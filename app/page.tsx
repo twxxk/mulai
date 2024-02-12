@@ -5,11 +5,18 @@ import { useChat } from 'ai/react';
 import Chat from './chat'
 import { useState } from 'react';
 import { ChatModel } from './chatModel'
+import { Send, StopCircle } from 'lucide-react';
 
 export default function Page() {
+  const [parentInput, setParentInput] = useState('')
+
   const chats:ChatModel[] = []
   const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
-  let parentInput = ''
+
+  const isLoadingAnyChat = () => {
+    // console.log('called'); 
+    return chats.some((chat:ChatModel) => chat.isLoading)
+  }
 
   // initialize ai models
   chatModelNames.forEach((modelName, index)=>{
@@ -22,27 +29,24 @@ export default function Page() {
     const chat:ChatModel = {...useChat(), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
 
     chats[index] = chat
-
-    // parent input is a clone of the first input
-    if (index === 0) {
-      parentInput = chat.input
-    }
   })
 
   const parentHandleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
+    const newValue = e.currentTarget.value
+    setParentInput(newValue)
+
     // copy parent input value to children inputs
     chats.map((chat:ChatModel, index:number) => {
-      // index==0 is connected to the parent input
-      // if (!chat.isEnabled)
-      //   return;
+      if (!chat.isEnabled)
+        return;
 
-      chat.setInput(e.currentTarget.value)
+      chat.setInput(newValue)
     })    
   }
 
   // form submit handler
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()    
+    e.preventDefault()
     chats.map((chat:ChatModel, index:number) => {
       if (!chat.isEnabled)
         return;
@@ -51,6 +55,16 @@ export default function Page() {
       const options:ChatRequestOptions = {options:{headers:{model: chat.model}}}
   
       chat.handleSubmit(e, options)
+    })
+
+    // make sure map is called with the old value
+    setTimeout(()=>setParentInput(''), 100)
+  }
+
+  const handleStop = () => {
+    console.log('stopping')      
+    chats.map((chat:ChatModel, index:number) => {
+      chat.stop()
     })
   }
 
@@ -63,13 +77,22 @@ export default function Page() {
         <Chat key={index} chatModel={chat} />
       ))}
     </main>
-    <form onSubmit={handleChatSubmit} className='fixed w-screen h-12 bottom-0'>
+    <form onSubmit={handleChatSubmit} className='fixed w-screen h-12 bottom-0 flex'>
       <input
-        className="w-full p-2 border border-gray-300 rounded"
+        className="p-2 border border-gray-300 rounded flex-1"
         value={parentInput}
         onChange={parentHandleInputChange}
         placeholder="Say something to all models..."
       />
+      {/* disabled is useful to stop submitting with enter */}
+      <button type="submit" className={isLoadingAnyChat() ? 'hidden' : ''} disabled={parentInput.length === 0 || isLoadingAnyChat()}>
+        <Send className="h-4 w-4" />
+        <span className="sr-only">Send</span>
+      </button>
+      <button onClick={handleStop} className={!isLoadingAnyChat() ? 'hidden' : ''}>
+        <StopCircle className="h-4 w-4" />
+        <span className="sr-only">Stop</span>
+      </button>
     </form>
   </>);
 }

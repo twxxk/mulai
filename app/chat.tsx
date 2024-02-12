@@ -28,7 +28,8 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
       ))}
       </div>
  
-      <form onSubmit={handleChatSubmit} className='bottom-0'>
+      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 p-2'>
+        <div className=''><strong>{chatModel.model}</strong></div>
         <input
           className="w-full p-2 mt-auto mb-0 border border-gray-300 rounded"
           value={chatModel.input}
