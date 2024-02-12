@@ -21,7 +21,8 @@ export default function RootLayout({
           <h1 className="font-bold"><a href="/">MulAI</a></h1>
           {/* <span><a onClick={clearConversation}>×</a></span> */}
         </header>
-        {children}</body>
+        {children}
+      </body>
     </html>
   );
 }
