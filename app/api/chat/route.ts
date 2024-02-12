@@ -66,7 +66,7 @@ export async function POST(req: Request) {
         model = DEFAULT_MODEL
         vendor = ALLOWED_MODELS[model]
     }
-    console.log('model=' + model)
+    // console.log('model=' + model)
 
     if (vendor == 'openai') {
         const stream = await openaiChatStream({model, messages})

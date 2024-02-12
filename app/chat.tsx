@@ -14,26 +14,30 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
     chatModel.handleSubmit(e, options)
   }
   
-  return (
-    <div className="resize-x overflow-auto border border-solid flex flex-col w-full max-w-md py-24 mx-auto stretch">
-      <div>Model: <strong>{chatModel.model}</strong></div>
+  return (<>
+    <div className="resize-x overflow-auto border border-solid flex flex-col w-full p-1 mx-1 stretch flex-grow">
+      <div className=''>Model: <strong>{chatModel.model}</strong></div>
+      <div className='flex-grow'>
       {chatModel.messages.map(m => (
-        <div key={m.id} className="whitespace-pre-wrap">
-          {m.role === 'user' ? 'User: ' 
+        <div key={m.id} className="whitespace-pre-wrap py-1">
+          <span className='font-bold'>{m.role === 'user' ? 'User: ' 
           : m.role === 'assistant' ? 'AI: '
-          : 'System: '}
+          : 'System: '}</span>
           {m.content}
         </div>
       ))}
+      </div>
  
-      <form onSubmit={handleChatSubmit} className='bottom-0 '>
+      <form onSubmit={handleChatSubmit} className='bottom-0'>
         <input
-          className="w-full max-w-md p-2 mb-8 border border-gray-300 rounded shadow-xl"
+          className="w-full p-2 mt-auto mb-0 border border-gray-300 rounded"
           value={chatModel.input}
-          placeholder="Say something..."
+          placeholder="Say something to this model..."
           onChange={chatModel.handleInputChange}
         />
+        {/* <input type='checkbox' />停止 */}
       </form>
     </div>
+    </>
   );
 }
