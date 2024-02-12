@@ -13,9 +13,14 @@ export default function Page() {
 
   // initialize ai models
   chatModelNames.forEach((modelName, index)=>{
-    // const { messages, input, handleInputChange, handleSubmit } = useChat()
+    // The order is always same so far. https://legacy.reactjs.org/docs/hooks-rules.html
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [model, setModel] = useState(modelName)
-    const chat:ChatModel = {...useChat(), model: model, setModel:setModel}
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const [isEnabled, setIsEnabled] = useState(true)
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const chat:ChatModel = {...useChat(), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
+
     chats[index] = chat
 
     // parent input is a clone of the first input
@@ -27,6 +32,10 @@ export default function Page() {
   const parentHandleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     // copy parent input value to children inputs
     chats.map((chat:ChatModel, index:number) => {
+      // index==0 is connected to the parent input
+      // if (!chat.isEnabled)
+      //   return;
+
       chat.setInput(e.currentTarget.value)
     })    
   }
@@ -35,7 +44,10 @@ export default function Page() {
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()    
     chats.map((chat:ChatModel, index:number) => {
-      console.log('requesting model=' + chat.model)
+      if (!chat.isEnabled)
+        return;
+
+      // console.log('requesting model=' + chat.model)
       const options:ChatRequestOptions = {options:{headers:{model: chat.model}}}
   
       chat.handleSubmit(e, options)

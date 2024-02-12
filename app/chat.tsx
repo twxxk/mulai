@@ -35,7 +35,12 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
           placeholder="Say something to this model..."
           onChange={chatModel.handleInputChange}
         />
-        {/* <input type='checkbox' />停止 */}
+        <label>
+          <input type="checkbox" className='mt-1 mr-1'
+            checked={chatModel.isEnabled}
+            onChange={() => chatModel.setIsEnabled(!chatModel.isEnabled)}
+          />
+          Accepts Broadcast</label>
       </form>
     </div>
     </>
