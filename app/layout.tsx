@@ -17,10 +17,6 @@ export default function RootLayout({
   return (
     <html>
       <body className={inter.className}>
-        <header className="flex h-fit bg-blue-500 text-white text-xl p-4 md:h-fit mb-6">
-          <h1 className="font-bold"><a href="/">MulAI</a></h1>
-          {/* <span><a onClick={clearConversation}>×</a></span> */}
-        </header>
         {children}
       </body>
     </html>

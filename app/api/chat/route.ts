@@ -19,7 +19,7 @@ export async function POST(req: Request) {
   }
 
   const model = ALLOWED_MODELS.indexOf(givenModel) >= 0 ? givenModel : ALLOWED_MODELS[0]
-  console.log('model=' + model)
+//   console.log('model=' + model)
 
   // Ask OpenAI for a streaming chat completion given the prompt
   const response = await openai.chat.completions.create({
