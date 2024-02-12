@@ -2,26 +2,32 @@
 
 import { ChatRequestOptions } from 'ai';
 import { useChat } from 'ai/react';
-import { useState } from 'react';
 import Chat from './chat'
+import { useState } from 'react';
+import { ChatModel } from './chatModel'
 
 export default function Page() {
-  const chats:any = []
-  const chatModels = ['gpt-3.5-turbo', 'gpt-4-turbo-preview']
-  let parentInput:any
+  const chats:ChatModel[] = []
+//  const chatModels = ['gpt-3.5-turbo', 'gpt-4-turbo-preview']
+  const chatModelNames = ['gemini-pro', 'gpt-4-turbo-preview']
+  let parentInput = ''
 
   // initialize ai models
-  chatModels.forEach((model, index)=>{
+  chatModelNames.forEach((modelName, index)=>{
     // const { messages, input, handleInputChange, handleSubmit } = useChat()
-    chats[index] = useChat()
-    chats[index].initialModel = chatModels[index]
+    const [model, setModel] = useState(modelName)
+    const chat:ChatModel = {...useChat(), model: model, setModel:setModel}
+    chats[index] = chat
+
+    // parent input is a clone of the first input
     if (index === 0) {
-      parentInput = chats[index].input
+      parentInput = chat.input
     }
   })
 
   const parentHandleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
-    chats.map((chat:any, index:number) => {
+    // copy parent input value to children inputs
+    chats.map((chat:ChatModel, index:number) => {
       chat.setInput(e.currentTarget.value)
     })    
   }
@@ -29,18 +35,21 @@ export default function Page() {
   // form submit handler
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()    
-    chats.map((chat:any, index:number) => {
-      chat.handleSubmit(e)
+    chats.map((chat:ChatModel, index:number) => {
+      console.log('requesting model=' + chat.model)
+      const options:ChatRequestOptions = {options:{headers:{model: chat.model}}}
+  
+      chat.handleSubmit(e, options)
     })
   }
 
   return (<>
-    <header className="flex h-fit bg-blue-500 text-white text-xl p-4 md:h-fit mb-6">
+    <header className="fixed w-screen bg-blue-500 text-white text-xl p-4 mb-6">
       <h1 className="font-bold"><a href="/">MulAI</a></h1>
     </header>
-    <div className='flex w-full stretch'>
-      {chats.map((m:any, index:number) => (
-        <Chat key={index} initialModel={m.initialModel} messages={m.messages} input={m.input} handleInputChange={m.handleInputChange} handleSubmit={m.handleSubmit} />
+    <div className='flex w-full stretch text-sm'>
+      {chats.map((chat:ChatModel, index:number) => (
+        <Chat key={index} chatModel={chat} />
       ))}
 
       {/*

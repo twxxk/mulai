@@ -1,0 +1,9 @@
+diff a/package.json b/package.json	(rejected hunks)
+@@ -9,6 +9,7 @@
+     "lint": "next lint"
+   },
+   "dependencies": {
++    "@google/generative-ai": "^0.2.0",
+     "ai": "^2.2.34",
+     "next": "14.1.0",
+     "openai": "^4.27.0",
