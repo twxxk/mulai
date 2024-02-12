@@ -2,10 +2,13 @@
  
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatModel } from './chatModel'
-import { RefreshCwIcon } from 'lucide-react';
+import { RefreshCwIcon, Minimize2Icon, Maximize2Icon } from 'lucide-react';
+import { useState } from 'react';
 
 export default function Chat({chatModel}:{chatModel:ChatModel}) 
 {
+  const [styles, setStyles] = useState({})
+
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
     console.log('requesting model=' + chatModel.model)
@@ -18,9 +21,27 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
   const handleReload = () => {
     chatModel.reload()
   }
-  
+
+  const handleUpdatePaneSize = () => updatePaneSize(false)
+  // const handleMaxmizePaneSize = () => 
+
+  const updatePaneSize = (forceMinimize:boolean) => {
+    const minimizedStyles = {width: '40em'}
+
+    if (forceMinimize) {
+      setStyles(minimizedStyles)
+      return
+    }
+
+    // console.log(styles)
+    if (minimizedStyles.width !== (styles as any)?.width)
+      setStyles(minimizedStyles)
+    else
+      setStyles({})
+  }
+
   return (<>
-    <div className="resize-x overflow-auto border border-solid flex flex-col w-full p-1 mx-1 stretch flex-grow">
+    <div style={styles} className="resize-x overflow-auto border border-solid flex flex-col w-full p-1 mx-1 stretch flex-grow">
       <div className=''>Model: <strong>{chatModel.model}</strong></div>
       <div className='flex-grow'>
       {chatModel.messages.map(m => (
@@ -34,7 +55,19 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
       </div>
  
       <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 p-2 rounded-sm'>
-        <div className=''><strong>{chatModel.model}</strong></div>
+        <div className='flex w-full'>
+          <div className="flex-1">
+            <strong>{chatModel.model}</strong>
+          </div>
+          <button className="ml-1" onClick={handleUpdatePaneSize}>
+            <Minimize2Icon className="h-4 w-4" />
+            <span className="sr-only">Minimize</span>
+          </button>
+          {/* <button className="ml-1" onClick={handleMaxmizePaneSize}>
+            <Maximize2Icon className="h-4 w-4" />
+            <span className="sr-only">Maximize</span>
+          </button> */}
+        </div>
         <div className='flex w-full'>
           <input
             className="flex-1 p-2 mt-auto mb-0 border border-gray-300 rounded"

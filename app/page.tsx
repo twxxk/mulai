@@ -3,13 +3,15 @@
 import { ChatRequestOptions } from 'ai';
 import { useChat } from 'ai/react';
 import Chat from './chat'
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ChatModel } from './chatModel'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 
 export default function Page() {
   const [parentInput, setParentInput] = useState('')
-
+  const [isUsingIME, setIsUsingIME] = useState(false)
+  const formRef = useRef<HTMLFormElement>(null);
+  
   const chats:ChatModel[] = []
   const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
 
@@ -41,7 +43,24 @@ export default function Page() {
         return;
 
       chat.setInput(newValue)
-    })    
+    })
+  }
+
+  // trigger enter key
+  const parentHandleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // console.log(e.currentTarget.value)
+
+    // submit only if the key is enter
+    if (e.key !== 'Enter' || e.shiftKey || isUsingIME)
+      return;
+
+    e.preventDefault();
+
+    // trigger form submission
+    if (formRef.current) {
+      // console.log('submitting')
+      formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
   }
 
   // form submit handler
@@ -78,29 +97,32 @@ export default function Page() {
     <header className="fixed w-screen bg-blue-500 text-white text-xl p-4 h-14">
       <a href="/"><h1><span className="font-bold">MulAI</span> - Chat with Multiple genAIs</h1></a>
     </header>
-    <main className='flex-grow flex flex-row w-full stretch text-xs overflow-auto mt-16 mb-16'>
+    <main className='flex-grow flex flex-row w-full stretch text-xs overflow-auto mt-16 mb-14'>
       {chats.map((chat:ChatModel, index:number) => (
         <Chat key={index} chatModel={chat} />
       ))}
     </main>
-    <form onSubmit={handleChatSubmit} className='fixed w-screen h-12 bottom-0 flex'>
-      <input
-        className="p-2 border border-gray-300 rounded flex-1"
+    <form ref={formRef} onSubmit={handleChatSubmit} className='fixed w-screen h-12 bottom-0 flex'>
+      <textarea
+        className="p-2 border border-gray-300 rounded flex-1 text-sm mr-1"
         value={parentInput}
         onChange={parentHandleInputChange}
+        onKeyDown={parentHandleInputKeyDown}
+        onCompositionStart={() => setIsUsingIME(true)}
+        onCompositionEnd={() => setIsUsingIME(false)}        
         placeholder="Say something to all models..."
       />
       {/* disabled is useful to stop submitting with enter */}
-      <button type="submit" className={isLoadingAnyChat() ? 'hidden' : ''} disabled={parentInput.length === 0 || isLoadingAnyChat()}>
-        <SendIcon className="h-4 w-4" />
+      <button type="submit" className={isLoadingAnyChat() ? 'hidden' : 'p-1'} disabled={parentInput.length === 0 || isLoadingAnyChat()}>
+        <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send</span>
       </button>
-      <button onClick={handleStop} className={!isLoadingAnyChat() ? 'hidden' : ''}>
-        <StopCircleIcon className="h-4 w-4" />
+      <button onClick={handleStop} className={!isLoadingAnyChat() ? 'hidden' : 'p-1'}>
+        <StopCircleIcon className="h-5 w-5" />
         <span className="sr-only">Stop</span>
       </button>
-      <button onClick={handleTrash} className={''}>
-        <Trash2Icon className="h-4 w-4" />
+      <button onClick={handleTrash} className='p-1'>
+        <Trash2Icon className="h-5 w-5" />
         <span className="sr-only">Trash</span>
       </button>
     </form>
