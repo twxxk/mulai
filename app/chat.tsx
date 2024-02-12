@@ -2,6 +2,7 @@
  
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatModel } from './chatModel'
+import { RefreshCwIcon } from 'lucide-react';
 
 export default function Chat({chatModel}:{chatModel:ChatModel}) 
 {
@@ -12,6 +13,10 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
 
     e.preventDefault()
     chatModel.handleSubmit(e, options)
+  }
+
+  const handleReload = () => {
+    chatModel.reload()
   }
   
   return (<>
@@ -28,14 +33,20 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
       ))}
       </div>
  
-      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 p-2'>
+      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 p-2 rounded-sm'>
         <div className=''><strong>{chatModel.model}</strong></div>
-        <input
-          className="w-full p-2 mt-auto mb-0 border border-gray-300 rounded"
-          value={chatModel.input}
-          placeholder="Say something to this model..."
-          onChange={chatModel.handleInputChange}
-        />
+        <div className='flex w-full'>
+          <input
+            className="flex-1 p-2 mt-auto mb-0 border border-gray-300 rounded"
+            value={chatModel.input}
+            placeholder="Say something to this model..."
+            onChange={chatModel.handleInputChange}
+          />
+          <button className="ml-1" onClick={handleReload} disabled={chatModel.isLoading && chatModel.messages.length >= 2}>
+            <RefreshCwIcon className="h-4 w-4" />
+            <span className="sr-only">Reload</span>
+          </button>
+        </div>
         <label>
           <input type="checkbox" className='mt-1 mr-1'
             checked={chatModel.isEnabled}

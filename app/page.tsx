@@ -5,7 +5,7 @@ import { useChat } from 'ai/react';
 import Chat from './chat'
 import { useState } from 'react';
 import { ChatModel } from './chatModel'
-import { Send, StopCircle } from 'lucide-react';
+import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 
 export default function Page() {
   const [parentInput, setParentInput] = useState('')
@@ -63,8 +63,14 @@ export default function Page() {
 
   const handleStop = () => {
     console.log('stopping')      
-    chats.map((chat:ChatModel, index:number) => {
-      chat.stop()
+    chats.map((chat:ChatModel, index:number) => chat.stop())
+  }
+
+  const handleTrash = () => {
+    console.log('trashing')
+    chats.map((chat:ChatModel) => {
+      chat.setInput('')
+      chat.setMessages([])
     })
   }
 
@@ -86,12 +92,16 @@ export default function Page() {
       />
       {/* disabled is useful to stop submitting with enter */}
       <button type="submit" className={isLoadingAnyChat() ? 'hidden' : ''} disabled={parentInput.length === 0 || isLoadingAnyChat()}>
-        <Send className="h-4 w-4" />
+        <SendIcon className="h-4 w-4" />
         <span className="sr-only">Send</span>
       </button>
       <button onClick={handleStop} className={!isLoadingAnyChat() ? 'hidden' : ''}>
-        <StopCircle className="h-4 w-4" />
+        <StopCircleIcon className="h-4 w-4" />
         <span className="sr-only">Stop</span>
+      </button>
+      <button onClick={handleTrash} className={''}>
+        <Trash2Icon className="h-4 w-4" />
+        <span className="sr-only">Trash</span>
       </button>
     </form>
   </>);
