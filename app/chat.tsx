@@ -41,7 +41,7 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
   }
 
   return (<>
-    <div style={styles} className="border border-solid flex flex-col w-full p-1 mx-1 h-full">
+    <div style={styles} className="border border-solid border-slate-200 flex flex-col w-full p-1 mx-1 h-full">
       <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
       <div id={'chatHistory' + index} className='flex-1 overflow-auto'>
       {chatModel.messages.map(m => (
