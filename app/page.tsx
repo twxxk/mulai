@@ -13,8 +13,10 @@ export default function Page() {
   const formRef = useRef<HTMLFormElement>(null);
   
   const chats:ChatModel[] = []
+  // const chatModelNames = ['gpt-3.5-turbo'] // for debug
   const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
 
+  // return true if any chat is loading
   const isLoadingAnyChat = () => {
     // console.log('called'); 
     return chats.some((chat:ChatModel) => chat.isLoading)
@@ -94,15 +96,15 @@ export default function Page() {
   }
 
   return (<>
-    <header className="fixed w-screen bg-blue-500 text-white text-xl p-4 h-14">
+    <header className="w-screen bg-teal-600 text-white text-xl p-4 h-14">
       <a href="/"><h1><span className="font-bold">MulAI</span> - Chat with Multiple genAIs</h1></a>
     </header>
-    <main className='flex-grow flex flex-row w-full stretch text-xs overflow-auto mt-16 mb-14'>
+    <main className='flex-1 flex flex-row w-full text-xs mt-1 overflow-auto'>
       {chats.map((chat:ChatModel, index:number) => (
         <Chat key={index} chatModel={chat} />
       ))}
     </main>
-    <form ref={formRef} onSubmit={handleChatSubmit} className='fixed w-screen h-12 bottom-0 flex'>
+    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
       <textarea
         className="p-2 border border-gray-300 rounded flex-1 text-sm mr-1"
         value={parentInput}
@@ -113,15 +115,21 @@ export default function Page() {
         placeholder="Say something to all models..."
       />
       {/* disabled is useful to stop submitting with enter */}
-      <button type="submit" className={isLoadingAnyChat() ? 'hidden' : 'p-1'} disabled={parentInput.length === 0 || isLoadingAnyChat()}>
+      <button type="submit" 
+        className={(isLoadingAnyChat() ? 'hidden' : 'p-1') 
+          + ' disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'} 
+        disabled={parentInput.length === 0 || isLoadingAnyChat()}>
         <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send</span>
       </button>
-      <button onClick={handleStop} className={!isLoadingAnyChat() ? 'hidden' : 'p-1'}>
+      <button onClick={handleStop} 
+        className={(!isLoadingAnyChat() ? 'hidden' : 'p-1') 
+          + ' disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'}>
         <StopCircleIcon className="h-5 w-5" />
         <span className="sr-only">Stop</span>
       </button>
-      <button onClick={handleTrash} className='p-1'>
+      <button onClick={handleTrash} 
+        className='p-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'>
         <Trash2Icon className="h-5 w-5" />
         <span className="sr-only">Trash</span>
       </button>
