@@ -88,6 +88,8 @@ export default function Page() {
   }
 
   const handleTrash = () => {
+    // You should stop before trash
+    handleStop()
     console.log('trashing')
     chats.map((chat:ChatModel) => {
       chat.setInput('')
