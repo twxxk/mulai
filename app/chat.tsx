@@ -5,7 +5,7 @@ import { ChatModel } from './chatModel'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon } from 'lucide-react';
 import { useState } from 'react';
 
-export default function Chat({chatModel}:{chatModel:ChatModel}) 
+export default function Chat({chatModel, index}:{chatModel:ChatModel, index:number}) 
 {
   const [styles, setStyles] = useState({})
 
@@ -43,7 +43,7 @@ export default function Chat({chatModel}:{chatModel:ChatModel})
   return (<>
     <div style={styles} className="border border-solid flex flex-col w-full p-1 mx-1 h-full">
       <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
-      <div className='flex-1 overflow-auto'>
+      <div id={'chatHistory' + index} className='flex-1 overflow-auto'>
       {chatModel.messages.map(m => (
         <div key={m.id} className={
           "whitespace-pre-wrap flex max-w-80 md:max-w-xl flex-col gap-2 rounded-sm px-2 py-1 m-1 text-sm " + 

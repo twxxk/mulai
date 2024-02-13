@@ -30,7 +30,22 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [isEnabled, setIsEnabled] = useState(true)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const chat:ChatModel = {...useChat(), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
+    const [paneSize, setPaneSize] = useState('')
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const chat:ChatModel = {...useChat({
+      onFinish: () => {
+        // scroll to the latest bottom of the chat history
+        const historyId = 'chatHistory' + index
+        const div:any = document.getElementById(historyId);
+        // console.log(`his ${div.scrollTop} ${div.scrollHeight}`)
+        // div.scrollTop = div.scrollHeight;
+        div.scrollTo({
+          top: div.scrollHeight,
+          left: 0,
+          behavior: 'smooth'
+        })
+      }
+    }), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
 
     chats[index] = chat
   })
@@ -88,7 +103,7 @@ export default function Page() {
   }
 
   const handleTrash = () => {
-    // You should stop before trash
+    // Stop to prevent getting responses after trash
     handleStop()
     console.log('trashing')
     chats.map((chat:ChatModel) => {
@@ -103,7 +118,8 @@ export default function Page() {
     </header>
     <main className='flex-1 flex flex-row w-full text-xs mt-1 overflow-auto'>
       {chats.map((chat:ChatModel, index:number) => (
-        <Chat key={index} chatModel={chat} />
+        <Chat key={index} index={index} chatModel={chat} 
+          />
       ))}
     </main>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
