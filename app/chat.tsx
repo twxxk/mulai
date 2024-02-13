@@ -4,6 +4,7 @@ import { ChatRequestOptions, Message } from 'ai';
 import { ChatModel } from './chatModel'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
 import { useState } from 'react';
+const Markdown = require('react-markdown-it')
 
 export default function Chat({chatModel, index}:{chatModel:ChatModel, index:number}) 
 {
@@ -43,27 +44,28 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
   return (<>
     <div style={styles} className="border border-solid border-slate-200 flex flex-col w-full p-1 mx-1 h-full">
       <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
-      <div id={'chatHistory' + index} className='flex-1 overflow-auto'>
+      <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full'>
       {chatModel.messages.map(m => (
         <div key={m.id} className={
-          "whitespace-pre-wrap flex max-w-80 md:max-w-xl flex-col gap-2 rounded-sm px-2 py-1 m-1 text-sm " + 
+          "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal overflow-x-auto prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:my-0 prose-pre:mt-1 prose-pre:mb-3 " + 
           (m.role === "user"
-            ? "bg-slate-50"
+            ? "bg-slate-100"
             : m.role === "assistant"
             ? ""
             : process.env.NODE_ENV !== 'development'
             ? "hidden" // system
             : "bg-gray-100 text-gray-400"
         )}>
-          <span className='font-bold'>{m.role === 'user' ? 'User: ' 
+          <div className='font-bold text-xs'>{m.role === 'user' ? 'User: ' 
           : m.role === 'assistant' ? 'AI: '
-          : 'System: '}</span>
-          {m.content}
+          : 'System: '}</div>
+          <Markdown source={m.content} />
+          {/* <div className='whitespace-pre-wrap whitespace-normal '>{m.content}</div> */}
         </div>
       ))}
       </div>
  
-      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 p-2 rounded-sm'>
+      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 py-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1">
             <strong>{chatModel.model}</strong>
@@ -80,7 +82,7 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
         </div>
         <div className='flex w-full'>
           <input
-            className="flex-1 p-2 mt-auto mb-0 border border-gray-300 rounded"
+            className="flex-1 p-2 my-1 border border-gray-300 rounded"
             value={chatModel.input}
             placeholder="Say something to this model..."
             onChange={chatModel.handleInputChange}
@@ -99,7 +101,7 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
           </button>
         </div>
         <label>
-          <input type="checkbox" className='mt-1 mr-1'
+          <input type="checkbox" className='mr-1'
             checked={chatModel.isEnabled}
             onChange={() => chatModel.setIsEnabled(!chatModel.isEnabled)}
           />
