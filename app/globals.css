@@ -31,3 +31,17 @@
     text-wrap: balance;
   }
 }
+
+
+/*
+ * Reresizeable split views library https://split.js.org/ 
+ */
+.gutter {
+  background-repeat: no-repeat;
+  background-position: 50%;
+}
+
+.gutter.gutter-horizontal {
+  background: linear-gradient(to bottom, #0d9488, white);
+  cursor: col-resize;
+}

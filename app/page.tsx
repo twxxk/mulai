@@ -6,6 +6,7 @@ import Chat from './chat'
 import { useRef, useState } from 'react';
 import { ChatModel } from './chatModel'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
+import Split from 'react-split'
 
 export default function Page() {
   const [parentInput, setParentInput] = useState('')
@@ -116,12 +117,12 @@ export default function Page() {
     <header className="w-screen bg-teal-600 text-white text-xl p-4 h-14">
       <a href="/"><h1><span className="font-bold">MulAI</span> - Chat with Multiple genAIs</h1></a>
     </header>
-    <main className='flex-1 flex flex-row w-full text-xs mt-1 overflow-auto'>
+    <Split gutterSize={8} minSize={240} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
       {chats.map((chat:ChatModel, index:number) => (
         <Chat key={index} index={index} chatModel={chat} 
           />
       ))}
-    </main>
+    </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
       <textarea
         className="p-2 border border-gray-300 rounded flex-1 text-sm m-1"
