@@ -1,12 +1,16 @@
 'use client';
  
-import { ChatRequestOptions, Message } from 'ai';
+import { ChatRequestOptions } from 'ai';
 import { ChatModel } from './chatModel'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
 import { useState } from 'react';
 const Markdown = require('react-markdown-it')
 
-export default function Chat({chatModel, index}:{chatModel:ChatModel, index:number}) 
+export default function Chat({chatModel, index, updatePaneSize}:{
+  chatModel:ChatModel, 
+  index:number, 
+  updatePaneSize:(index:number, size:string)=>void,
+}) 
 {
   const [styles, setStyles] = useState({})
 
@@ -23,26 +27,16 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
     chatModel.reload()
   }
 
-  const handleUpdatePaneSize = () => updatePaneSize(false)
-  // const handleMaxmizePaneSize = () => 
+  const handleMinimizePaneSize = () => {
+    updatePaneSize(index, "minimize")
+  }
 
-  const updatePaneSize = (forceMinimize:boolean) => {
-    const minimizedStyles = {width: '40em'}
-
-    if (forceMinimize) {
-      setStyles(minimizedStyles)
-      return
-    }
-
-    // console.log(styles)
-    if (minimizedStyles.width !== (styles as any)?.width)
-      setStyles(minimizedStyles)
-    else
-      setStyles({})
+  const handleMaxmizePaneSize = () => {
+    updatePaneSize(index, "maximize")
   }
 
   return (<>
-    <div style={styles} className="border border-solid border-slate-200 flex flex-col w-full p-1 mx-1 h-full">
+    <div style={styles} className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
       <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full'>
       {chatModel.messages.map(m => (
@@ -70,15 +64,14 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
           <div className="flex-1">
             <strong>{chatModel.model}</strong>
           </div>
-          {/* 
-          <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleUpdatePaneSize}>
+          <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-4 w-4" />
             <span className="sr-only">Minimize</span>
           </button>
-          <button className="ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMaxmizePaneSize}>
+          <button className="ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMaxmizePaneSize}>
             <Maximize2Icon className="h-4 w-4" />
             <span className="sr-only">Maximize</span>
-          </button> */}
+          </button>
         </div>
         <div className='flex w-full'>
           <input

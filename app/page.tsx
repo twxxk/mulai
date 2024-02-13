@@ -8,14 +8,22 @@ import { ChatModel } from './chatModel'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
 
+// 2 => [50, 50], 4 => [25, 25, 25, 25]
+function splitToArray(num:number) {
+  return Array(num).fill(100/num)
+}
+
 export default function Page() {
+  // const chatModelNames = ['gpt-3.5-turbo'] // for debug
+  const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
+
   const [parentInput, setParentInput] = useState('')
   const [isUsingIME, setIsUsingIME] = useState(false)
+  const [splitSizes, setSplitSizes] = useState(splitToArray(chatModelNames.length))
+
   const formRef = useRef<HTMLFormElement>(null);
   
   const chats:ChatModel[] = []
-  // const chatModelNames = ['gpt-3.5-turbo'] // for debug
-  const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
 
   // return true if any chat is loading
   const isLoadingAnyChat = () => {
@@ -50,6 +58,82 @@ export default function Page() {
 
     chats[index] = chat
   })
+
+  // Split onDragStart={onDragStart}
+  // const onDragStart = (sizes:number[]) => {
+  //   console.log('current sizes=', sizes)
+  // }
+
+  const updatePaneSize = (updateIndex:number, operation:string) => {
+    const currentValue = splitSizes[updateIndex]
+    // console.log('index=', updateIndex, ', operation=' + operation, 'currentValue=', currentValue)
+
+    // calc newValue
+    switch (operation) {
+      case 'minimize':
+        if (currentValue === 0) operation = 'restore'
+        break;
+      case 'maximize':
+        if (currentValue === 100) operation = 'restore'
+        break;
+      default:
+        console.log('unexpected operation=' + operation + ', index=' + updateIndex)
+        break;
+    }
+
+    // do operation
+    const operations:any = {
+      'minimize': calcMinimizePaneSizes, 
+      'maximize': calcMaximizePaneSizes, 
+      'restore': calcRestorePaneSizes
+    }
+    const calcSizes = operations[operation] as (updateIndex:number) => number[]
+    const newSizes = calcSizes(updateIndex)
+    setSplitSizes(newSizes)
+
+    function calcMinimizePaneSizes(updateIndex:number) {
+      // e.g. [33.3, 33.3, 33.3] => [50, 50, 0]
+      const updateSize = 0
+      const otherSize = 100/(splitSizes.length - 1)
+
+      const newSizes = splitSizes.map((size, index) => 
+        index === updateIndex ? updateSize : otherSize
+      )
+
+      // console.log('min=', newSizes)
+      return newSizes
+    }
+    function calcMaximizePaneSizes(updateIndex:number) {
+      // e.g. [33.3, 33.3, 33.3] => [0, 0, 100] 
+      // sizes will be adjusted to min by the library automatically
+      const updateSize = 100
+      const otherSize = 0
+
+      const newSizes = splitSizes.map((size, index) => 
+        index === updateIndex ? updateSize : otherSize
+      )
+
+      // console.log('max=', newSizes)
+      return newSizes
+    }
+    function calcRestorePaneSizes(updateIndex:number) {
+      // e.g. [50, 50, 0] => [33.3, 33.3, 33.3]
+      // [0, 0, 100] => [33.3, 33.3, 33.3]
+      const averageSize = 100/(splitSizes.length) // 33.3
+      if (splitSizes.length === 1) {
+        console.log('unexpected splitSizes')
+        return;
+      }
+      const adjustValue = (currentValue - averageSize)/(splitSizes.length - 1) // -33.3/2
+
+      const newSizes = splitSizes.map((size, index) => 
+        index === updateIndex ? averageSize : size + adjustValue
+      )
+
+      // console.log('restore=', newSizes)
+      return newSizes
+    }
+  }
 
   const parentHandleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = e.currentTarget.value
@@ -117,10 +201,9 @@ export default function Page() {
     <header className="w-screen bg-teal-600 text-white text-xl p-4 h-14">
       <a href="/"><h1><span className="font-bold">MulAI</span> - Chat with Multiple genAIs</h1></a>
     </header>
-    <Split gutterSize={8} minSize={240} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
+    <Split gutterSize={8} minSize={240} sizes={splitSizes} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
       {chats.map((chat:ChatModel, index:number) => (
-        <Chat key={index} index={index} chatModel={chat} 
-          />
+        <Chat key={index} index={index} chatModel={chat} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
