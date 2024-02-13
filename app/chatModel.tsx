@@ -1,5 +1,5 @@
-import { UseChatHelpers, useChat } from 'ai/react';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { UseChatHelpers } from 'ai/react';
+import { Dispatch, SetStateAction } from 'react';
 
 export type ChatModel = UseChatHelpers & { 
     isEnabled: boolean, setIsEnabled: Dispatch<SetStateAction<boolean>>,

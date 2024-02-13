@@ -39,8 +39,6 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [isEnabled, setIsEnabled] = useState(true)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [paneSize, setPaneSize] = useState('')
-    // eslint-disable-next-line react-hooks/rules-of-hooks
     const chat:ChatModel = {...useChat({
       onFinish: () => {
         // scroll to the latest bottom of the chat history
@@ -198,10 +196,13 @@ export default function Page() {
   }
 
   return (<>
-    <header className="w-screen bg-teal-600 text-white text-xl p-4 h-14">
-      <a href="/"><h1><span className="font-bold">MulAI</span> - Chat with Multiple genAIs</h1></a>
+    <header className="w-screen bg-teal-600 text-white text-xl p-4 h-14 flex flex-row">
+      <a className='flex-1' href="/"><h1>
+        <span className="font-bold">MulAI</span> - Chat with Multiple genAIs
+      </h1></a>
+      <a className='text-xs pt-1 text-teal-700' href="https://twitter.com/twk" target="_blank" rel="noopener noreferrer">author: @twk</a>
     </header>
-    <Split gutterSize={8} minSize={240} sizes={splitSizes} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
+    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
       {chats.map((chat:ChatModel, index:number) => (
         <Chat key={index} index={index} chatModel={chat} updatePaneSize={updatePaneSize} />
       ))}

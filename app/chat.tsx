@@ -3,7 +3,6 @@
 import { ChatRequestOptions } from 'ai';
 import { ChatModel } from './chatModel'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
-import { useState } from 'react';
 const Markdown = require('react-markdown-it')
 
 export default function Chat({chatModel, index, updatePaneSize}:{
@@ -12,8 +11,6 @@ export default function Chat({chatModel, index, updatePaneSize}:{
   updatePaneSize:(index:number, size:string)=>void,
 }) 
 {
-  const [styles, setStyles] = useState({})
-
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
     console.log('requesting model=' + chatModel.model)
@@ -36,7 +33,7 @@ export default function Chat({chatModel, index, updatePaneSize}:{
   }
 
   return (<>
-    <div style={styles} className="flex flex-col w-full pt-2 h-full">
+    <div className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
       <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full'>
       {chatModel.messages.map(m => (
