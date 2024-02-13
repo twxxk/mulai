@@ -124,7 +124,7 @@ export default function Page() {
     </main>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
       <textarea
-        className="p-2 border border-gray-300 rounded flex-1 text-sm mr-1"
+        className="p-2 border border-gray-300 rounded flex-1 text-sm m-1"
         value={parentInput}
         onChange={parentHandleInputChange}
         onKeyDown={parentHandleInputKeyDown}

@@ -2,7 +2,7 @@
  
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatModel } from './chatModel'
-import { RefreshCwIcon, Minimize2Icon, Maximize2Icon } from 'lucide-react';
+import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Chat({chatModel, index}:{chatModel:ChatModel, index:number}) 
@@ -85,6 +85,13 @@ export default function Chat({chatModel, index}:{chatModel:ChatModel, index:numb
             placeholder="Say something to this model..."
             onChange={chatModel.handleInputChange}
           />
+          {/* disabled is useful to stop submitting with enter */}
+          <button type="submit" 
+            className='ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600' 
+            disabled={chatModel.input.length === 0 || chatModel.isLoading}>
+            <SendIcon className="h-5 w-5" />
+            <span className="sr-only">Send</span>
+          </button>
           <button className="ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" 
             onClick={handleReload} disabled={chatModel.isLoading || chatModel.messages.length < 2}>
             <RefreshCwIcon className="h-4 w-4" />
