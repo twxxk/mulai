@@ -3,10 +3,11 @@
 import { ChatRequestOptions } from 'ai';
 import { useChat } from 'ai/react';
 import Chat from './chat'
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ChatModel } from './chatModel'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
+import { ModelLabel } from '@/app/common';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -14,17 +15,21 @@ function splitToArray(num:number) {
 }
 
 export default function Page() {
-  // const chatModelNames = ['gpt-3.5-turbo'] // for debug
-  // const chatModelNames = ['gemini-pro'] // for debug
-  const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
+  // const chatModelLabels:ModelLabel[] = ['Gemini Pro'] // for free debug
+  const chatModelLabels:ModelLabel[] = ['GPT-3.5', 'GPT-4', 'Gemini Pro']
 
   const [parentInput, setParentInput] = useState('')
   const [isUsingIME, setIsUsingIME] = useState(false)
-  const [splitSizes, setSplitSizes] = useState(splitToArray(chatModelNames.length))
+  const [splitSizes, setSplitSizes] = useState(splitToArray(chatModelLabels.length))
 
   const formRef = useRef<HTMLFormElement>(null);
+  const defaultFocusRef = useRef<HTMLTextAreaElement>(null);
   
   const chats:ChatModel[] = []
+
+  useEffect(() => {
+    defaultFocusRef.current?.focus()
+  }, [])
 
   // return true if any chat is loading
   const isLoadingAnyChat = () => {
@@ -33,7 +38,7 @@ export default function Page() {
   }
 
   // initialize ai models
-  chatModelNames.forEach((modelName, index)=>{
+  chatModelLabels.forEach((modelName, index)=>{
     // The order is always same so far. https://legacy.reactjs.org/docs/hooks-rules.html
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [model, setModel] = useState(modelName)
@@ -198,6 +203,7 @@ export default function Page() {
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
       <textarea
         className="p-2 border border-gray-300 rounded flex-1 text-sm m-1"
+        ref={defaultFocusRef}
         value={parentInput}
         onChange={parentHandleInputChange}
         onKeyDown={parentHandleInputKeyDown}
