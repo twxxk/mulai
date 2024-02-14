@@ -45,7 +45,7 @@ export default function Page() {
     chats[index] = chat
   })
 
-  // Split onDragStart={onDragStart}
+  // You can debug by adding onDragStart={onDragStart} to with <Split />
   // const onDragStart = (sizes:number[]) => {
   //   console.log('current sizes=', sizes)
   // }

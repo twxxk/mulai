@@ -9,7 +9,7 @@ const Markdown = require('react-markdown-it')
 export default function Chat({chatModel, index, updatePaneSize}:{
   chatModel:ChatModel, 
   index:number, 
-  updatePaneSize:(index:number, size:string)=>void,
+  updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
 }) 
 {
   const historyElementRef = useRef(null);
