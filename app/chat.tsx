@@ -107,17 +107,17 @@ export default function Chat({chatModel, index, updatePaneSize}:{
       ))}
       </div>
  
-      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 py-1 rounded-sm'>
+      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1">
             <strong>{chatModel.model}</strong>
           </div>
           <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
-            <Minimize2Icon className="h-4 w-4" />
+            <Minimize2Icon className="h-3 w-3" />
             <span className="sr-only">Minimize</span>
           </button>
           <button className="ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMaxmizePaneSize}>
-            <Maximize2Icon className="h-4 w-4" />
+            <Maximize2Icon className="h-3 w-3" />
             <span className="sr-only">Maximize</span>
           </button>
         </div>
