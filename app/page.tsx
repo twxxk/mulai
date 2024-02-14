@@ -45,7 +45,7 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [isEnabled, setIsEnabled] = useState(true)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const chat:ChatModel = {...useChat(), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
+    const chat:ChatModel = {...useChat(), model, setModel, isEnabled, setIsEnabled}
 
     chats[index] = chat
   })
