@@ -15,6 +15,7 @@ function splitToArray(num:number) {
 
 export default function Page() {
   // const chatModelNames = ['gpt-3.5-turbo'] // for debug
+  // const chatModelNames = ['gemini-pro'] // for debug
   const chatModelNames = ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
 
   const [parentInput, setParentInput] = useState('')
@@ -39,20 +40,7 @@ export default function Page() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [isEnabled, setIsEnabled] = useState(true)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const chat:ChatModel = {...useChat({
-      onFinish: () => {
-        // scroll to the latest bottom of the chat history
-        const historyId = 'chatHistory' + index
-        const div:any = document.getElementById(historyId);
-        // console.log(`his ${div.scrollTop} ${div.scrollHeight}`)
-        // div.scrollTop = div.scrollHeight;
-        div.scrollTo({
-          top: div.scrollHeight,
-          left: 0,
-          behavior: 'smooth'
-        })
-      }
-    }), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
+    const chat:ChatModel = {...useChat(), model: model, setModel: setModel, isEnabled: isEnabled, setIsEnabled: setIsEnabled}
 
     chats[index] = chat
   })
@@ -62,11 +50,11 @@ export default function Page() {
   //   console.log('current sizes=', sizes)
   // }
 
-  const updatePaneSize = (updateIndex:number, operation:string) => {
+  const updatePaneSize = (updateIndex:number, operation:'minimize' | 'maximize' | 'restore') => {
     const currentValue = splitSizes[updateIndex]
     // console.log('index=', updateIndex, ', operation=' + operation, 'currentValue=', currentValue)
 
-    // calc newValue
+    // check current state and overwrite operation
     switch (operation) {
       case 'minimize':
         if (currentValue === 0) operation = 'restore'
@@ -79,7 +67,7 @@ export default function Page() {
         break;
     }
 
-    // do operation
+    // do the actual operation
     const operations:any = {
       'minimize': calcMinimizePaneSizes, 
       'maximize': calcMaximizePaneSizes, 

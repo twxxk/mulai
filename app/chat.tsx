@@ -3,6 +3,7 @@
 import { ChatRequestOptions } from 'ai';
 import { ChatModel } from './chatModel'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 const Markdown = require('react-markdown-it')
 
 export default function Chat({chatModel, index, updatePaneSize}:{
@@ -11,6 +12,56 @@ export default function Chat({chatModel, index, updatePaneSize}:{
   updatePaneSize:(index:number, size:string)=>void,
 }) 
 {
+  const historyElementRef = useRef(null);
+
+  useEffect(() => {
+    if (historyElementRef.current) {
+      // Scroll
+      const resizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          // console.log('resize top=', entry.target.scrollTop, ', height=', entry.target.scrollHeight);
+          const historyElement = historyElementRef.current as unknown as Element
+          historyElement.scrollTop = historyElement.scrollHeight
+        }
+      });
+
+      // Called when the new answer is added
+      let lastObservedNode:Element
+      const mutationObserver = new MutationObserver(entries => {
+        for (const mutation of entries) {
+          // only childList is being observed
+          // if (mutation.type !== 'childList')
+          //   continue;
+
+          // Set the resize observer to the last node which should be the expanding
+          // console.log('added nodes=', mutation.addedNodes.length)
+          const addedNode = mutation.addedNodes.item(mutation.addedNodes.length - 1)
+
+          if (addedNode?.nodeType !== Node.ELEMENT_NODE) {
+            console.log('node type=', addedNode?.nodeType)
+            continue;
+          }
+
+          if (lastObservedNode)
+            resizeObserver.unobserve(lastObservedNode)
+          
+          const addedElement = addedNode as Element
+          resizeObserver.observe(addedElement)
+          lastObservedNode = addedElement
+        }
+      });
+
+      mutationObserver.observe(historyElementRef.current, { attributes: false, characterData: false, childList: true });
+
+      // cleanup
+      return () => {
+        // console.log('cleaning observers'); 
+        mutationObserver.disconnect()
+        resizeObserver.disconnect()
+      };
+    }
+  }, []);
+
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
     console.log('requesting model=' + chatModel.model)
@@ -35,7 +86,7 @@ export default function Chat({chatModel, index, updatePaneSize}:{
   return (<>
     <div className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
-      <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full'>
+      <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
       {chatModel.messages.map(m => (
         <div key={m.id} className={
           "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal overflow-x-auto prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:my-0 prose-pre:mt-1 prose-pre:mb-3 " + 
