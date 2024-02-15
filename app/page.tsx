@@ -4,6 +4,7 @@ import { ChatRequestOptions } from 'ai';
 import { useChat } from 'ai/react';
 import Chat from './chat'
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation'
 import { ChatModel } from './chatModel'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
@@ -14,9 +15,42 @@ function splitToArray(num:number) {
   return Array(num).fill(100/num)
 }
 
+// @models '1' | '2' | '3' | '4'
+function getChatModelLabels(models:string):ModelLabel[] {
+  const modelsNumber = parseInt(models ?? '0')
+
+  // 'magi'
+
+  // default fallback
+  if (isNaN(modelsNumber) || modelsNumber <= 0) {
+    if (process.env.NODE_ENV === 'development') {
+      // alternative for free debug
+      return ['Gemini Pro', 'Japanese StableLM Instruct Beta 70B', 'Gemini Pro']
+    } else {
+      return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+    }
+  }
+
+  if (modelsNumber == 1) {
+    return ['Gemini Pro'] // for free debug
+  } else if (modelsNumber == 2) {
+    return ['GPT-3.5', 'GPT-4']
+  } else if (modelsNumber == 3) {
+    return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+  } else if (modelsNumber == 4) {
+    return ['GPT-3.5', 'GPT-4', 'Gemini Pro', 'Japanese StableLM Instruct Beta 70B']
+  } else if (modelsNumber == 5) {
+    return ['GPT-3.5', 'GPT-4', 'Gemini Pro', 'Japanese StableLM Instruct Beta 70B', 'FireLLaVA 13B']
+  } else {
+    // fallback to default
+    return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+  }
+}
+
 export default function Page() {
-  // const chatModelLabels:ModelLabel[] = ['Gemini Pro'] // for free debug
-  const chatModelLabels:ModelLabel[] = ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+  const searchParams = useSearchParams()
+  const modelsParam = searchParams.get('models')
+  const chatModelLabels:ModelLabel[] = getChatModelLabels(modelsParam ?? '') 
 
   const [parentInput, setParentInput] = useState('')
   const [isUsingIME, setIsUsingIME] = useState(false)
