@@ -72,7 +72,8 @@ export default function Chat({chatModel, index, updatePaneSize}:{
   }
 
   const handleReload = () => {
-    chatModel.reload()
+    const options:ChatRequestOptions = {options:{headers:{model: chatModel.model}}}
+    chatModel.reload(options)
   }
 
   const handleMinimizePaneSize = () => {
