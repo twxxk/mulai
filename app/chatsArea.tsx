@@ -17,15 +17,31 @@ function splitToArray(num:number) {
 
 // @models '1' | '2' | '3' | '4'
 function getChatModelLabels(models:string):ModelLabel[] {
-  const modelsNumber = parseInt(models ?? '0')
 
-  // 'magi'
+  // for free debug
+  if (models === 'free1') {
+    return Array(1).fill('Gemini Pro')
+  } else if (models === 'free2') {
+    return Array(2).fill('Gemini Pro')
+  } else if (models === 'free3') {
+    return Array(3).fill('Gemini Pro')
+  } else if (models === 'free4') {
+    return Array(4).fill('Gemini Pro')
+  } else if (models === 'free5') {
+    return Array(5).fill('Gemini Pro')
+  }
+
+  if (models === 'magi') {
+    return Array(3).fill('GPT-4') // XXX
+  }
+
+  const modelsNumber = parseInt(models ?? '0')
 
   // default fallback
   if (isNaN(modelsNumber) || modelsNumber <= 0) {
     if (process.env.NODE_ENV === 'development') {
       // alternative for free debug
-      return ['Gemini Pro', 'Japanese StableLM Instruct Beta 70B', 'Gemini Pro']
+      return Array(3).fill('Gemini Pro')
     } else {
       return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
     }
@@ -60,6 +76,22 @@ export default function ChatsArea() {
   const defaultFocusRef = useRef<HTMLTextAreaElement>(null);
 
   const chats:ChatModel[] = []
+
+  // trap escape key to interrupt responses
+  useEffect(() => {
+    const handleKeyDown = (e:any) => {
+      const event = e as React.KeyboardEvent
+      if (event.key === "Escape") {
+        // if (isLoadingAnyChat()) // not work
+          handleStop()
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
 
   useEffect(() => {
     defaultFocusRef.current?.focus()
@@ -219,7 +251,8 @@ export default function ChatsArea() {
 
   const handleTrash = () => {
     // Stop to prevent getting responses after trash
-    handleStop()
+    // if (isLoadingAnyChat()) // not work
+      handleStop()
     console.log('trashing')
     chats.map((chat:ChatModel) => {
       chat.setInput('')
