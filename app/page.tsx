@@ -208,7 +208,8 @@ export default function Page() {
         onChange={parentHandleInputChange}
         onKeyDown={parentHandleInputKeyDown}
         onCompositionStart={() => setIsUsingIME(true)}
-        onCompositionEnd={() => setIsUsingIME(false)}        
+        onCompositionEnd={() => // Needs timeout as Safari triggers CompositionEnd before KeyDown when pushing Enter
+          setTimeout(()=>setIsUsingIME(false), 0)}
         placeholder="Say something to all models..."
       />
       {/* disabled is useful to stop submitting with enter */}
