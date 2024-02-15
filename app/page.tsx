@@ -144,9 +144,14 @@ export default function Page() {
     // console.log(e.currentTarget.value)
 
     // submit only if the key is enter
-    if (e.key !== 'Enter' || e.shiftKey || isUsingIME)
+    if (e.key !== 'Enter' || e.shiftKey)
       return;
 
+    if (isUsingIME) {
+      // console.log('using ime', new Date)
+      return;
+    }
+    
     e.preventDefault();
 
     // trigger form submission
@@ -207,9 +212,16 @@ export default function Page() {
         value={parentInput}
         onChange={parentHandleInputChange}
         onKeyDown={parentHandleInputKeyDown}
-        onCompositionStart={() => setIsUsingIME(true)}
-        onCompositionEnd={() => // Needs timeout as Safari triggers CompositionEnd before KeyDown when pushing Enter
-          setTimeout(()=>setIsUsingIME(false), 0)}
+        onCompositionStart={() => setTimeout(() => {
+          // To deal with the situation CompositionEnd then CompositionStart, both needs timeout
+          // console.log('start', new Date)
+          setIsUsingIME(true)
+        }, 0)}
+        onCompositionEnd={() => setTimeout(() => {
+          // Needs timeout as Safari triggers CompositionEnd before KeyDown when pushing Enter
+          // console.log('end', new Date)
+          setIsUsingIME(false)
+        }, 0)}
         placeholder="Say something to all models..."
       />
       {/* disabled is useful to stop submitting with enter */}
