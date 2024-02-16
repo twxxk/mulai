@@ -35,10 +35,10 @@ function getChatModelValues(modelsParam:string):ModelValue[] {
   // default fallback
   if (isNaN(modelsNumber) || modelsNumber <= 0) {
     if (process.env.NODE_ENV === 'development') {
-      // alternative for free debug
-      return Array(3).fill('gemini-pro')
+      // for free debug
+      return ['gemini-pro', 'gemini-1.0-pro-latest']
     } else {
-      return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
+      return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro', 'gemini-1.0-pro-latest']
     }
   }
 
