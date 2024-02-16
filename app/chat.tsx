@@ -1,18 +1,47 @@
 'use client';
  
-import { ChatRequestOptions } from 'ai';
-import { ChatModel } from './chatModel'
+import { ChatRequestOptions, Message } from 'ai';
+import { ChatOptions } from './ui/chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import CharacterSelector from './ui/characterSelector';
+import { Character, ModelValue } from './lib/common';
+import ModelSelector from './ui/modelSelector';
+import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
 
-export default function Chat({chatModel, index, updatePaneSize}:{
-  chatModel:ChatModel, 
+const allCharacters:Character[] = [
+  {value: 'normal', label: 'Normal', promptContent: ''},
+  {value: 'child', label: '小学生', promptContent: '小学生でもわかるように説明して'},
+  {value: 'bullets', label: '箇条書き', promptContent: '箇条書きで簡潔に答えて'},
+  {value: 'steps', label: 'ステップ', promptContent: 'ステップバイステップで答えて'},
+]
+const getAvailableCharacters = (modelValue:string):Character[] => {
+  //   return []
+  return allCharacters
+}
+const getCharacter = (characterValue:string) => {
+  return allCharacters.find((character) => character.value === characterValue)
+}
+
+export default function Chat({modelValue: modelValue, index, updatePaneSize, setChatOptions: setChatOptions, changeModel}:{
+  modelValue:string,
   index:number, 
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
+  setChatOptions:(index:number, value:ChatOptions)=>void,
+  changeModel:(index:number, newModelValue:ModelValue)=>void,
 }) 
 {
+  const [characterName, setCharacterName] = useState('')
   const historyElementRef = useRef(null);
+
+  const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
+  const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast}
+
+  // console.log('chat is being initialized with=' + modelValue)
+  setChatOptions(index, chatOptions)
+
+  let characters = getAvailableCharacters(modelValue)
 
   useEffect(() => {
     if (historyElementRef.current) {
@@ -64,16 +93,16 @@ export default function Chat({chatModel, index, updatePaneSize}:{
 
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
-    console.log('requesting model=' + chatModel.model)
-    const options:ChatRequestOptions = {options:{headers:{model: chatModel.model}}}
+    console.log('requesting model=' + modelValue)
+    const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
 
     e.preventDefault()
-    chatModel.handleSubmit(e, options)
+    chatOptions.handleSubmit(e, options)
   }
 
   const handleReload = () => {
-    const options:ChatRequestOptions = {options:{headers:{model: chatModel.model}}}
-    chatModel.reload(options)
+    const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
+    chatOptions.reload(options)
   }
 
   const handleMinimizePaneSize = () => {
@@ -84,11 +113,35 @@ export default function Chat({chatModel, index, updatePaneSize}:{
     updatePaneSize(index, "maximize")
   }
 
+  function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
+    const value = e.target.value
+    const character = getCharacter(value)
+    if (character?.promptContent === '')
+      return
+
+    chatOptions.setMessages([
+      // GPT understands the system message but gemini prefers conversations
+      // {role: 'system', content:character?.promptContent} as Message, 
+      {role: 'user', content:character?.promptContent} as Message,
+      {role: 'assistant', content:`Understood: ${character?.promptContent}`} as Message,
+    ])
+    setCharacterName(value)
+  }
+
+  function handleModelChange(e:React.ChangeEvent<HTMLSelectElement>) {
+    const modelValue = e.target.value as ModelValue
+    console.log('changing model to=', modelValue)
+    changeModel(index, modelValue)
+  }
+
   return (<>
     <div className="flex flex-col w-full pt-2 h-full">
-      <div className='px-3'>Model: <strong>{chatModel.model}</strong></div>
+      <div className='px-3'>
+        <ModelSelector selectedValue={modelValue} onChange={handleModelChange} /> 
+        <CharacterSelector selectedValue={characterName} characters={characters} onChange={handleCharacterChange} />
+      </div>
       <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
-      {chatModel.messages.map(m => (
+      {chatOptions.messages.map(m => (
         <div key={m.id} className={
           "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal overflow-x-auto prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:my-0 prose-pre:mt-1 prose-pre:mb-3 " + 
           (m.role === "user"
@@ -111,7 +164,7 @@ export default function Chat({chatModel, index, updatePaneSize}:{
       <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1">
-            <strong>{chatModel.model}</strong>
+            <strong>{modelValue.replace(/.*\//, '')}</strong>
           </div>
           <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />
@@ -125,27 +178,27 @@ export default function Chat({chatModel, index, updatePaneSize}:{
         <div className='flex w-full'>
           <input
             className="flex-1 p-2 my-1 border border-gray-300 rounded"
-            value={chatModel.input}
+            value={chatOptions.input}
             placeholder="Say something to this model..."
-            onChange={chatModel.handleInputChange}
+            onChange={chatOptions.handleInputChange}
           />
           {/* disabled is useful to stop submitting with enter */}
           <button type="submit" 
             className='ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600' 
-            disabled={chatModel.input.length === 0 || chatModel.isLoading}>
+            disabled={chatOptions.input.length === 0 || chatOptions.isLoading}>
             <SendIcon className="h-5 w-5" />
             <span className="sr-only">Send</span>
           </button>
           <button className="ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" 
-            onClick={handleReload} disabled={chatModel.isLoading || chatModel.messages.length < 2}>
+            onClick={handleReload} disabled={chatOptions.isLoading || chatOptions.messages.length < 2}>
             <RefreshCwIcon className="h-4 w-4" />
             <span className="sr-only">Reload</span>
           </button>
         </div>
         <label>
           <input type="checkbox" className='mr-1'
-            checked={chatModel.acceptsBroadcast}
-            onChange={() => chatModel.setAcceptsBroadcast(!chatModel.acceptsBroadcast)}
+            checked={acceptsBroadcast}
+            onChange={() => setAcceptsBroadcast(!acceptsBroadcast)}
           />
           Accepts Broadcast
         </label>

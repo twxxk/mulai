@@ -1,14 +1,13 @@
 'use client';
 
 import { ChatRequestOptions } from 'ai';
-import { useChat } from 'ai/react';
 import Chat from './chat'
-import { RefObject, Suspense, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
-import { ChatModel } from './chatModel'
+import { ChatOptions } from './ui/chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { ModelLabel } from '@/app/common';
+import { ModelLabel, ModelValue } from '@/app/lib/common';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -16,66 +15,62 @@ function splitToArray(num:number) {
 }
 
 // @models '1' | '2' | '3' | '4'
-function getChatModelLabels(models:string):ModelLabel[] {
+function getChatModelValues(modelsParam:string):ModelValue[] {
 
   // for free debug
-  if (models === 'free1') {
-    return Array(1).fill('Gemini Pro')
-  } else if (models === 'free2') {
-    return Array(2).fill('Gemini Pro')
-  } else if (models === 'free3') {
-    return Array(3).fill('Gemini Pro')
-  } else if (models === 'free4') {
-    return Array(4).fill('Gemini Pro')
-  } else if (models === 'free5') {
-    return Array(5).fill('Gemini Pro')
+  if (modelsParam === 'free1') {
+    return Array(1).fill('gemini-pro')
+  } else if (modelsParam === 'free2') {
+    return Array(2).fill('gemini-pro')
+  } else if (modelsParam === 'free3') {
+    return Array(3).fill('gemini-pro')
+  } else if (modelsParam === 'free4') {
+    return Array(4).fill('gemini-pro')
+  } else if (modelsParam === 'free5') {
+    return Array(5).fill('gemini-pro')
   }
 
-  if (models === 'magi') {
-    return Array(3).fill('GPT-4') // XXX
-  }
-
-  const modelsNumber = parseInt(models ?? '0')
+  const modelsNumber = parseInt(modelsParam ?? '0')
 
   // default fallback
   if (isNaN(modelsNumber) || modelsNumber <= 0) {
     if (process.env.NODE_ENV === 'development') {
       // alternative for free debug
-      return Array(3).fill('Gemini Pro')
+      return Array(3).fill('gemini-pro')
     } else {
-      return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+      return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
     }
   }
 
   if (modelsNumber == 1) {
-    return ['Gemini Pro'] // for free debug
+    return ['gemini-pro'] // for free debug
   } else if (modelsNumber == 2) {
-    return ['GPT-3.5', 'GPT-4']
+    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview']
   } else if (modelsNumber == 3) {
-    return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
   } else if (modelsNumber == 4) {
-    return ['GPT-3.5', 'GPT-4', 'Gemini Pro', 'Japanese StableLM Instruct Beta 70B']
+    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro', 'accounts/stability/models/japanese-stablelm-instruct-beta-70b']
   } else if (modelsNumber == 5) {
-    return ['GPT-3.5', 'GPT-4', 'Gemini Pro', 'Japanese StableLM Instruct Beta 70B', 'FireLLaVA 13B']
+    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro', 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', 'accounts/fireworks/models/firellava-13b']
   } else {
     // fallback to default
-    return ['GPT-3.5', 'GPT-4', 'Gemini Pro']
+    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
   }
 }
 
 export default function ChatsArea() {
   const searchParams = useSearchParams()
   const modelsParam = searchParams.get('models')
-  const chatModelLabels:ModelLabel[] = getChatModelLabels(modelsParam ?? '') 
+  const [chatModelValues, setChatModelValues] = useState(getChatModelValues(modelsParam ?? ''))
 
   const [parentInput, setParentInput] = useState('')
   const [isUsingIME, setIsUsingIME] = useState(false)
-  const [splitSizes, setSplitSizes] = useState(splitToArray(chatModelLabels.length))
+  const [splitSizes, setSplitSizes] = useState(splitToArray(chatModelValues.length))
 
   const formRef = useRef<HTMLFormElement>(null);
   const defaultFocusRef = useRef<HTMLTextAreaElement>(null);
 
-  const chats:ChatModel[] = []
+  const chats:ChatOptions[] = []
 
   // trap escape key to interrupt responses
   useEffect(() => {
@@ -107,21 +102,19 @@ export default function ChatsArea() {
   // return true if any chat is loading
   const isLoadingAnyChat = () => {
     // console.log('called'); 
-    return chats.some((chat:ChatModel) => chat.isLoading)
+    return chats.some((chat:ChatOptions) => chat.isLoading)
   }
 
-  // initialize ai models
-  chatModelLabels.forEach((modelName, index)=>{
-    // The order is always same so far. https://legacy.reactjs.org/docs/hooks-rules.html
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [model, setModel] = useState(modelName)
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const chat:ChatModel = {...useChat(), model, setModel, acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast}
-
+  const setChatOptions = (index:number, chat:ChatOptions) => {
     chats[index] = chat
-  })
+  }
+
+  const changeModel = (index:number, newModelValue:ModelValue) => {
+    let newValues = chatModelValues.slice()
+    newValues[index] = newModelValue
+    console.log('changing to new models', newValues)
+    setChatModelValues(newValues)
+  }
 
   // You can debug by adding onDragStart={onDragStart} to with <Split />
   // const onDragStart = (sizes:number[]) => {
@@ -204,7 +197,7 @@ export default function ChatsArea() {
     setParentInput(newValue)
 
     // copy parent input value to children inputs
-    chats.map((chat:ChatModel, index:number) => {
+    chats.map((chat:ChatOptions, index:number) => {
       if (!chat.acceptsBroadcast)
         return;
 
@@ -237,12 +230,13 @@ export default function ChatsArea() {
   // form submit handler
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    chats.map((chat:ChatModel, index:number) => {
+    chats.map((chat:ChatOptions, index:number) => {
       if (!chat.acceptsBroadcast)
         return;
 
       // console.log('requesting model=' + chat.model)
-      const options:ChatRequestOptions = {options:{headers:{model: chat.model}}}
+      const model = chatModelValues[index]
+      const options:ChatRequestOptions = {options:{headers:{model}}}
   
       chat.handleSubmit(e, options)
     })
@@ -253,7 +247,7 @@ export default function ChatsArea() {
 
   const handleStop = () => {
     console.log('stopping')      
-    chats.map((chat:ChatModel, index:number) => chat.stop())
+    chats.map((chat:ChatOptions, index:number) => chat.stop())
   }
 
   const handleTrash = () => {
@@ -261,7 +255,7 @@ export default function ChatsArea() {
     // if (isLoadingAnyChat()) // not work
       handleStop()
     console.log('trashing')
-    chats.map((chat:ChatModel) => {
+    chats.map((chat:ChatOptions) => {
       chat.setInput('')
       chat.setMessages([])
     })
@@ -269,8 +263,8 @@ export default function ChatsArea() {
 
   return (<>
     <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
-      {chats.map((chat:ChatModel, index:number) => (
-        <Chat key={index} index={index} chatModel={chat} updatePaneSize={updatePaneSize} />
+      {chatModelValues.map((label:string, index:number) => (
+        <Chat key={index} index={index} modelValue={label as ModelLabel} setChatOptions={setChatOptions} changeModel={changeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
