@@ -55,8 +55,14 @@ export const modelList:ChatModelData[] = [
     // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/llama-v2-70b-chat'},
 ]
 
+export function getModelByValue(modelValue:ModelValue):ChatModelData | undefined {
+    return modelList.find((value) => value.model === modelValue)
+}
+  
+export type CharacterValue = 'normal' | 'child' | 'bullets' | 'steps'
+
 export type Character = {
-    value: string,
+    value: CharacterValue,
     label: string,
     promptContent: string,
 }

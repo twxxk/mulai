@@ -5,7 +5,7 @@ import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
-import { Character, ModelValue } from '../lib/common';
+import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
@@ -18,21 +18,22 @@ const allCharacters:Character[] = [
 ]
 const getAvailableCharacters = (modelValue:string):Character[] => {
   //   return []
+  // Currently returning the same characters for any models
   return allCharacters
 }
-const getCharacter = (characterValue:string) => {
+const getCharacter = (characterValue:CharacterValue) => {
   return allCharacters.find((character) => character.value === characterValue)
 }
 
-export default function Chat({modelValue: modelValue, index, updatePaneSize, setChatOptions: setChatOptions, changeModel}:{
-  modelValue:string,
+export default function Chat({modelValue, index, updatePaneSize, setChatOptions, changeModel}:{
+  modelValue:ModelValue,
   index:number, 
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
   setChatOptions:(index:number, value:ChatOptions)=>void,
   changeModel:(index:number, newModelValue:ModelValue)=>void,
 }) 
 {
-  const [characterName, setCharacterName] = useState('')
+  const [characterName, setCharacterName] = useState('' as CharacterValue)
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [isUsingIME, setIsUsingIME] = useState(false)
@@ -116,7 +117,7 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
   }
 
   function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value
+    const value = e.target.value as CharacterValue
     const character = getCharacter(value)
     if (character?.promptContent === '')
       return
@@ -158,6 +159,15 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
     }
   }
 
+  const getAILabel = (modelValue:ModelValue, characterName:CharacterValue) => {
+    const modelLabel = getModelByValue(modelValue)?.label
+    const characterLabel = getCharacter(characterName)?.label
+    if (characterLabel)
+      return `${modelLabel} (${characterLabel})`
+    else
+      return modelLabel
+  }
+
   return (<>
     <div className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>
@@ -188,7 +198,7 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
       <form ref={formRef} onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1">
-            <strong>{modelValue.replace(/.*\//, '')}</strong>
+            <strong>{getAILabel(modelValue, characterName)}</strong>
           </div>
           <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />

@@ -3,7 +3,7 @@ import { StreamingTextResponse, Message } from 'ai';
 import { OpenAIStream, GoogleGenerativeAIStream, CohereStream } from 'ai';
 // import does not work with google https://ai.google.dev/tutorials/node_quickstart
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-import { DEFAULT_MODEL, ModelVendor, modelList } from '@/app/lib/common';
+import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/lib/common';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
         let model = req.headers.get('Model') ?? ''
 
         // get vendor from model (verifying model)       
-        let vendor = modelList.find((value) => value.model === model)?.vendor
+        let vendor = getModelByValue(model as ModelValue)?.vendor
         if (!vendor) {
             console.error('model not found=' + model);
             ({vendor, model} = DEFAULT_MODEL)

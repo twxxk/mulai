@@ -265,7 +265,7 @@ export default function ChatsArea() {
   <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0">
     <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto">
       {chatModelValues.map((label:string, index:number) => (
-        <Chat key={index} index={index} modelValue={label as ModelLabel} setChatOptions={setChatOptions} changeModel={changeModel} updatePaneSize={updatePaneSize} />
+        <Chat key={index} index={index} modelValue={label as ModelValue} setChatOptions={setChatOptions} changeModel={changeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
