@@ -11,10 +11,13 @@ import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
 
 const allCharacters:Character[] = [
-  {value: 'normal', label: 'Normal', promptContent: ''},
-  {value: 'child', label: '小学生', promptContent: '小学生でもわかるように説明して'},
-  {value: 'bullets', label: '箇条書き', promptContent: '箇条書きで簡潔に答えて'},
-  {value: 'steps', label: 'ステップ', promptContent: 'ステップバイステップで答えて'},
+  {value: '', label: 'Normal', promptContent: ''},
+  {value: 'child', label: 'Child', promptContent: '小学生でもわかるように説明してください。'},
+  {value: 'bullets', label: 'Bullets', promptContent: '箇条書きで簡潔に答えて'},
+  {value: 'steps', label: 'Steps', promptContent: 'ステップバイステップで答えてください。'},
+  {value: 'melchior', label: 'Melchior-1', promptContent: '科学者の側面から、論理的かつ分析的に回答してください。'},
+  {value: 'balthasar', label: 'Balthasar-2', promptContent: '母の側面から、保護的かつ愛情深く回答してください。'},
+  {value: 'caspar', label: 'Caspar-3', promptContent: '女性としての側面から、直感的かつ柔軟な思考で回答してください。'},
 ]
 const getAvailableCharacters = (modelValue:string):Character[] => {
   //   return []
@@ -25,8 +28,18 @@ const getCharacter = (characterValue:CharacterValue) => {
   return allCharacters.find((character) => character.value === characterValue)
 }
 
-export default function Chat({modelValue, index, totalLength, updatePaneSize, setChatOptions, changeModel, addPane, removePane: removePane}:{
+const getAILabel = (modelValue:ModelValue, characterName:CharacterValue) => {
+  const modelLabel = getModelByValue(modelValue)?.label
+  const characterLabel = getCharacter(characterName)?.label
+  if (characterLabel)
+    return `${modelLabel} (${characterLabel})`
+  else
+    return modelLabel
+}
+
+export default function Chat({modelValue, initialCharacterValue, index, totalLength, updatePaneSize, setChatOptions, changeModel, addPane, removePane: removePane}:{
   modelValue:ModelValue,
+  initialCharacterValue?:CharacterValue,
   index:number, 
   totalLength:number,
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
@@ -36,7 +49,7 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
   removePane:(index:number)=>void,
 }) 
 {
-  const [characterName, setCharacterName] = useState('' as CharacterValue)
+  const [characterValue, setCharacterValue] = useState(initialCharacterValue ?? '' as CharacterValue)
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
   const [isUsingIME, setIsUsingIME] = useState(false)
@@ -48,6 +61,12 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
   setChatOptions(index, chatOptions)
 
   let characters = getAvailableCharacters(modelValue)
+
+  useEffect(() => {
+    if (initialCharacterValue) {
+      submitCharacterValue(initialCharacterValue as CharacterValue)
+    }
+  }, [])
 
   useEffect(() => {
     if (historyElementRef.current) {
@@ -127,11 +146,12 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
     addPane()
   }
 
-  function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
-    const value = e.target.value as CharacterValue
+  function submitCharacterValue(value: CharacterValue) {
     const character = getCharacter(value)
-    if (character?.promptContent === '')
+    if (character?.promptContent === '') {
+      // XXX if you change to a different value and then back to normal, the value should be reset
       return
+    }
 
     chatOptions.setMessages([
       // GPT understands the system message but gemini prefers conversations
@@ -139,7 +159,11 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
       {role: 'user', content:character?.promptContent} as Message,
       {role: 'assistant', content:`Understood: ${character?.promptContent}`} as Message,
     ])
-    setCharacterName(value)
+    setCharacterValue(value)
+  }
+
+  function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
+    submitCharacterValue(e.target.value as CharacterValue)
   }
 
   function handleModelChange(e:React.ChangeEvent<HTMLSelectElement>) {
@@ -170,24 +194,15 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
     }
   }
 
-  const getAILabel = (modelValue:ModelValue, characterName:CharacterValue) => {
-    const modelLabel = getModelByValue(modelValue)?.label
-    const characterLabel = getCharacter(characterName)?.label
-    if (characterLabel)
-      return `${modelLabel} (${characterLabel})`
-    else
-      return modelLabel
-  }
-
   return (<>
     <div className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>
         <ModelSelector selectedValue={modelValue} onChange={handleModelChange} /> 
-        <CharacterSelector selectedValue={characterName} characters={characters} onChange={handleCharacterChange} />
+        <CharacterSelector selectedValue={characterValue} characters={characters} onChange={handleCharacterChange} />
       </div>
-      <div id={'chatHistory' + index} className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
-      {chatOptions.messages.map(m => (
-        <div key={m.id} className={
+      <div className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
+      {chatOptions.messages.map((m, index) => (
+        <div key={index} className={
           "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal overflow-x-auto prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:my-0 prose-pre:mt-1 prose-pre:mb-3 " + 
           (m.role === "user"
             ? "bg-slate-100"
@@ -201,7 +216,7 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
           : m.role === 'assistant' ? 'AI: '
           : 'System: '}</div>
           {m.role === "user" 
-            ? (<div className='whitespace-pre-wrap'>{m.content}</div>)
+            ? <div className='whitespace-pre-wrap'>{m.content}</div>
             : <Markdown source={m.content} />
             }
         </div>
@@ -211,7 +226,7 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
       <form ref={formRef} onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1">
-            <strong>{getAILabel(modelValue, characterName)}</strong>
+            <strong>{getAILabel(modelValue, characterValue)}</strong>
           </div>
           <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />

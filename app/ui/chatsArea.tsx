@@ -7,65 +7,68 @@ import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { DEFAULT_MODEL, ModelLabel, ModelValue } from '@/app/lib/common';
+import { CharacterValue, DEFAULT_MODEL, ModelLabel, ModelValue } from '@/app/lib/common';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
   return Array(num).fill(100/num)
 }
 
-// @models '1' | '2' | '3' | '4'
-function getChatModelValues(modelsParam:string):ModelValue[] {
+type ModelCharacterPair = {modelValue:ModelValue, characterValue?:CharacterValue}
 
-  // for free debug
-  if (modelsParam === 'free1') {
-    return Array(1).fill('gemini-pro')
-  } else if (modelsParam === 'free2') {
-    return Array(2).fill('gemini-pro')
-  } else if (modelsParam === 'free3') {
-    return Array(3).fill('gemini-pro')
-  } else if (modelsParam === 'free4') {
-    return Array(4).fill('gemini-pro')
-  } else if (modelsParam === 'free5') {
-    return Array(5).fill('gemini-pro')
+const freeValues:ModelCharacterPair[] = [
+  {modelValue: 'gemini-pro'},
+  {modelValue: 'gemini-1.0-pro-latest'},
+  {modelValue: 'gemini-1.0-pro-latest'},
+  {modelValue: 'gemini-1.0-pro-latest'},
+  {modelValue: 'gemini-1.0-pro-latest'},
+]
+const bestQualityValues:ModelCharacterPair[] = [
+  {modelValue: 'gpt-3.5-turbo'},
+  {modelValue: 'gpt-4-turbo-preview'},
+  {modelValue: 'gemini-1.0-pro-latest'},
+  {modelValue: 'gemini-pro'},
+  {modelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'},
+  {modelValue: 'accounts/fireworks/models/firellava-13b'},
+]
+
+function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
+
+  // no params
+  if (modelsParam === '') {
+    const baseValues = process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues
+    return baseValues.slice(0, 3)
   }
 
+  // Evangelion
+  if (modelsParam === 'magi') {
+    return [
+      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
+      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
+      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
+    ]
+  }
+
+  // 1..5
   const modelsNumber = parseInt(modelsParam ?? '0')
+  if (modelsNumber >= 1 && modelsNumber <= 5)
+    return bestQualityValues.slice(0, modelsNumber)
 
-  // default fallback
-  if (isNaN(modelsNumber) || modelsNumber <= 0) {
-    if (process.env.NODE_ENV === 'development') {
-      // for free debug
-      return ['gemini-pro', 'gemini-1.0-pro-latest', 'gemini-1.0-pro-latest']
-    } else {
-      return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-1.0-pro-latest']
-    }
-  }
-
-  if (modelsNumber == 1) {
-    return ['gemini-pro'] // for free debug
-  } else if (modelsNumber == 2) {
-    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview']
-  } else if (modelsNumber == 3) {
-    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
-  } else if (modelsNumber == 4) {
-    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro', 'accounts/stability/models/japanese-stablelm-instruct-beta-70b']
-  } else if (modelsNumber == 5) {
-    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro', 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', 'accounts/fireworks/models/firellava-13b']
-  } else {
-    // fallback to default
-    return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro']
-  }
+  return [
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+  ]
 }
 
 export default function ChatsArea() {
   const searchParams = useSearchParams()
   const modelsParam = searchParams.get('models')
-  const [chatModelValues, setChatModelValues] = useState(getChatModelValues(modelsParam ?? ''))
+  const [modelCharacterValues, setModelCharacterValues] = useState(getModelCharacterValues(modelsParam ?? ''))
 
   const [parentInput, setParentInput] = useState('')
   const [isUsingIME, setIsUsingIME] = useState(false)
-  const [splitSizes, setSplitSizes] = useState(splitToArray(chatModelValues.length))
+  const [splitSizes, setSplitSizes] = useState(splitToArray(modelCharacterValues.length))
 
   const formRef = useRef<HTMLFormElement>(null);
   const defaultFocusRef = useRef<HTMLTextAreaElement>(null);
@@ -109,27 +112,27 @@ export default function ChatsArea() {
     chats[index] = chat
   }
 
-  const changeModel = (index:number, newModelValue:ModelValue) => {
-    let newValues = chatModelValues.slice()
-    newValues[index] = newModelValue
+  const changeModel = (index:number, modelValue:ModelValue) => {
+    let newValues = modelCharacterValues.slice()
+    newValues[index] = {modelValue}
     console.log('changing to new models', newValues)
-    setChatModelValues(newValues)
+    setModelCharacterValues(newValues)
   }
 
   const removeModel = (index:number) => {
-    let newValues = chatModelValues.slice()
+    let newValues = modelCharacterValues.slice()
     newValues.splice(index, 1)
     console.log('changing to new models', newValues, splitToArray(newValues.length))
-    setChatModelValues(newValues)
+    setModelCharacterValues(newValues)
     setSplitSizes(splitToArray(newValues.length))
   }
 
   const addModel = () => {
-    let newValues = chatModelValues.slice()
-    const newModel:ModelValue = DEFAULT_MODEL.model
-    newValues.push(newModel)
+    let newValues = modelCharacterValues.slice()
+    const modelValue:ModelValue = DEFAULT_MODEL.model
+    newValues.push({modelValue})
     console.log('changing to new models', newValues, splitToArray(newValues.length))
-    setChatModelValues(newValues)
+    setModelCharacterValues(newValues)
     const newSplitSizes = splitToArray(newValues.length)
     // debugger;
     setSplitSizes(newSplitSizes)
@@ -255,7 +258,8 @@ export default function ChatsArea() {
         return;
 
       // console.log('requesting model=' + chat.model)
-      const model = chatModelValues[index]
+      const model = modelCharacterValues[index].modelValue
+      // const model = chatModelValues[index]
       const options:ChatRequestOptions = {options:{headers:{model}}}
   
       chat.handleSubmit(e, options)
@@ -282,11 +286,12 @@ export default function ChatsArea() {
   }
 
   return (<>
-  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col min-h-0" key={chatModelValues.length}>
+  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col min-h-0" key={modelCharacterValues.length}>
     <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1 min-h-0">
-      {chatModelValues.map((label:ModelValue, index:number) => (
-        <Chat key={index} index={index} totalLength={chatModelValues.length} 
-          modelValue={label} setChatOptions={setChatOptions} changeModel={changeModel} 
+      {modelCharacterValues.map((value:ModelCharacterPair, index:number) => (
+        <Chat key={index} index={index} totalLength={modelCharacterValues.length} 
+          modelValue={value.modelValue} initialCharacterValue={value.characterValue}
+          setChatOptions={setChatOptions} changeModel={changeModel} 
           addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
