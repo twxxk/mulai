@@ -116,6 +116,14 @@ export default function ChatsArea() {
     setChatModelValues(newValues)
   }
 
+  const removeModel = (index:number) => {
+    let newValues = chatModelValues.slice()
+    newValues.splice(index, 1)
+    console.log('changing to new models', newValues, splitToArray(newValues.length))
+    setChatModelValues(newValues)
+    setSplitSizes(splitToArray(newValues.length))
+  }
+
   // You can debug by adding onDragStart={onDragStart} to with <Split />
   // const onDragStart = (sizes:number[]) => {
   //   console.log('current sizes=', sizes)
@@ -265,7 +273,7 @@ export default function ChatsArea() {
   <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0">
     <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto">
       {chatModelValues.map((label:string, index:number) => (
-        <Chat key={index} index={index} modelValue={label as ModelValue} setChatOptions={setChatOptions} changeModel={changeModel} updatePaneSize={updatePaneSize} />
+        <Chat key={index} index={index} totalLength={chatModelValues.length} modelValue={label as ModelValue} setChatOptions={setChatOptions} changeModel={changeModel} removeModel={removeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>

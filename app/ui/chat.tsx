@@ -2,7 +2,7 @@
  
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatOptions } from './chatOptions'
-import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
+import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
 import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
@@ -25,12 +25,14 @@ const getCharacter = (characterValue:CharacterValue) => {
   return allCharacters.find((character) => character.value === characterValue)
 }
 
-export default function Chat({modelValue, index, updatePaneSize, setChatOptions, changeModel}:{
+export default function Chat({modelValue, index, totalLength, updatePaneSize, setChatOptions, changeModel, removeModel}:{
   modelValue:ModelValue,
   index:number, 
+  totalLength:number,
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
   setChatOptions:(index:number, value:ChatOptions)=>void,
   changeModel:(index:number, newModelValue:ModelValue)=>void,
+  removeModel:(index:number)=>void,
 }) 
 {
   const [characterName, setCharacterName] = useState('' as CharacterValue)
@@ -114,6 +116,10 @@ export default function Chat({modelValue, index, updatePaneSize, setChatOptions,
 
   const handleMaxmizePaneSize = () => {
     updatePaneSize(index, "maximize")
+  }
+
+  const handleClosePane = () => {
+    removeModel(index)
   }
 
   function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
@@ -208,6 +214,12 @@ export default function Chat({modelValue, index, updatePaneSize, setChatOptions,
             <Maximize2Icon className="h-3 w-3" />
             <span className="sr-only">Maximize</span>
           </button>
+          <button className='ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
+            disabled={totalLength <= 2 /* Split does not work as expected when you remove from two to one */ } 
+            onClick={handleClosePane}>
+            <XIcon className="h-3 w-3" />
+            <span className='sr-only'>Close</span>
+          </button>          
         </div>
         <div className='flex w-full'>
           <textarea
