@@ -116,9 +116,9 @@ export default function ChatsArea() {
     // eslint-disable-next-line react-hooks/rules-of-hooks
     const [model, setModel] = useState(modelName)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const [isEnabled, setIsEnabled] = useState(true)
+    const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
     // eslint-disable-next-line react-hooks/rules-of-hooks
-    const chat:ChatModel = {...useChat(), model, setModel, isEnabled, setIsEnabled}
+    const chat:ChatModel = {...useChat(), model, setModel, acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast}
 
     chats[index] = chat
   })
@@ -205,7 +205,7 @@ export default function ChatsArea() {
 
     // copy parent input value to children inputs
     chats.map((chat:ChatModel, index:number) => {
-      if (!chat.isEnabled)
+      if (!chat.acceptsBroadcast)
         return;
 
       chat.setInput(newValue)
@@ -238,7 +238,7 @@ export default function ChatsArea() {
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     chats.map((chat:ChatModel, index:number) => {
-      if (!chat.isEnabled)
+      if (!chat.acceptsBroadcast)
         return;
 
       // console.log('requesting model=' + chat.model)

@@ -144,10 +144,11 @@ export default function Chat({chatModel, index, updatePaneSize}:{
         </div>
         <label>
           <input type="checkbox" className='mr-1'
-            checked={chatModel.isEnabled}
-            onChange={() => chatModel.setIsEnabled(!chatModel.isEnabled)}
+            checked={chatModel.acceptsBroadcast}
+            onChange={() => chatModel.setAcceptsBroadcast(!chatModel.acceptsBroadcast)}
           />
-          Accepts Broadcast</label>
+          Accepts Broadcast
+        </label>
       </form>
     </div>
     </>
