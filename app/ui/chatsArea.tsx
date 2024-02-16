@@ -282,8 +282,8 @@ export default function ChatsArea() {
   }
 
   return (<>
-  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col" key={chatModelValues.length}>
-    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1">
+  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col min-h-0" key={chatModelValues.length}>
+    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1 min-h-0">
       {chatModelValues.map((label:ModelValue, index:number) => (
         <Chat key={index} index={index} totalLength={chatModelValues.length} 
           modelValue={label} setChatOptions={setChatOptions} changeModel={changeModel} 
