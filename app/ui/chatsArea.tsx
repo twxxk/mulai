@@ -48,6 +48,12 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
       {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
     ]
   }
+  if (modelsParam === 'optpess') {
+    return [
+      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'optimist'},
+      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
+    ]
+  }
 
   // 1..5
   const modelsNumber = parseInt(modelsParam ?? '0')

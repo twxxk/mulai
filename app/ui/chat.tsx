@@ -15,6 +15,8 @@ const allCharacters:Character[] = [
   {value: 'child', label: 'Child', promptContent: '小学生でもわかるように説明してください。'},
   {value: 'bullets', label: 'Bullets', promptContent: '箇条書きで簡潔に答えて'},
   {value: 'steps', label: 'Steps', promptContent: 'ステップバイステップで答えてください。'},
+  {value: 'optimist', label: 'Optimist', promptContent: '楽観的な観点で、物事がうまく行く可能性を前向きに考えて回答してください。'},
+  {value: 'pessimist', label: 'Pessimist', promptContent: '悲観的な観点で、物事がうまく行かなくなる可能性を注意深く予測して回答してください。'},
   {value: 'melchior', label: 'Melchior-1', promptContent: '科学者の側面から、論理的かつ分析的に回答してください。'},
   {value: 'balthasar', label: 'Balthasar-2', promptContent: '母の側面から、保護的かつ愛情深く回答してください。'},
   {value: 'caspar', label: 'Caspar-3', promptContent: '女性としての側面から、直感的かつ柔軟な思考で回答してください。'},

@@ -59,7 +59,7 @@ export function getModelByValue(modelValue:ModelValue):ChatModelData | undefined
     return modelList.find((value) => value.model === modelValue)
 }
   
-export type CharacterValue = '' | 'child' | 'bullets' | 'steps' | 'melchior' | 'balthasar' | 'caspar'
+export type CharacterValue = '' | 'child' | 'bullets' | 'steps' | 'optimist' | 'pessimist' |'melchior' | 'balthasar' | 'caspar'
 
 export type Character = {
     value: CharacterValue,
