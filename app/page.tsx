@@ -1,9 +1,13 @@
 import { Suspense } from 'react';
 import ChatsArea from './ui/chatsArea';
+import { ChatsAreaSkeleton } from './ui/skeltons';
 
 export default function Page() {
   return (<>
-    <Suspense>
+    {/* 
+      <ChatsAreaSkeleton /> 
+    */}
+    <Suspense fallback={<ChatsAreaSkeleton />}>
       <ChatsArea />
     </Suspense>    
   </>);

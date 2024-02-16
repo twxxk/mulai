@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { ModelLabel, ModelValue } from '@/app/lib/common';
+import { DEFAULT_MODEL, ModelLabel, ModelValue } from '@/app/lib/common';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -36,9 +36,9 @@ function getChatModelValues(modelsParam:string):ModelValue[] {
   if (isNaN(modelsNumber) || modelsNumber <= 0) {
     if (process.env.NODE_ENV === 'development') {
       // for free debug
-      return ['gemini-pro', 'gemini-1.0-pro-latest']
+      return ['gemini-pro', 'gemini-1.0-pro-latest', 'gemini-1.0-pro-latest']
     } else {
-      return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-pro', 'gemini-1.0-pro-latest']
+      return ['gpt-3.5-turbo', 'gpt-4-turbo-preview', 'gemini-1.0-pro-latest']
     }
   }
 
@@ -122,6 +122,18 @@ export default function ChatsArea() {
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setChatModelValues(newValues)
     setSplitSizes(splitToArray(newValues.length))
+  }
+
+  const addModel = () => {
+    let newValues = chatModelValues.slice()
+    const newModel:ModelValue = DEFAULT_MODEL.model
+    newValues.push(newModel)
+    console.log('changing to new models', newValues, splitToArray(newValues.length))
+    setChatModelValues(newValues)
+    const newSplitSizes = splitToArray(newValues.length)
+    // debugger;
+    setSplitSizes(newSplitSizes)
+    // setTimeout(()=>{setSplitSizes(splitToArray(newValues.length))}, 5000)
   }
 
   // You can debug by adding onDragStart={onDragStart} to with <Split />
@@ -270,10 +282,12 @@ export default function ChatsArea() {
   }
 
   return (<>
-  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0">
-    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto">
-      {chatModelValues.map((label:string, index:number) => (
-        <Chat key={index} index={index} totalLength={chatModelValues.length} modelValue={label as ModelValue} setChatOptions={setChatOptions} changeModel={changeModel} removeModel={removeModel} updatePaneSize={updatePaneSize} />
+  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col" key={chatModelValues.length}>
+    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1">
+      {chatModelValues.map((label:ModelValue, index:number) => (
+        <Chat key={index} index={index} totalLength={chatModelValues.length} 
+          modelValue={label} setChatOptions={setChatOptions} changeModel={changeModel} 
+          addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
