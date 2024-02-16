@@ -200,8 +200,10 @@ export default function Chat({modelValue, index, totalLength, updatePaneSize, se
           <div className='font-bold text-xs'>{m.role === 'user' ? 'User: ' 
           : m.role === 'assistant' ? 'AI: '
           : 'System: '}</div>
-          <Markdown source={m.content} />
-          {/* <div className='whitespace-pre-wrap whitespace-normal '>{m.content}</div> */}
+          {m.role === "user" 
+            ? (<div className='whitespace-pre-wrap'>{m.content}</div>)
+            : <Markdown source={m.content} />
+            }
         </div>
       ))}
       </div>

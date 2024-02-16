@@ -3,7 +3,7 @@ import { Character } from "../lib/common"
 
 export default function CharacterSelector({selectedValue, characters, onChange: handleChange}:{selectedValue:string, characters:any[], onChange:ChangeEventHandler<HTMLSelectElement>}) {
 
-    if (characters.length < 1) return 'Character: 通常'
+    if (characters.length < 1) return 'Character: Normal'
 
     return (<div>
         Character: <select value={selectedValue} onChange={handleChange} className="font-bold">
