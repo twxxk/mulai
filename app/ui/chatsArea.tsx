@@ -4,7 +4,7 @@ import { ChatRequestOptions } from 'ai';
 import Chat from './chat'
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
-import { ChatOptions } from './ui/chatOptions'
+import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
 import { ModelLabel, ModelValue } from '@/app/lib/common';
@@ -269,7 +269,7 @@ export default function ChatsArea() {
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
       <textarea
-        className="p-2 border border-gray-300 rounded flex-1 text-sm m-1"
+        className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none"
         ref={defaultFocusRef}
         value={parentInput}
         onChange={parentHandleInputChange}

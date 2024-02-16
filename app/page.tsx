@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import ChatsArea from './chatsArea';
+import ChatsArea from './ui/chatsArea';
 
 export default function Page() {
   return (<>

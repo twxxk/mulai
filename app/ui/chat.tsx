@@ -1,12 +1,12 @@
 'use client';
  
 import { ChatRequestOptions, Message } from 'ai';
-import { ChatOptions } from './ui/chatOptions'
+import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
-import CharacterSelector from './ui/characterSelector';
-import { Character, ModelValue } from './lib/common';
-import ModelSelector from './ui/modelSelector';
+import CharacterSelector from './characterSelector';
+import { Character, ModelValue } from '../lib/common';
+import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
 
@@ -34,6 +34,8 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
 {
   const [characterName, setCharacterName] = useState('')
   const historyElementRef = useRef(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isUsingIME, setIsUsingIME] = useState(false)
 
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
   const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast}
@@ -134,6 +136,28 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
     changeModel(index, modelValue)
   }
 
+  // trigger enter key
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // console.log(e.currentTarget.value)
+
+    // submit only if the key is enter
+    if (e.key !== 'Enter' || e.shiftKey)
+      return;
+
+    if (isUsingIME) {
+      // console.log('using ime', new Date)
+      return;
+    }
+    
+    e.preventDefault();
+
+    // trigger form submission
+    if (formRef.current) {
+      // console.log('submitting')
+      formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+  }
+
   return (<>
     <div className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>
@@ -161,7 +185,7 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
       ))}
       </div>
  
-      <form onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
+      <form ref={formRef} onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1">
             <strong>{modelValue.replace(/.*\//, '')}</strong>
@@ -176,12 +200,30 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
           </button>
         </div>
         <div className='flex w-full'>
-          <input
+          {/* <input
             className="flex-1 p-2 my-1 border border-gray-300 rounded"
             value={chatOptions.input}
             placeholder="Say something to this model..."
             onChange={chatOptions.handleInputChange}
+          /> */}
+          <textarea
+            className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none"
+            value={chatOptions.input}
+            onChange={chatOptions.handleInputChange}
+            onKeyDown={handleInputKeyDown}
+            onCompositionStart={() => setTimeout(() => {
+              // To deal with the situation CompositionEnd then CompositionStart, both needs timeout
+              // console.log('start', new Date)
+              setIsUsingIME(true)
+            }, 0)}
+            onCompositionEnd={() => setTimeout(() => {
+              // Needs timeout as Safari triggers CompositionEnd before KeyDown when pushing Enter
+              // console.log('end', new Date)
+              setIsUsingIME(false)
+            }, 0)}
+            placeholder="Say something to this model..."
           />
+
           {/* disabled is useful to stop submitting with enter */}
           <button type="submit" 
             className='ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600' 
