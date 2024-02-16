@@ -262,14 +262,15 @@ export default function ChatsArea() {
   }
 
   return (<>
-    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex-1 flex flex-row w-full text-xs m-0 overflow-auto">
+  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0">
+    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto">
       {chatModelValues.map((label:string, index:number) => (
         <Chat key={index} index={index} modelValue={label as ModelLabel} setChatOptions={setChatOptions} changeModel={changeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
-    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex'>
+    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
       <textarea
-        className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none"
+        className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none overflow-hidden"
         ref={defaultFocusRef}
         value={parentInput}
         onChange={parentHandleInputChange}
@@ -306,5 +307,6 @@ export default function ChatsArea() {
         <span className="sr-only">Trash</span>
       </button>
     </form>
+  </Split>
   </>);
 }

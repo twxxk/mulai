@@ -200,14 +200,8 @@ export default function Chat({modelValue: modelValue, index, updatePaneSize, set
           </button>
         </div>
         <div className='flex w-full'>
-          {/* <input
-            className="flex-1 p-2 my-1 border border-gray-300 rounded"
-            value={chatOptions.input}
-            placeholder="Say something to this model..."
-            onChange={chatOptions.handleInputChange}
-          /> */}
           <textarea
-            className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none"
+            className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none overflow-hidden"
             value={chatOptions.input}
             onChange={chatOptions.handleInputChange}
             onKeyDown={handleInputKeyDown}
