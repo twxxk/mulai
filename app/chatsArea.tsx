@@ -81,10 +81,17 @@ export default function ChatsArea() {
   useEffect(() => {
     const handleKeyDown = (e:any) => {
       const event = e as React.KeyboardEvent
-      if (event.key === "Escape") {
-        // if (isLoadingAnyChat()) // not work
-          handleStop()
+      if (event.key !== "Escape") {
+        return;
       }
+      if (isUsingIME) {
+        // console.log('using ime', new Date)
+        return;
+      }
+      e.preventDefault();
+      
+      // if (isLoadingAnyChat()) // not work
+      handleStop()
     };
 
     document.addEventListener('keydown', handleKeyDown);
