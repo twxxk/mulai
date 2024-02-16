@@ -3,11 +3,13 @@
 import { DicesIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
-const candidateModels = ['magi', 'optpess']
+const candidateModels = ['magi', 'optpess', 'free2']
 
 function generateRandomUrl(modelsParam:string) {
 
     let models = candidateModels.slice()
+
+    // exclude current URL
     const pos = candidateModels.indexOf(modelsParam)
     if (pos >= 0)
         models.splice(pos, 1)

@@ -54,6 +54,12 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
       {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
     ]
   }
+  if (modelsParam === 'free2') {
+    return [
+      {modelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'},
+      {modelValue: 'accounts/fireworks/models/firellava-13b'},    
+    ]
+  }
 
   // 1..5
   const modelsNumber = parseInt(modelsParam ?? '0')
