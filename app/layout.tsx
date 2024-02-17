@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html>
-      <body className="flex flex-col h-screen">
+      <body className="flex flex-col h-dvh" suppressHydrationWarning={true /* suppress the warning of grammarly */}>
         <header className="w-screen bg-teal-600 text-white text-xs p-4 h-14 flex flex-row">
           <a className='flex-1 text-xl hover:text-teal-100 active:text-teal-50' href="/"><h1>
             <span className="font-bold">MulAI</span> - Chat with Multiple genAIs

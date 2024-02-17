@@ -23,7 +23,7 @@ export default function DiceLink({className}:{className:string}) {
     const modelsParam = searchParams.get('models')
     const randomUrl = generateRandomUrl(modelsParam ?? '')
 
-    return (<a href={randomUrl}><button className={className}>
+    return (<a href={randomUrl} suppressHydrationWarning={true}><button className={className}>
         <DicesIcon />
     </button></a>)
 }

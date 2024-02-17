@@ -33,8 +33,7 @@ const bestQualityValues:ModelCharacterPair[] = [
 ]
 
 function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
-
-  // no params
+  // default, no params
   if (modelsParam === '') {
     const baseValues = process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues
     return baseValues.slice(0, 3)
@@ -146,9 +145,7 @@ export default function ChatsArea() {
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
     const newSplitSizes = splitToArray(newValues.length)
-    // debugger;
     setSplitSizes(newSplitSizes)
-    // setTimeout(()=>{setSplitSizes(splitToArray(newValues.length))}, 5000)
   }
 
   // You can debug by adding onDragStart={onDragStart} to with <Split />
