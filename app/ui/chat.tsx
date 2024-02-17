@@ -227,7 +227,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
  
       <form ref={formRef} onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
-          <div className="flex-1">
+          <div className="flex-1 whitespace-nowrap overflow-hidden">
             <strong>{getAILabel(modelValue, characterValue)}</strong>
           </div>
           <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
@@ -283,7 +283,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
             <span className="sr-only">Reload</span>
           </button>
         </div>
-        <label>
+        <label className='whitespace-nowrap overflow-hidden'>
           <input type="checkbox" className='mr-1'
             checked={acceptsBroadcast}
             onChange={() => setAcceptsBroadcast(!acceptsBroadcast)}
