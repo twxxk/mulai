@@ -10,12 +10,16 @@ import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
 
+const defaultAssistantPromptContent = 'Understood.'
+const defaultAssistantPromptContent_ja = 'かしこまりました。'
 const allCharacters:Character[] = [
   {
     "value": "",
     "label": "Normal",
-    "promptContent_ja": "",
-    "promptContent": ""
+    "promptContent_ja": "こんにちは。よろしくお願いしますね。",
+    "promptContent": "Hello.",
+    assistantPromptContent_ja: 'こんにちは！何かお手伝いできることはありますか？',
+    assistantPromptContent: 'Hello! How can I assist you today?',
   },
   {
     "value": "child",
@@ -215,13 +219,15 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     }
 
     // console.log('loc:', locale)
-    const underStood = locale === 'ja' ? 'かしこまりました。' : 'Understood.'
     const localizedPromptContent = locale === 'ja' ? character?.promptContent_ja : character?.promptContent
+    const assistantPromptContent = locale === 'ja' 
+      ? (character?.assistantPromptContent_ja ?? defaultAssistantPromptContent_ja)
+      : (character?.assistantPromptContent ?? defaultAssistantPromptContent)
     chatOptions.setMessages([
       // GPT understands the system message but gemini prefers conversations
       // {role: 'system', content:localizedPromptContent} as Message, 
       {role: 'user', content:localizedPromptContent} as Message,
-      {role: 'assistant', content:`${underStood}`} as Message,
+      {role: 'assistant', content:assistantPromptContent} as Message,
     ])
     setCharacterValue(value)
   }

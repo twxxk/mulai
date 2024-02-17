@@ -133,6 +133,8 @@ export type Character = {
     label: string,
     promptContent: string,
     promptContent_ja: string,
+    assistantPromptContent?: string,
+    assistantPromptContent_ja?: string,
 }
 
 export function validateModelCharacter(modelValueString:string, characterValueString:string):ModelCharacterPair {
