@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     // suppressHydrationWarnings to deal with grammarly and other extentions
     // https://stackoverflow.com/questions/75337953/what-causes-nextjs-warning-extra-attributes-from-the-server-data-new-gr-c-s-c
-    <html suppressHydrationWarning={true}>
+    <html className="overscroll-none" suppressHydrationWarning={true}>
       <body className="flex flex-col h-dvh overscroll-none" suppressHydrationWarning={true}>
         <header className="w-screen bg-teal-600 text-white text-xs p-4 h-14 flex flex-row">
           <a className='flex-1 text-xl hover:text-teal-100 active:text-teal-50  whitespace-nowrap' href="/"><h1>
