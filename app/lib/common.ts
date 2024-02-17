@@ -65,4 +65,5 @@ export type Character = {
     value: CharacterValue,
     label: string,
     promptContent: string,
+    promptContent_ja: string,
 }

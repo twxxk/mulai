@@ -72,7 +72,7 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
   ]
 }
 
-export default function ChatsArea() {
+export default function ChatsArea({locale}:{locale:string}) {
   const searchParams = useSearchParams()
   const modelsParam = searchParams.get('models')
   const [modelCharacterValues, setModelCharacterValues] = useState(getModelCharacterValues(modelsParam ?? ''))
@@ -298,7 +298,7 @@ export default function ChatsArea() {
   <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col min-h-0" key={modelCharacterValues.length}>
     <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1 min-h-0">
       {modelCharacterValues.map((value:ModelCharacterPair, index:number) => (
-        <Chat key={index} index={index} totalLength={modelCharacterValues.length} 
+        <Chat key={index} index={index} totalLength={modelCharacterValues.length} locale={locale}
           modelValue={value.modelValue} initialCharacterValue={value.characterValue}
           setChatOptions={setChatOptions} changeModel={changeModel} 
           addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} />

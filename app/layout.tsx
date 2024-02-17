@@ -25,6 +25,7 @@ export default function RootLayout({
           <Suspense>
             <DiceLink className="px-2 hover:text-teal-100 active:text-teal-50" />
           </Suspense>
+          {/* copyright @twk all rights reserved */}
           <a className='pt-1 text-teal-700 whitespace-nowrap overflow-x-hidden' href="https://twitter.com/twk" target="_blank" rel="noopener noreferrer">author: @twk</a>
         </header>
         {children}

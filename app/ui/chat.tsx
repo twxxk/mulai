@@ -11,15 +11,60 @@ import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
 
 const allCharacters:Character[] = [
-  {value: '', label: 'Normal', promptContent: ''},
-  {value: 'child', label: 'Child', promptContent: '小学生でもわかるように説明してください。'},
-  {value: 'bullets', label: 'Bullets', promptContent: '箇条書きで簡潔に答えて'},
-  {value: 'steps', label: 'Steps', promptContent: 'ステップバイステップで答えてください。'},
-  {value: 'optimist', label: 'Optimist', promptContent: '楽観的な観点で、物事がうまく行く可能性を前向きに考えて回答してください。'},
-  {value: 'pessimist', label: 'Pessimist', promptContent: '悲観的な観点で、物事がうまく行かなくなる可能性を注意深く予測して回答してください。'},
-  {value: 'melchior', label: 'Melchior-1', promptContent: '科学者の側面から、論理的かつ分析的に回答してください。'},
-  {value: 'balthasar', label: 'Balthasar-2', promptContent: '母の側面から、保護的かつ愛情深く回答してください。'},
-  {value: 'caspar', label: 'Caspar-3', promptContent: '女性としての側面から、直感的かつ柔軟な思考で回答してください。'},
+  {
+    "value": "",
+    "label": "Normal",
+    "promptContent_ja": "",
+    "promptContent": ""
+  },
+  {
+    "value": "child",
+    "label": "Child",
+    "promptContent_ja": "小学生でもわかるように説明してください。",
+    "promptContent": "Please explain in a way that even an elementary school student would understand."
+  },
+  {
+    "value": "bullets",
+    "label": "Bullets",
+    "promptContent_ja": "箇条書きで簡潔に答えて",
+    "promptContent": "Answer concisely in bullet points."
+  },
+  {
+    "value": "steps",
+    "label": "Steps",
+    "promptContent_ja": "ステップバイステップで答えてください。",
+    "promptContent": "Please answer step by step."
+  },
+  {
+    "value": "optimist",
+    "label": "Optimist",
+    "promptContent_ja": "楽観的な観点で、物事がうまく行く可能性を前向きに考えて回答してください。",
+    "promptContent": "From an optimistic viewpoint, please answer with a positive outlook on the possibilities of things going well."
+  },
+  {
+    "value": "pessimist",
+    "label": "Pessimist",
+    "promptContent_ja": "悲観的な観点で、物事がうまく行かなくなる可能性を注意深く予測して回答してください。",
+    "promptContent": "From a pessimistic viewpoint, please answer by carefully predicting the possibilities of things not going well."
+  },
+  {
+    "value": "melchior",
+    "label": "Scientist",
+    "promptContent_ja": "科学者の側面から、論理的かつ分析的に回答してください。",
+    "promptContent": "From a scientist's perspective, please answer logically and analytically."
+  },
+  {
+    "value": "balthasar",
+    "label": "Mother",
+    "promptContent_ja": "母の側面から、保護的かつ愛情深く回答してください。",
+    "promptContent": "From a mother's perspective, please answer protectively and with deep affection."
+  },
+  {
+    "value": "caspar",
+    "label": "Woman",
+    "promptContent_ja": "女性としての側面から、直感的かつ柔軟な思考で回答してください。",
+    "promptContent": "From a woman’s perspective, please answer with intuitive and flexible thinking."
+  }
 ]
 const getAvailableCharacters = (modelValue:string):Character[] => {
   //   return []
@@ -30,20 +75,22 @@ const getCharacter = (characterValue:CharacterValue) => {
   return allCharacters.find((character) => character.value === characterValue)
 }
 
-const getAILabel = (modelValue:ModelValue, characterName:CharacterValue) => {
+const getAILabel = (modelValue:ModelValue, characterValue:CharacterValue) => {
   const modelLabel = getModelByValue(modelValue)?.label
-  const characterLabel = getCharacter(characterName)?.label
-  if (characterLabel)
-    return `${modelLabel} (${characterLabel})`
-  else
+  if (characterValue !== '') {
+    const characterLabel = getCharacter(characterValue)?.label
+    return `${modelLabel} (${characterLabel})`  
+  } else {
     return modelLabel
+  }
 }
 
-export default function Chat({modelValue, initialCharacterValue, index, totalLength, updatePaneSize, setChatOptions, changeModel, addPane, removePane: removePane}:{
+export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, addPane, removePane: removePane}:{
   modelValue:ModelValue,
   initialCharacterValue?:CharacterValue,
   index:number, 
   totalLength:number,
+  locale:string,
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
   setChatOptions:(index:number, value:ChatOptions)=>void,
   changeModel:(index:number, newModelValue:ModelValue)=>void,
@@ -155,11 +202,13 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
       return
     }
 
+    console.log('funcloc', locale)
+    const localizedPromptContent = locale === 'ja' ? character?.promptContent_ja : character?.promptContent
     chatOptions.setMessages([
       // GPT understands the system message but gemini prefers conversations
-      // {role: 'system', content:character?.promptContent} as Message, 
-      {role: 'user', content:character?.promptContent} as Message,
-      {role: 'assistant', content:`Understood: ${character?.promptContent}`} as Message,
+      // {role: 'system', content:localizedPromptContent} as Message, 
+      {role: 'user', content:localizedPromptContent} as Message,
+      {role: 'assistant', content:`Understood: ${localizedPromptContent}`} as Message,
     ])
     setCharacterValue(value)
   }
