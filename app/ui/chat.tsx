@@ -5,7 +5,7 @@ import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
-import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
+import { Character, CharacterValue, ModelValue, getModelByValue, getSdkModelValue } from '../lib/common';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')
@@ -85,7 +85,7 @@ const getAILabel = (modelValue:ModelValue, characterValue:CharacterValue) => {
   }
 }
 
-export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, addPane, removePane: removePane}:{
+export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, changeCharacter, changeChatLoading, addPane, removePane}:{
   modelValue:ModelValue,
   initialCharacterValue?:CharacterValue,
   index:number, 
@@ -94,6 +94,8 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
   setChatOptions:(index:number, value:ChatOptions)=>void,
   changeModel:(index:number, newModelValue:ModelValue)=>void,
+  changeCharacter:(index:number, newCharacterValue:CharacterValue)=>void,
+  changeChatLoading:(index:number, newLoadingValue:boolean)=>void,
   addPane:()=>void,
   removePane:(index:number)=>void,
 }) 
@@ -105,6 +107,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
 
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
   const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast}
+  const [isSplitLoaded, setIsSplitLoaded] = useState(false)
 
   // console.log('chat is being initialized with=' + modelValue)
   setChatOptions(index, chatOptions)
@@ -112,9 +115,18 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   let characters = getAvailableCharacters(modelValue)
 
   useEffect(() => {
+    changeChatLoading(index, chatOptions.isLoading)
+  }, [chatOptions.isLoading])
+
+  useEffect(() => {
     if (initialCharacterValue) {
-      submitCharacterValue(initialCharacterValue as CharacterValue)
+      setCharacterMessages(initialCharacterValue as CharacterValue)
     }
+  }, [])
+
+  useEffect(() => {
+    // Not checking the load status but wait for a while to improve UX
+    setIsSplitLoaded(true)
   }, [])
 
   useEffect(() => {
@@ -167,7 +179,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
 
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
-    console.log('requesting model=' + modelValue)
+    console.log('requesting model:' + modelValue)
     const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
 
     e.preventDefault()
@@ -195,31 +207,34 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     addPane()
   }
 
-  function submitCharacterValue(value: CharacterValue) {
+  function setCharacterMessages(value: CharacterValue) {
     const character = getCharacter(value)
     if (character?.promptContent === '') {
-      // XXX if you change to a different value and then back to normal, the value should be reset
+      // FIXME if you change to a different value and then back to normal, the value should be reset
       return
     }
 
-    console.log('funcloc', locale)
+    // console.log('loc:', locale)
+    const underStood = locale === 'ja' ? 'かしこまりました。' : 'Understood.'
     const localizedPromptContent = locale === 'ja' ? character?.promptContent_ja : character?.promptContent
     chatOptions.setMessages([
       // GPT understands the system message but gemini prefers conversations
       // {role: 'system', content:localizedPromptContent} as Message, 
       {role: 'user', content:localizedPromptContent} as Message,
-      {role: 'assistant', content:`Understood: ${localizedPromptContent}`} as Message,
+      {role: 'assistant', content:`${underStood}`} as Message,
     ])
     setCharacterValue(value)
   }
 
   function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
-    submitCharacterValue(e.target.value as CharacterValue)
+    const characterValue = e.target.value as CharacterValue
+    setCharacterMessages(characterValue)
+    changeCharacter(index, characterValue)
   }
 
   function handleModelChange(e:React.ChangeEvent<HTMLSelectElement>) {
     const modelValue = e.target.value as ModelValue
-    console.log('changing model to=', modelValue)
+    console.log('changing model to:', modelValue)
     changeModel(index, modelValue)
   }
 
@@ -274,7 +289,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
       ))}
       </div>
  
-      <form ref={formRef} onSubmit={handleChatSubmit} className='bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
+      <form ref={formRef} onSubmit={handleChatSubmit} className={(isSplitLoaded ? 'opacity-100 ' : 'opacity-0 ') + 'transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'}>
         <div className='flex flex-row w-full'>
           <div className="flex-1 whitespace-nowrap overflow-hidden">
             <strong>{getAILabel(modelValue, characterValue)}</strong>

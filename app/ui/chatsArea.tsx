@@ -7,15 +7,15 @@ import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { CharacterValue, DEFAULT_MODEL, ModelLabel, ModelValue } from '@/app/lib/common';
+import { CharacterValue, DEFAULT_MODEL, ModelCharacterPair, ModelLabel, ModelValue, getSdkModelValue, validateModelCharacter } from '@/app/lib/common';
+import { useRouter } from 'next/navigation';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
   return Array(num).fill(100/num)
 }
 
-type ModelCharacterPair = {modelValue:ModelValue, characterValue?:CharacterValue}
-
+// for debug
 const freeValues:ModelCharacterPair[] = [
   {modelValue: 'gemini-pro'},
   {modelValue: 'gemini-1.0-pro-latest'},
@@ -23,16 +23,36 @@ const freeValues:ModelCharacterPair[] = [
   {modelValue: 'gemini-1.0-pro-latest'},
   {modelValue: 'gemini-1.0-pro-latest'},
 ]
+// for production
 const bestQualityValues:ModelCharacterPair[] = [
   {modelValue: 'gpt-3.5-turbo'},
   {modelValue: 'gpt-4-turbo-preview'},
   {modelValue: 'gemini-1.0-pro-latest'},
   {modelValue: 'gemini-pro'},
-  {modelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'},
-  {modelValue: 'accounts/fireworks/models/firellava-13b'},
+  {modelValue: 'japanese-stablelm-instruct-beta-70b'},
+  {modelValue: 'firellava-13b'},
+]
+const allValues:ModelCharacterPair[] = [
+  {modelValue: 'gpt-3.5-turbo'},
+  {modelValue: 'gpt-4-turbo-preview'},
+  {modelValue: 'gemini-1.0-pro-latest'},
+  {modelValue: 'gemini-pro'},
+  {modelValue: 'japanese-stablelm-instruct-beta-70b'},
+  {modelValue: 'japanese-stablelm-instruct-gamma-7b'},
+  {modelValue: 'firellava-13b'},
+  {modelValue: 'qwen-14b-chat'},
+  {modelValue: 'qwen-72b-chat'},
+  {modelValue: 'mixtral-8x7b-instruct'},
+  {modelValue: 'llama-v2-7b-chat'},
+  {modelValue: 'llama-v2-13b-chat'},
+  {modelValue: 'llama-v2-70b-chat'},
 ]
 
 function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
+  // for debug
+  // if (modelsParam === '') 
+  //   return allValues.slice(10, 10+3)
+
   // default, no params
   if (modelsParam === '') {
     const baseValues = process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues
@@ -55,8 +75,8 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
   }
   if (modelsParam === 'free2') {
     return [
-      {modelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'},
-      {modelValue: 'accounts/fireworks/models/firellava-13b'},    
+      {modelValue: 'japanese-stablelm-instruct-beta-70b'},
+      {modelValue: 'firellava-13b'},    
     ]
   }
 
@@ -65,11 +85,21 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
   if (modelsNumber >= 1 && modelsNumber <= 5)
     return bestQualityValues.slice(0, modelsNumber)
 
-  return [
-    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-  ]
+  return modelsParam.split(',').map((value, index) => {
+    const [modelValueString, characterValueString] = value.split(':')
+    return validateModelCharacter(modelValueString, characterValueString ?? '') // undefined => ''
+  })
+}
+
+// generate /?models={return} from the current models and characters
+function generateModelsParam(modelCharacters:ModelCharacterPair[]):string {
+  let a:string[] = []
+  modelCharacters.map((modelCharacter) => {
+    // console.log('character:', modelCharacter.characterValue)
+    const mc = modelCharacter.modelValue + (modelCharacter.characterValue ? ':' + modelCharacter.characterValue : '')
+    a.push(mc)
+  })
+  return a.join(',')
 }
 
 export default function ChatsArea({locale}:{locale:string}) {
@@ -83,8 +113,20 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   const formRef = useRef<HTMLFormElement>(null);
   const defaultFocusRef = useRef<HTMLTextAreaElement>(null);
+  const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
 
   const chats:ChatOptions[] = []
+
+  const router = useRouter()
+
+  // generate url based on models and characters
+  // need to call router function in useEffect
+  useEffect(() => {
+    console.log('model or character is updated. generating a new url')
+    const params = generateModelsParam(modelCharacterValues)
+    const searchParams = params ? '/?models=' + params : '/'
+    router.replace(searchParams)
+  }, [modelCharacterValues])
 
   // trap escape key to interrupt responses
   useEffect(() => {
@@ -98,8 +140,6 @@ export default function ChatsArea({locale}:{locale:string}) {
         return;
       }
       e.preventDefault();
-      
-      // if (isLoadingAnyChat()) // not work
       handleStop()
     };
 
@@ -113,19 +153,24 @@ export default function ChatsArea({locale}:{locale:string}) {
     defaultFocusRef.current?.focus()
   }, [])
   
-  // return true if any chat is loading
-  const isLoadingAnyChat = () => {
-    // console.log('called'); 
-    return chats.some((chat:ChatOptions) => chat.isLoading)
+  const changeChatLoading = (index:number, value:boolean) => {
+    setIsLoadingAnyChat(chats.some((chat:ChatOptions) => chat.isLoading))
   }
 
   const setChatOptions = (index:number, chat:ChatOptions) => {
     chats[index] = chat
   }
 
+  const changeCharacter = (index:number, characterValue:CharacterValue) => {
+    let newValues = modelCharacterValues.slice()
+    newValues[index].characterValue = characterValue
+    console.log('changing to new character', newValues)
+    setModelCharacterValues(newValues)
+  }
+
   const changeModel = (index:number, modelValue:ModelValue) => {
     let newValues = modelCharacterValues.slice()
-    newValues[index] = {modelValue}
+    newValues[index].modelValue = modelValue // keep character
     console.log('changing to new models', newValues)
     setModelCharacterValues(newValues)
   }
@@ -140,7 +185,7 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   const addModel = () => {
     let newValues = modelCharacterValues.slice()
-    const modelValue:ModelValue = DEFAULT_MODEL.model
+    const modelValue:ModelValue = DEFAULT_MODEL.modelValue
     newValues.push({modelValue})
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
@@ -260,16 +305,16 @@ export default function ChatsArea({locale}:{locale:string}) {
   }
 
   // form submit handler
+  // submit all children chats
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     chats.map((chat:ChatOptions, index:number) => {
       if (!chat.acceptsBroadcast)
         return;
 
-      // console.log('requesting model=' + chat.model)
-      const model = modelCharacterValues[index].modelValue
-      // const model = chatModelValues[index]
-      const options:ChatRequestOptions = {options:{headers:{model}}}
+      console.log('requesting model=' + modelCharacterValues[index].modelValue)
+      const modelValue = modelCharacterValues[index].modelValue
+      const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
   
       chat.handleSubmit(e, options)
     })
@@ -278,15 +323,18 @@ export default function ChatsArea({locale}:{locale:string}) {
     setTimeout(()=>setParentInput(''), 100)
   }
 
+  // stop chat
   const handleStop = () => {
-    console.log('stopping')      
-    chats.map((chat:ChatOptions, index:number) => chat.stop())
+    chats.map((chat:ChatOptions, index) => {
+      // Sometimes fails to stop. Need more investigation
+      console.log('stopping:', index, ':', chat.isLoading)
+      chat.stop()
+    })
   }
 
   const handleTrash = () => {
     // Stop to prevent getting responses after trash
-    // if (isLoadingAnyChat()) // not work
-      handleStop()
+    handleStop()
     console.log('trashing')
     chats.map((chat:ChatOptions) => {
       chat.setInput('')
@@ -300,7 +348,8 @@ export default function ChatsArea({locale}:{locale:string}) {
       {modelCharacterValues.map((value:ModelCharacterPair, index:number) => (
         <Chat key={index} index={index} totalLength={modelCharacterValues.length} locale={locale}
           modelValue={value.modelValue} initialCharacterValue={value.characterValue}
-          setChatOptions={setChatOptions} changeModel={changeModel} 
+          setChatOptions={setChatOptions} changeModel={changeModel} changeCharacter={changeCharacter}
+          changeChatLoading={changeChatLoading}
           addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} />
       ))}
     </Split>
@@ -325,15 +374,15 @@ export default function ChatsArea({locale}:{locale:string}) {
       />
       {/* disabled is useful to stop submitting with enter */}
       <button type="submit" 
-        className={(isLoadingAnyChat() ? 'hidden' : 'p-1') 
-          + ' disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'} 
-        disabled={parentInput.length === 0 || isLoadingAnyChat()}>
+        className={(isLoadingAnyChat ? 'disabled:hidden' : '') 
+          + ' p-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'} 
+        disabled={parentInput.length === 0 || isLoadingAnyChat}>
         <SendIcon className="h-5 w-5" />
         <span className="sr-only">Send</span>
       </button>
       <button onClick={handleStop} 
-        className={(!isLoadingAnyChat() ? 'hidden' : 'p-1') 
-          + ' disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'}>
+        className={'p-1 disabled:hidden disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'}
+        disabled={!isLoadingAnyChat}>
         <StopCircleIcon className="h-5 w-5" />
         <span className="sr-only">Stop</span>
       </button>

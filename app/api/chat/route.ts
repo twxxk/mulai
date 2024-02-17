@@ -100,18 +100,18 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
 export async function POST(req: Request) {
     try {
         const { messages } = await req.json();
-        let model = req.headers.get('Model') ?? ''
+        let modelValue = req.headers.get('Model') ?? ''
 
         // get vendor from model (verifying model)       
-        let vendor = getModelByValue(model as ModelValue)?.vendor
-        if (!vendor) {
-            console.error('model not found=' + model);
-            ({vendor, model} = DEFAULT_MODEL)
+        let modelData = getModelByValue(modelValue as ModelValue)
+        if (!modelData) {
+            console.error('model not found=' + modelValue);
+            modelData = DEFAULT_MODEL
         }
-        console.log('model=' + model, ', vendor=', vendor)
+        console.log('model:', modelValue, ', vendor:', modelData.vendor, ', sdkModel:', modelData.sdkModelValue)
     
-        const responseStreamGenerator = chatStreamFactory(vendor)
-        const stream = await responseStreamGenerator({model, messages})
+        const responseStreamGenerator = chatStreamFactory(modelData.vendor)
+        const stream = await responseStreamGenerator({model:modelData.sdkModelValue, messages})
         return new StreamingTextResponse(stream)
     } catch (e:any) {
         // any network error etc

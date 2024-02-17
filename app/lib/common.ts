@@ -14,56 +14,134 @@
 //   https://fireworks.ai/models
 export type ModelLabel = 'GPT-3.5' | 'GPT-4' | 'Gemini Pro' | 'Gemini Pro Latest'
     | 'Japanese StableLM Instruct Beta 70B' // free
-    // | 'Japanese Stable LM Instruct Gamma 7B' // free. very low quality
     | 'FireLLaVA 13B' // free. OSS based
-    // | 'Qwen 14B Chat' // in:$0.2/M out:$0.8/M
-    // | 'Qwen 72B Chat' // in:$0.7/M out:$2.8/M
-    // | 'Mixtral MoE 8x7B Instruct' | 'Llama 2 7B Chat' | 'Llama 2 13B Chat' | 'Llama 2 70B Chat' // english only
+    // additional    
+    | 'Japanese Stable LM Instruct Gamma 7B' // free. very low quality
+    | 'Qwen 14B Chat' // in:$0.2/M out:$0.8/M
+    | 'Qwen 72B Chat' // in:$0.7/M out:$2.8/M
+    | 'Mixtral MoE 8x7B Instruct' | 'Llama 2 7B Chat' | 'Llama 2 13B Chat' | 'Llama 2 70B Chat' // english only
+// const modelLabels = [
+//     'GPT-3.5', 
+//     'GPT-4', 
+//     'Gemini Pro', 
+//     'Gemini Pro Latest',
+//     'Japanese StableLM Instruct Beta 70B', // free
+//     'FireLLaVA 13B', // free. OSS based
+//     // additional  
+//     'Japanese Stable LM Instruct Gamma 7B', // free. very low quality
+//     'Qwen 14B Chat', // in:$0.2/M out:$0.8/M
+//     'Qwen 72B Chat', // in:$0.7/M out:$2.8/M
+//     'Mixtral MoE 8x7B Instruct', 
+//     'Llama 2 7B Chat', 
+//     'Llama 2 13B Chat', 
+//     'Llama 2 70B Chat' // english only
+// ] as const;
+
+// export type ModelLabel = typeof modelLabels[number];
 
 export type ModelVendor = 'openai' | 'google' | 'fireworks.ai'
 
-export type ModelValue = 'gpt-3.5-turbo' | 'gpt-4-turbo-preview' 
+const modelValues = [
+    'gpt-3.5-turbo', 
+    'gpt-4-turbo-preview', 
+    'gemini-pro', 
+    'gemini-1.0-pro-latest',
+    'japanese-stablelm-instruct-beta-70b',
+    'japanese-stablelm-instruct-gamma-7b',
+    'firellava-13b',
+    'qwen-14b-chat',
+    'qwen-72b-chat',
+    'mixtral-8x7b-instruct',
+    'llama-v2-7b-chat',
+    'llama-v2-13b-chat',
+    'llama-v2-70b-chat'
+] as const;
+
+export type ModelValue = typeof modelValues[number];
+
+export type ModelCharacterPair = {modelValue:ModelValue, characterValue?:CharacterValue}
+
+export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4-turbo-preview' 
     | 'gemini-pro' | 'gemini-1.0-pro-latest'
     | 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'
     | 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b'
     | 'accounts/fireworks/models/firellava-13b'
+    | 'accounts/fireworks/models/qwen-14b-chat'
+    | 'accounts/fireworks/models/qwen-72b-chat'
+    | 'accounts/fireworks/models/mixtral-8x7b-instruct'
+    | 'accounts/fireworks/models/llama-v2-7b-chat'
+    | 'accounts/fireworks/models/llama-v2-13b-chat'
+    | 'accounts/fireworks/models/llama-v2-70b-chat'
 
-type ChatModelData = {
-    label: ModelLabel,
+// returns default value if not found
+export function getSdkModelValue(modelValue:ModelValue) {
+    const model = allModels.find((modelData) => modelData.modelValue == modelValue)
+    if (!model)
+        console.log('model not found:', modelValue)
+    console.log(modelValue, model)
+    return model?.sdkModelValue ?? DEFAULT_MODEL.sdkModelValue
+}
+
+export type ChatModelData = {
+    label: ModelLabel, // for human
     vendor: ModelVendor,
-    model: ModelValue, // pass to ai
+    modelValue: ModelValue, // for url parameter and internal
+    sdkModelValue: SdkModelValue, // the value to be passed to AI sdk
 }
 
 export const DEFAULT_MODEL:ChatModelData
-    = {label:'Gemini Pro', vendor: 'google', model: 'gemini-pro'} // fall back free model.
+    = {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro'} // fall back free model.
 
-export const modelList:ChatModelData[] = [
-    {label:'GPT-3.5', vendor: 'openai', model: 'gpt-3.5-turbo'},
-    {label:'GPT-4', vendor: 'openai', model: 'gpt-4-turbo-preview'},
-    {label:'Gemini Pro', vendor: 'google', model: 'gemini-pro'},
-    {label:'Gemini Pro Latest', vendor: 'google', model: 'gemini-1.0-pro-latest'},
-    // # japanese
-    {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', model: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'},
-    // {label: 'Japanese Stable LM Instruct Gamma 7B', vendor: 'fireworks.ai', model: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b'},
-    {label: 'FireLLaVA 13B', vendor: 'fireworks.ai', model: 'accounts/fireworks/models/firellava-13b'},
-    // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/qwen-14b-chat'},
-    // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/qwen-72b-chat'},
-    // # non-japanese output
-    // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/mixtral-8x7b-instruct'},
-    // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/llama-v2-7b-chat'},
-    // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/llama-v2-13b-chat'},
-    // {vendor: 'fireworks.ai', model: 'accounts/fireworks/models/llama-v2-70b-chat'},
+// models which can be choosable with the selection
+export const selectableModels:ChatModelData[] = [
+    {label:'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo'},
+    {label:'GPT-4', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview'},
+    {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro'},
+    {label:'Gemini Pro Latest', vendor: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest'},
+    {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'},
+    {label: 'FireLLaVA 13B', vendor: 'fireworks.ai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b'},
 ]
 
+// models which can only be specified with the parameter. poorer Japanese quality models
+export const allModels:ChatModelData[] = [
+    ...selectableModels,
+    // # japanese
+    {label: 'Japanese Stable LM Instruct Gamma 7B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b'},
+    {label: 'Qwen 14B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-14b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-14b-chat'},
+    {label: 'Qwen 72B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-72b-chat'},
+    // # non-japanese output
+    {label: 'Mixtral MoE 8x7B Instruct', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct'},
+    {label: 'Llama 2 7B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-7b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-7b-chat'},
+    {label: 'Llama 2 13B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-13b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-13b-chat'},
+    {label: 'Llama 2 70B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat'},
+]
+
+// from all models
 export function getModelByValue(modelValue:ModelValue):ChatModelData | undefined {
-    return modelList.find((value) => value.model === modelValue)
+    return allModels.find((value) => value.modelValue === modelValue)
 }
-  
-export type CharacterValue = '' | 'child' | 'bullets' | 'steps' | 'optimist' | 'pessimist' |'melchior' | 'balthasar' | 'caspar'
+
+const DEFAULT_CHARACTER = ''
+const characterValues = ['', 'child', 'bullets', 'steps', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
+export type CharacterValue = typeof characterValues[number];
 
 export type Character = {
     value: CharacterValue,
     label: string,
     promptContent: string,
     promptContent_ja: string,
+}
+
+export function validateModelCharacter(modelValueString:string, characterValueString:string):ModelCharacterPair {
+    let modelValue = modelValueString as ModelValue 
+    let characterValue = characterValueString as CharacterValue
+    if (!modelValues.includes(modelValue)) {
+        console.log('model not found:', modelValue, ' defaulting to ', DEFAULT_MODEL.modelValue)
+        modelValue = DEFAULT_MODEL.modelValue
+    }
+    if (!characterValues.includes(characterValue)) {
+        console.log('character not found:', characterValue, ' defaulting to ', DEFAULT_CHARACTER)
+        characterValue = DEFAULT_CHARACTER
+    }
+    return {modelValue, characterValue}
 }
