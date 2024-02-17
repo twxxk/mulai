@@ -1,25 +1,32 @@
 // called from edge and webapp
 
+// If you want to remove some models, remove them from allModels to let api ignore the parameter
+// It will also remove options from ModelSelector
+
 // # openai 
-//   gpt-4-0125-preview (turbo) in $0.01/1K tokens, out $0.03/1K tokens 
-//   gpt-3.5-turbo-0125         in $0.0005/1K tokens, out $0.0015/1K tokens
 //   https://openai.com/pricing#language-models
 // # google
-//   free (up to 60queries/min) 
 //   https://ai.google.dev/pricing
 //   https://ai.google.dev/models/gemini
 // # fireworks.ai
-//   free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
 //   https://readme.fireworks.ai/page/pricing
 //   https://fireworks.ai/models
-export type ModelLabel = 'GPT-3.5' | 'GPT-4' | 'Gemini Pro' | 'Gemini Pro Latest'
+export type ModelLabel 
+    = 'GPT-3.5' // in $0.0005/1K tokens, out $0.0015/1K tokens
+    | 'GPT-4' // in $0.01/1K tokens, out $0.03/1K tokens 
+    | 'Gemini Pro' // free (up to 60queries/min) 
+    | 'Gemini Pro Latest' // free (up to 60queries/min) 
+    // fireworks.ai is free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
     | 'Japanese StableLM Instruct Beta 70B' // free
     | 'FireLLaVA 13B' // free. OSS based
-    // additional    
+    // additional
     | 'Japanese Stable LM Instruct Gamma 7B' // free. very low quality
     | 'Qwen 14B Chat' // in:$0.2/M out:$0.8/M
     | 'Qwen 72B Chat' // in:$0.7/M out:$2.8/M
-    | 'Mixtral MoE 8x7B Instruct' | 'Llama 2 7B Chat' | 'Llama 2 13B Chat' | 'Llama 2 70B Chat' // english only
+    | 'Mixtral MoE 8x7B Instruct' // in:$0.4/M out:$1.6/M
+    | 'Llama 2 7B Chat' // ?
+    | 'Llama 2 13B Chat' // free
+    | 'Llama 2 70B Chat' // free
 // const modelLabels = [
 //     'GPT-3.5', 
 //     'GPT-4', 
@@ -41,7 +48,7 @@ export type ModelLabel = 'GPT-3.5' | 'GPT-4' | 'Gemini Pro' | 'Gemini Pro Latest
 
 export type ModelVendor = 'openai' | 'google' | 'fireworks.ai'
 
-const modelValues = [
+export const modelValues = [
     'gpt-3.5-turbo', 
     'gpt-4-turbo-preview', 
     'gemini-pro', 
@@ -61,6 +68,7 @@ export type ModelValue = typeof modelValues[number];
 
 export type ModelCharacterPair = {modelValue:ModelValue, characterValue?:CharacterValue}
 
+// model to call AI sdk
 export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4-turbo-preview' 
     | 'gemini-pro' | 'gemini-1.0-pro-latest'
     | 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'
@@ -72,15 +80,6 @@ export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4-turbo-preview'
     | 'accounts/fireworks/models/llama-v2-7b-chat'
     | 'accounts/fireworks/models/llama-v2-13b-chat'
     | 'accounts/fireworks/models/llama-v2-70b-chat'
-
-// returns default value if not found
-export function getSdkModelValue(modelValue:ModelValue) {
-    const model = allModels.find((modelData) => modelData.modelValue == modelValue)
-    if (!model)
-        console.log('model not found:', modelValue)
-    console.log(modelValue, model)
-    return model?.sdkModelValue ?? DEFAULT_MODEL.sdkModelValue
-}
 
 export type ChatModelData = {
     label: ModelLabel, // for human
@@ -94,7 +93,8 @@ export type ChatModelData = {
 export const DEFAULT_MODEL:ChatModelData
     = {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', recommendScore: 100}
 
-// models which can be choosable with the selection
+// //  which can be choosable with the selection
+// currently all models are selectable
 export const selectableModels:ChatModelData[] = [
     {label:'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', recommendScore: 80},
     {label:'GPT-4', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
@@ -104,7 +104,8 @@ export const selectableModels:ChatModelData[] = [
     {label: 'FireLLaVA 13B', vendor: 'fireworks.ai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', recommendScore:50},
 ]
 
-// models which can only be specified with the parameter. poorer Japanese quality models
+// // models which can only be specified with the parameter. poorer Japanese quality models
+// currently all models are selectable
 export const allModels:ChatModelData[] = [
     ...selectableModels,
     // # japanese
@@ -124,7 +125,7 @@ export function getModelByValue(modelValue:ModelValue):ChatModelData | undefined
 }
 
 const DEFAULT_CHARACTER = ''
-const characterValues = ['', 'child', 'bullets', 'steps', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
+export const characterValues = ['', 'child', 'bullets', 'steps', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
 export type CharacterValue = typeof characterValues[number];
 
 export type Character = {

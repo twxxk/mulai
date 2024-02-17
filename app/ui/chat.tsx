@@ -5,7 +5,7 @@ import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
-import { Character, CharacterValue, ModelValue, getModelByValue, getSdkModelValue } from '../lib/common';
+import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 const Markdown = require('react-markdown-it')

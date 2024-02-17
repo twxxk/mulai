@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { CharacterValue, DEFAULT_MODEL, ModelCharacterPair, ModelLabel, ModelValue, getSdkModelValue, validateModelCharacter } from '@/app/lib/common';
+import { CharacterValue, DEFAULT_MODEL, ModelCharacterPair, ModelValue, validateModelCharacter } from '@/app/lib/common';
 import { useRouter } from 'next/navigation';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
@@ -48,36 +48,36 @@ const allValues:ModelCharacterPair[] = [
   {modelValue: 'llama-v2-70b-chat'},
 ]
 
+const specialPairs:{[key:string]:ModelCharacterPair[]} = {
+  default: (process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues).slice(0, 3),
+  magi: [
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
+  ],
+  optpess: [
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: 'optimist'},
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
+  ]
+}
+
 function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
+  // console.log('param:', modelsParam)
   // for debug
   // if (modelsParam === '') 
   //   return allValues.slice(10, 10+3)
 
   // default, no params
   if (modelsParam === '') {
-    const baseValues = process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues
-    return baseValues.slice(0, 3)
+    return specialPairs.default;
   }
 
   // Evangelion
   if (modelsParam === 'magi') {
-    return [
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
-    ]
+    return specialPairs.magi
   }
   if (modelsParam === 'optpess') {
-    return [
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'optimist'},
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
-    ]
-  }
-  if (modelsParam === 'free2') {
-    return [
-      {modelValue: 'japanese-stablelm-instruct-beta-70b'},
-      {modelValue: 'firellava-13b'},    
-    ]
+    return specialPairs.optpess
   }
 
   // 1..5
@@ -85,6 +85,7 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
   if (modelsNumber >= 1 && modelsNumber <= 5)
     return bestQualityValues.slice(0, modelsNumber)
 
+  // model1(:character1),model2(:character2),...
   return modelsParam.split(',').map((value, index) => {
     const [modelValueString, characterValueString] = value.split(':')
     return validateModelCharacter(modelValueString, characterValueString ?? '') // undefined => ''
@@ -93,6 +94,23 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
 
 // generate /?models={return} from the current models and characters
 function generateModelsParam(modelCharacters:ModelCharacterPair[]):string {
+  // console.log('now', modelCharacters)
+  const matched = Object.entries(specialPairs).filter(([key, pairs]) => {
+    // console.log('pairs', pairs)
+    if (pairs.length != modelCharacters.length) return false;
+    return pairs.every((lhsPair, index) => {
+      const rhsPair = modelCharacters.at(index) as ModelCharacterPair
+      if (!rhsPair) return false
+      return lhsPair.modelValue === rhsPair.modelValue && (lhsPair.characterValue ?? '') === (rhsPair.characterValue ?? '')
+    })
+  })
+  // console.log(matched)
+  if (matched?.length > 0) {
+    const key = matched[0][0]
+    if (key === 'default') return ''
+    return key
+  }
+
   let a:string[] = []
   modelCharacters.map((modelCharacter) => {
     // console.log('character:', modelCharacter.characterValue)

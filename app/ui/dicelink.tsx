@@ -2,20 +2,33 @@
 
 import { DicesIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
+import { modelValues, characterValues } from "../lib/common";
 
-const candidateModels = ['magi', 'optpess', 'free2']
+// false means true random
+const candidateModelKeywords = ['magi', 'optpess', false, false]
 
+// magi, optpess, or true random
 function generateRandomUrl(modelsParam:string) {
-
-    let models = candidateModels.slice()
-
     // exclude current URL
-    const pos = candidateModels.indexOf(modelsParam)
+    let keywords = candidateModelKeywords.slice()
+    const pos = candidateModelKeywords.indexOf(modelsParam)
     if (pos >= 0)
-        models.splice(pos, 1)
+        keywords.splice(pos, 1)
     
-    const index = Math.floor(Math.random() * models.length)
-    return '/?models=' + models[index]
+    const keyword = keywords[Math.floor(Math.random() * keywords.length)];
+    if (keyword)
+        return '/?models=' + keyword
+
+    // true random
+    const pane = 3
+    const a = Array(pane).fill('').map(() => {
+        const model = modelValues[Math.floor(Math.random() * modelValues.length)]
+        const character = characterValues[Math.floor(Math.random() * characterValues.length)]
+        const s = model + (character ? ':' + character : '')
+        // console.log(s)
+        return s
+    })
+    return '/?models=' + a.join(',')
 }
 
 export default function DiceLink({className}:{className:string}) {
