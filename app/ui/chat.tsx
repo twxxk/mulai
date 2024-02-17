@@ -197,7 +197,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   }
 
   return (<>
-    <div className="flex flex-col w-full pt-2 h-full">
+    <article className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>
         <ModelSelector selectedValue={modelValue} onChange={handleModelChange} /> 
         <CharacterSelector selectedValue={characterValue} characters={characters} onChange={handleCharacterChange} />
@@ -291,7 +291,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
           Accepts Broadcast
         </label>
       </form>
-    </div>
+    </article>
     </>
   );
 }
