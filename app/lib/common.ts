@@ -125,7 +125,7 @@ export function getModelByValue(modelValue:ModelValue):ChatModelData | undefined
 }
 
 const DEFAULT_CHARACTER = ''
-export const characterValues = ['', 'child', 'bullets', 'steps', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
+export const characterValues = ['', 'child', 'bullets', 'steps', 'proofreading', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
 export type CharacterValue = typeof characterValues[number];
 
 export type Character = {

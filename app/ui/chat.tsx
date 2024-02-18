@@ -40,6 +40,12 @@ const allCharacters:Character[] = [
     "promptContent": "Please answer step by step."
   },
   {
+    "value": "proofreading",
+    "label": "Proofread",
+    "promptContent_ja": "次の文章を校正して、校正箇所について日本語で理由を教えてください。",
+    "promptContent": "Please correct the following sentences and explain the reasons in English for the corrections."
+  },
+  {
     "value": "optimist",
     "label": "Optimist",
     "promptContent_ja": "楽観的な観点で、物事がうまく行く可能性を前向きに考えて回答してください。",
