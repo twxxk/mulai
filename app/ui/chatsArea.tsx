@@ -61,26 +61,31 @@ const specialPairs:{[key:string]:ModelCharacterPair[]} = {
   ]
 }
 
+function deepCopy(originalObject:object) {
+  return JSON.parse(JSON.stringify(originalObject));
+}
+
 function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
   // console.log('param:', modelsParam)
   // for debug
   // if (modelsParam === '') 
   //   return allValues.slice(10, 10+3)
 
+  // needs deep copy to return the special pairs as changing models update the original object
   // default, no params
   if (modelsParam === '') {
-    return specialPairs.default;
+    return deepCopy(specialPairs.default)
   }
 
   // Evangelion
   if (modelsParam === 'magi') {
-    return specialPairs.magi
+    return deepCopy(specialPairs.magi)
   }
   if (modelsParam === 'optpess') {
-    return specialPairs.optpess
+    return deepCopy(specialPairs.optpess)
   }
 
-  // 1..5
+  // 1..5. Only shorthand to longhand. No generate this url.
   const modelsNumber = parseInt(modelsParam ?? '0')
   if (modelsNumber >= 1 && modelsNumber <= 5)
     return bestQualityValues.slice(0, modelsNumber)
@@ -95,8 +100,8 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
 // generate /?models={return} from the current models and characters
 function generateModelsParam(modelCharacters:ModelCharacterPair[]):string {
   // console.log('now', modelCharacters)
-  const matched = Object.entries(specialPairs).filter(([key, pairs]) => {
-    // console.log('pairs', pairs)
+  const matched = Object.entries(specialPairs).find(([key, pairs]) => {
+    // console.log(key, 'pairs', pairs)
     if (pairs.length != modelCharacters.length) return false;
     return pairs.every((lhsPair, index) => {
       const rhsPair = modelCharacters.at(index) as ModelCharacterPair
@@ -105,8 +110,8 @@ function generateModelsParam(modelCharacters:ModelCharacterPair[]):string {
     })
   })
   // console.log(matched)
-  if (matched?.length > 0) {
-    const key = matched[0][0]
+  if (matched) {
+    const key = matched[0]
     if (key === 'default') return ''
     return key
   }
@@ -140,8 +145,8 @@ export default function ChatsArea({locale}:{locale:string}) {
   // generate url based on models and characters
   // need to call router function in useEffect
   useEffect(() => {
-    console.log('model or character is updated. generating a new url')
     const params = generateModelsParam(modelCharacterValues)
+    // console.log('model or character is updated. generated a new url:', params)
     const searchParams = params ? '/?models=' + params : '/'
     router.replace(searchParams)
   }, [modelCharacterValues])
