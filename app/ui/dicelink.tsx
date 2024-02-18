@@ -2,7 +2,7 @@
 
 import { DicesIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { modelValues, characterValues } from "../lib/common";
+import { allModelValues, characterValues } from "../lib/common";
 
 // false means true random
 const candidateModelKeywords = ['magi', 'optpess', false, false]
@@ -19,10 +19,10 @@ function generateRandomUrl(modelsParam:string) {
     if (keyword)
         return '/?models=' + keyword
 
-    // true random
+    // true random - from all models including non-selectable models
     const pane = 3
     const a = Array(pane).fill('').map(() => {
-        const model = modelValues[Math.floor(Math.random() * modelValues.length)]
+        const model = allModelValues[Math.floor(Math.random() * allModelValues.length)]
         const character = characterValues[Math.floor(Math.random() * characterValues.length)]
         const s = model + (character ? ':' + character : '')
         // console.log(s)

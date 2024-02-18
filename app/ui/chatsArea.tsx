@@ -7,7 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { CharacterValue, DEFAULT_MODEL, ModelCharacterPair, ModelValue, validateModelCharacter } from '@/app/lib/common';
+import { CharacterValue, DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, validateModelCharacter } from '@/app/lib/common';
 import { useRouter } from 'next/navigation';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
@@ -209,7 +209,7 @@ export default function ChatsArea({locale}:{locale:string}) {
   const addModel = () => {
     let newValues = modelCharacterValues.slice()
     const modelValue:ModelValue = DEFAULT_MODEL.modelValue
-    newValues.push({modelValue})
+    newValues.push({modelValue, characterValue:DEFAULT_CHARACTER_VALUE})
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
     const newSplitSizes = splitToArray(newValues.length)
