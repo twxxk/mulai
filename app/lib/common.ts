@@ -66,7 +66,7 @@ export const modelValues = [
 
 export type ModelValue = typeof modelValues[number];
 
-export type ModelCharacterPair = {modelValue:ModelValue, characterValue?:CharacterValue}
+export type ModelCharacterPair = {modelValue:ModelValue, characterValue:CharacterValue}
 
 // model to call AI sdk
 export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4-turbo-preview' 

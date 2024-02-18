@@ -97,7 +97,7 @@ const getAILabel = (modelValue:ModelValue, characterValue:CharacterValue) => {
 
 export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, changeCharacter, changeChatLoading, addPane, removePane}:{
   modelValue:ModelValue,
-  initialCharacterValue?:CharacterValue,
+  initialCharacterValue:CharacterValue,
   index:number, 
   totalLength:number,
   locale:string,
@@ -116,7 +116,12 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   const [isUsingIME, setIsUsingIME] = useState(false)
 
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
-  const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast}
+
+  const initMessages = () => {
+    setCharacterMessages(initialCharacterValue as CharacterValue)
+  }
+
+  const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast, initMessages}
   const [isSplitLoaded, setIsSplitLoaded] = useState(false)
 
   // console.log('chat is being initialized with=' + modelValue)
@@ -125,19 +130,17 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   let characters = getAvailableCharacters(modelValue)
 
   useEffect(() => {
-    changeChatLoading(index, chatOptions.isLoading)
-  }, [chatOptions.isLoading])
-
-  useEffect(() => {
-    if (initialCharacterValue) {
-      setCharacterMessages(initialCharacterValue as CharacterValue)
-    }
-  }, [])
-
-  useEffect(() => {
     // Not checking the load status but wait for a while to improve UX
     setIsSplitLoaded(true)
   }, [])
+
+  useEffect(() => {
+    initMessages()
+  }, [])
+
+  useEffect(() => {
+    changeChatLoading(index, chatOptions.isLoading)
+  }, [chatOptions.isLoading])
 
   useEffect(() => {
     if (historyElementRef.current) {

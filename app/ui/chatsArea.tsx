@@ -17,35 +17,35 @@ function splitToArray(num:number) {
 
 // for debug
 const freeValues:ModelCharacterPair[] = [
-  {modelValue: 'gemini-pro'},
-  {modelValue: 'gemini-1.0-pro-latest'},
-  {modelValue: 'gemini-1.0-pro-latest'},
-  {modelValue: 'gemini-1.0-pro-latest'},
-  {modelValue: 'gemini-1.0-pro-latest'},
+  {modelValue: 'gemini-pro', characterValue: ''},
+  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
 ]
 // for production
 const bestQualityValues:ModelCharacterPair[] = [
-  {modelValue: 'gpt-3.5-turbo'},
-  {modelValue: 'gpt-4-turbo-preview'},
-  {modelValue: 'gemini-1.0-pro-latest'},
-  {modelValue: 'gemini-pro'},
-  {modelValue: 'japanese-stablelm-instruct-beta-70b'},
-  {modelValue: 'firellava-13b'},
+  {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+  {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+  {modelValue: 'gemini-pro', characterValue: ''},
+  {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
+  {modelValue: 'firellava-13b', characterValue: ''},
 ]
 const allValues:ModelCharacterPair[] = [
-  {modelValue: 'gpt-3.5-turbo'},
-  {modelValue: 'gpt-4-turbo-preview'},
-  {modelValue: 'gemini-1.0-pro-latest'},
-  {modelValue: 'gemini-pro'},
-  {modelValue: 'japanese-stablelm-instruct-beta-70b'},
-  {modelValue: 'japanese-stablelm-instruct-gamma-7b'},
-  {modelValue: 'firellava-13b'},
-  {modelValue: 'qwen-14b-chat'},
-  {modelValue: 'qwen-72b-chat'},
-  {modelValue: 'mixtral-8x7b-instruct'},
-  {modelValue: 'llama-v2-7b-chat'},
-  {modelValue: 'llama-v2-13b-chat'},
-  {modelValue: 'llama-v2-70b-chat'},
+  {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+  {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+  {modelValue: 'gemini-pro', characterValue: ''},
+  {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
+  {modelValue: 'japanese-stablelm-instruct-gamma-7b', characterValue: ''},
+  {modelValue: 'firellava-13b', characterValue: ''},
+  {modelValue: 'qwen-14b-chat', characterValue: ''},
+  {modelValue: 'qwen-72b-chat', characterValue: ''},
+  {modelValue: 'mixtral-8x7b-instruct', characterValue: ''},
+  {modelValue: 'llama-v2-7b-chat', characterValue: ''},
+  {modelValue: 'llama-v2-13b-chat', characterValue: ''},
+  {modelValue: 'llama-v2-70b-chat', characterValue: ''},
 ]
 
 const specialPairs:{[key:string]:ModelCharacterPair[]} = {
@@ -356,7 +356,7 @@ export default function ChatsArea({locale}:{locale:string}) {
     console.log('trashing')
     chats.map((chat:ChatOptions) => {
       chat.setInput('')
-      chat.setMessages([])
+      chat.initMessages()
     })
   }
 
