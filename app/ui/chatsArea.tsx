@@ -143,12 +143,32 @@ export default function ChatsArea({locale}:{locale:string}) {
   const router = useRouter()
 
   // generate url based on models and characters
-  // need to call router function in useEffect
+  // need to call router function in useEffect. location is not defined
   useEffect(() => {
-    const params = generateModelsParam(modelCharacterValues)
-    // console.log('model or character is updated. generated a new url:', params)
-    const searchParams = params ? '/?models=' + params : '/'
-    router.replace(searchParams)
+    const paramString:string = generateModelsParam(modelCharacterValues)
+
+    let newSearchParams:string[][] = []
+    searchParams.forEach((value, key) => {
+      // delete
+      if (key === 'models' && paramString === '')
+        return;
+      // update
+      newSearchParams.push([key, key === 'models' ? paramString : value])
+    })
+
+    // add
+    if (!searchParams.has('models') && paramString !== '')
+      newSearchParams.push(['models', paramString])
+
+    const newSearchString = newSearchParams
+      .map(([key, value]:string[]) => key + '=' + value)
+      .join('&')   
+    // console.log('model or character is updated. generated a new url:', paramString, 'new:', newSearchString)
+
+    if (newSearchString.length > 0)
+      router.replace('/?' + newSearchString)
+    else
+      router.replace('/')
   }, [modelCharacterValues])
 
   // trap escape key to interrupt responses
