@@ -2,7 +2,7 @@ import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 import { NextRequest, NextResponse } from 'next/server';
 
-// get locale for the app based on the search parameter and the request header
+// get locale for the app based on the search parameter (?locale=ja|en) and the request header (by browser)
 function getLocale(req:NextRequest) {
     const supportedLocales = ['en', 'ja'];
     const defaultLocale = 'en';

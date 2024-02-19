@@ -32,21 +32,23 @@ const bestQualityValues:ModelCharacterPair[] = [
   {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
   {modelValue: 'firellava-13b', characterValue: ''},
 ]
-const allValues:ModelCharacterPair[] = [
-  {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-  {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
-  {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-  {modelValue: 'gemini-pro', characterValue: ''},
-  {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
-  {modelValue: 'japanese-stablelm-instruct-gamma-7b', characterValue: ''},
-  {modelValue: 'firellava-13b', characterValue: ''},
-  {modelValue: 'qwen-14b-chat', characterValue: ''},
-  {modelValue: 'qwen-72b-chat', characterValue: ''},
-  {modelValue: 'mixtral-8x7b-instruct', characterValue: ''},
-  {modelValue: 'llama-v2-7b-chat', characterValue: ''},
-  {modelValue: 'llama-v2-13b-chat', characterValue: ''},
-  {modelValue: 'llama-v2-70b-chat', characterValue: ''},
-]
+// for debug purpose
+// const allValues:ModelCharacterPair[] = [
+//   {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+//   {modelValue: 'gpt-4', characterValue: ''},
+//   {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+//   {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+//   {modelValue: 'gemini-pro', characterValue: ''},
+//   {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
+//   {modelValue: 'japanese-stablelm-instruct-gamma-7b', characterValue: ''},
+//   {modelValue: 'firellava-13b', characterValue: ''},
+//   {modelValue: 'qwen-14b-chat', characterValue: ''},
+//   {modelValue: 'qwen-72b-chat', characterValue: ''},
+//   {modelValue: 'mixtral-8x7b-instruct', characterValue: ''},
+//   {modelValue: 'llama-v2-7b-chat', characterValue: ''},
+//   {modelValue: 'llama-v2-13b-chat', characterValue: ''},
+//   {modelValue: 'llama-v2-70b-chat', characterValue: ''},
+// ]
 
 const specialPairs:{[key:string]:ModelCharacterPair[]} = {
   default: (process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues).slice(0, 3),
@@ -58,6 +60,15 @@ const specialPairs:{[key:string]:ModelCharacterPair[]} = {
   optpess: [
     {modelValue: 'gemini-1.0-pro-latest', characterValue: 'optimist'},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
+  ],
+  gemini: [
+    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+    {modelValue: 'gemini-pro', characterValue: ''},
+  ],
+  gpt: [
+  {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+  {modelValue: 'gpt-4', characterValue: ''},
+  {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
   ]
 }
 
@@ -83,6 +94,12 @@ function getModelCharacterValues(modelsParam:string):ModelCharacterPair[] {
   }
   if (modelsParam === 'optpess') {
     return deepCopy(specialPairs.optpess)
+  }
+  if (modelsParam === 'gemini') {
+    return deepCopy(specialPairs.gemini)
+  }
+  if (modelsParam === 'gpt') {
+    return deepCopy(specialPairs.gpt)
   }
 
   // 1..5. Only shorthand to longhand. No generate this url.
@@ -125,6 +142,33 @@ function generateModelsParam(modelCharacters:ModelCharacterPair[]):string {
   return a.join(',')
 }
 
+function generateUrlToReplace(searchParams:ReadonlyURLSearchParams, modelCharacterValues:ModelCharacterPair[]): string{
+  const paramString:string = generateModelsParam(modelCharacterValues)
+
+  let newSearchParams:string[][] = []
+  searchParams.forEach((value, key) => {
+    // delete
+    if (key === 'models' && paramString === '')
+      return;
+    // update
+    newSearchParams.push([key, key === 'models' ? paramString : value])
+  })
+
+  // add
+  if (!searchParams.has('models') && paramString !== '')
+    newSearchParams.push(['models', paramString])
+
+  const newSearchString = newSearchParams
+    .map(([key, value]:string[]) => key + '=' + value)
+    .join('&')   
+  // console.log('model or character is updated. generated a new url:', paramString, 'new:', newSearchString)
+
+  if (newSearchString.length > 0)
+    return '/?' + newSearchString
+  else
+    return '/'
+}
+
 export default function ChatsArea({locale}:{locale:string}) {
   const searchParams = useSearchParams()
   const modelsParam = searchParams.get('models')
@@ -145,30 +189,7 @@ export default function ChatsArea({locale}:{locale:string}) {
   // generate url based on models and characters
   // need to call router function in useEffect. location is not defined
   useEffect(() => {
-    const paramString:string = generateModelsParam(modelCharacterValues)
-
-    let newSearchParams:string[][] = []
-    searchParams.forEach((value, key) => {
-      // delete
-      if (key === 'models' && paramString === '')
-        return;
-      // update
-      newSearchParams.push([key, key === 'models' ? paramString : value])
-    })
-
-    // add
-    if (!searchParams.has('models') && paramString !== '')
-      newSearchParams.push(['models', paramString])
-
-    const newSearchString = newSearchParams
-      .map(([key, value]:string[]) => key + '=' + value)
-      .join('&')   
-    // console.log('model or character is updated. generated a new url:', paramString, 'new:', newSearchString)
-
-    if (newSearchString.length > 0)
-      router.replace('/?' + newSearchString)
-    else
-      router.replace('/')
+    router.replace(generateUrlToReplace(searchParams, modelCharacterValues))
   }, [modelCharacterValues])
 
   // trap escape key to interrupt responses

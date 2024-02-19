@@ -5,6 +5,7 @@
 
 // # openai 
 //   https://openai.com/pricing#language-models
+//   https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
 // # google
 //   https://ai.google.dev/pricing
 //   https://ai.google.dev/models/gemini
@@ -13,7 +14,8 @@
 //   https://fireworks.ai/models
 export type ModelLabel 
     = 'GPT-3.5' // in $0.0005/1K tokens, out $0.0015/1K tokens
-    | 'GPT-4' // in $0.01/1K tokens, out $0.03/1K tokens 
+    | 'GPT-4' // in $0.03/1K tokens, out $0.06/1K tokens
+    | 'GPT-4 Turbo' // in $0.01/1K tokens, out $0.03/1K tokens 
     | 'Gemini Pro' // free (up to 60queries/min) 
     | 'Gemini Pro Latest' // free (up to 60queries/min) 
     // fireworks.ai is free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
@@ -50,6 +52,7 @@ export type ModelVendor = 'openai' | 'google' | 'fireworks.ai'
 
 export const allModelValues = [
     'gpt-3.5-turbo', 
+    'gpt-4', 
     'gpt-4-turbo-preview', 
     'gemini-pro', 
     'gemini-1.0-pro-latest',
@@ -69,7 +72,7 @@ export type ModelValue = typeof allModelValues[number];
 export type ModelCharacterPair = {modelValue:ModelValue, characterValue:CharacterValue}
 
 // model to call AI sdk
-export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4-turbo-preview' 
+export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
     | 'gemini-pro' | 'gemini-1.0-pro-latest'
     | 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'
     | 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b'
@@ -95,7 +98,8 @@ export const DEFAULT_MODEL:ChatModelData
 
 export const allModels:ChatModelData[] = [
     {label:'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', recommendScore: 80},
-    {label:'GPT-4', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
+    {label:'GPT-4', vendor: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
+    {label:'GPT-4 Turbo', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
     {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', recommendScore: 100},
     {label:'Gemini Pro Latest', vendor: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', recommendScore: 100},
     {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', recommendScore:50},
