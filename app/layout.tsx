@@ -4,7 +4,8 @@ import DiceLink from "./ui/dicelink";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "MulAI - Multi genAIs",
+  title: (process.env.NODE_ENV === 'development' ? '(dev) ' : '')
+    + "MulAI - Multi genAIs",
   description: "Let's chat with multiple genAIs",
 };
 

@@ -3,7 +3,7 @@
 import { ChatRequestOptions } from 'ai';
 import Chat from './chat'
 import { useEffect, useRef, useState } from 'react';
-import { useSearchParams } from 'next/navigation'
+import { ReadonlyURLSearchParams, useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
@@ -66,9 +66,9 @@ const specialPairs:{[key:string]:ModelCharacterPair[]} = {
     {modelValue: 'gemini-pro', characterValue: ''},
   ],
   gpt: [
-  {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-  {modelValue: 'gpt-4', characterValue: ''},
-  {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+    {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+    {modelValue: 'gpt-4', characterValue: ''},
+    {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
   ]
 }
 
@@ -179,18 +179,17 @@ export default function ChatsArea({locale}:{locale:string}) {
   const [splitSizes, setSplitSizes] = useState(splitToArray(modelCharacterValues.length))
 
   const formRef = useRef<HTMLFormElement>(null);
-  const defaultFocusRef = useRef<HTMLTextAreaElement>(null);
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
 
   const chats:ChatOptions[] = []
 
   const router = useRouter()
+  const urlToReplace = generateUrlToReplace(searchParams, modelCharacterValues)
 
-  // generate url based on models and characters
-  // need to call router function in useEffect. location is not defined
+  // XXX generate browser url based on models and characters
   useEffect(() => {
-    router.replace(generateUrlToReplace(searchParams, modelCharacterValues))
-  }, [modelCharacterValues])
+    router.replace(urlToReplace)
+  }, [urlToReplace])
 
   // trap escape key to interrupt responses
   useEffect(() => {
@@ -213,10 +212,6 @@ export default function ChatsArea({locale}:{locale:string}) {
     };
   }, []);
 
-  useEffect(() => {
-    defaultFocusRef.current?.focus()
-  }, [])
-  
   const changeChatLoading = (index:number, value:boolean) => {
     setIsLoadingAnyChat(chats.some((chat:ChatOptions) => chat.isLoading))
   }
@@ -226,31 +221,33 @@ export default function ChatsArea({locale}:{locale:string}) {
   }
 
   const changeCharacter = (index:number, characterValue:CharacterValue) => {
-    let newValues = modelCharacterValues.slice()
-    newValues[index].characterValue = characterValue
+    const newValues = modelCharacterValues.map((value, i) =>
+      i !== index ? value : {modelValue: value.modelValue, characterValue:characterValue}
+    )
     console.log('changing to new character', newValues)
     setModelCharacterValues(newValues)
   }
 
   const changeModel = (index:number, modelValue:ModelValue) => {
-    let newValues = modelCharacterValues.slice()
-    newValues[index].modelValue = modelValue // keep character
+    const newValues = modelCharacterValues.map((value, i) =>
+      i !== index ? value : {modelValue: modelValue, characterValue:value.characterValue}
+    )
     console.log('changing to new models', newValues)
     setModelCharacterValues(newValues)
   }
 
   const removeModel = (index:number) => {
-    let newValues = modelCharacterValues.slice()
-    newValues.splice(index, 1)
+    const newValues = modelCharacterValues.filter((_, i) => i !== index)
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
     setSplitSizes(splitToArray(newValues.length))
   }
 
   const addModel = () => {
-    let newValues = modelCharacterValues.slice()
-    const modelValue:ModelValue = DEFAULT_MODEL.modelValue
-    newValues.push({modelValue, characterValue:DEFAULT_CHARACTER_VALUE})
+    const newValues = [
+      ...modelCharacterValues, 
+      {modelValue: DEFAULT_MODEL.modelValue, characterValue: DEFAULT_CHARACTER_VALUE}
+    ]
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
     const newSplitSizes = splitToArray(newValues.length)
@@ -419,8 +416,8 @@ export default function ChatsArea({locale}:{locale:string}) {
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
       <textarea
+        autoFocus
         className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none overflow-hidden"
-        ref={defaultFocusRef}
         value={parentInput}
         onChange={parentHandleInputChange}
         onKeyDown={parentHandleInputKeyDown}
