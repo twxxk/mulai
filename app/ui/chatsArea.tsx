@@ -9,6 +9,7 @@ import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
 import { CharacterValue, DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, validateModelCharacter } from '@/app/lib/common';
 import { useRouter } from 'next/navigation';
+import EnterableTextarea from './enterableTextarea';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -175,7 +176,6 @@ export default function ChatsArea({locale}:{locale:string}) {
   const [modelCharacterValues, setModelCharacterValues] = useState(getModelCharacterValues(modelsParam ?? ''))
 
   const [parentInput, setParentInput] = useState('')
-  const [isUsingIME, setIsUsingIME] = useState(false)
   const [splitSizes, setSplitSizes] = useState(splitToArray(modelCharacterValues.length))
 
   const formRef = useRef<HTMLFormElement>(null);
@@ -186,22 +186,24 @@ export default function ChatsArea({locale}:{locale:string}) {
   const router = useRouter()
   const urlToReplace = generateUrlToReplace(searchParams, modelCharacterValues)
 
-  // XXX generate browser url based on models and characters
+  // generate browser url based on models and characters
+  // FIXME Warning: React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   useEffect(() => {
     router.replace(urlToReplace)
   }, [urlToReplace])
 
   // trap escape key to interrupt responses
+  // FIXME Warning: React Hook useEffect has missing dependencies: 'handleStop' and 'isUsingIME'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
   useEffect(() => {
     const handleKeyDown = (e:any) => {
       const event = e as React.KeyboardEvent
       if (event.key !== "Escape") {
         return;
       }
-      if (isUsingIME) {
-        // console.log('using ime', new Date)
-        return;
-      }
+      // if (isUsingIME.current) {
+      //   // console.log('using ime', new Date)
+      //   return;
+      // }
       e.preventDefault();
       handleStop()
     };
@@ -343,28 +345,6 @@ export default function ChatsArea({locale}:{locale:string}) {
     })
   }
 
-  // trigger enter key
-  const parentHandleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // console.log(e.currentTarget.value)
-
-    // submit only if the key is enter
-    if (e.key !== 'Enter' || e.shiftKey)
-      return;
-
-    if (isUsingIME) {
-      // console.log('using ime', new Date)
-      return;
-    }
-    
-    e.preventDefault();
-
-    // trigger form submission
-    if (formRef.current) {
-      // console.log('submitting')
-      formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }
-  }
-
   // form submit handler
   // submit all children chats
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -415,22 +395,15 @@ export default function ChatsArea({locale}:{locale:string}) {
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
-      <textarea
-        autoFocus
+      <EnterableTextarea 
+        autoFocus={true}
         className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none overflow-hidden"
         value={parentInput}
         onChange={parentHandleInputChange}
-        onKeyDown={parentHandleInputKeyDown}
-        onCompositionStart={() => setTimeout(() => {
-          // To deal with the situation CompositionEnd then CompositionStart, both needs timeout
-          // console.log('start', new Date)
-          setIsUsingIME(true)
-        }, 0)}
-        onCompositionEnd={() => setTimeout(() => {
-          // Needs timeout as Safari triggers CompositionEnd before KeyDown when pushing Enter
-          // console.log('end', new Date)
-          setIsUsingIME(false)
-        }, 0)}
+        onEnter={()=>{
+          if (formRef.current)
+            formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+        }}
         placeholder="Say something to all models..."
       />
       {/* disabled is useful to stop submitting with enter */}

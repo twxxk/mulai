@@ -8,6 +8,7 @@ import CharacterSelector from './characterSelector';
 import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
+import EnterableTextarea from './enterableTextarea';
 const Markdown = require('react-markdown-it')
 
 const defaultAssistantPromptContent = 'Understood.'
@@ -113,10 +114,10 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   const [characterValue, setCharacterValue] = useState(initialCharacterValue ?? '' as CharacterValue)
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
-  const [isUsingIME, setIsUsingIME] = useState(false)
 
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
 
+  // FIXME Warning: React Hook useEffect has a missing dependency: 'initMessages'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   const initMessages = () => {
     setCharacterMessages(initialCharacterValue as CharacterValue)
   }
@@ -135,12 +136,13 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   }, [])
 
   useEffect(() => {
-    initMessages()
+    setCharacterMessages(initialCharacterValue as CharacterValue)
   }, [])
 
+  // FIXME Warning: React Hook useEffect has a missing dependency: 'changeChatLoading'. Either include it or remove the dependency array. If 'changeChatLoading' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
   useEffect(() => {
     changeChatLoading(index, chatOptions.isLoading)
-  }, [chatOptions.isLoading])
+  }, [index, chatOptions.isLoading])
 
   useEffect(() => {
     if (historyElementRef.current) {
@@ -216,10 +218,6 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     removePane(index)
   }
 
-  const handleAddPane = () => {
-    addPane()
-  }
-
   function setCharacterMessages(value: CharacterValue) {
     const character = getCharacter(value)
     if (character?.promptContent === '') {
@@ -251,28 +249,6 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     const modelValue = e.target.value as ModelValue
     console.log('changing model to:', modelValue)
     changeModel(index, modelValue)
-  }
-
-  // trigger enter key
-  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // console.log(e.currentTarget.value)
-
-    // submit only if the key is enter
-    if (e.key !== 'Enter' || e.shiftKey)
-      return;
-
-    if (isUsingIME) {
-      // console.log('using ime', new Date)
-      return;
-    }
-    
-    e.preventDefault();
-
-    // trigger form submission
-    if (formRef.current) {
-      // console.log('submitting')
-      formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
-    }
   }
 
   return (<>
@@ -325,29 +301,22 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
           </button>  
           <button className='ml-1 disabled:hidden enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
             disabled={index !== totalLength - 1} 
-            onClick={handleAddPane}>
+            onClick={addPane}>
             <PlusIcon className="h-3 w-3" />
             <span className='sr-only'>Add</span>
           </button>  
         </div>
         <div className='flex w-full'>
-          <textarea
+          <EnterableTextarea 
             className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none overflow-hidden"
             value={chatOptions.input}
             onChange={chatOptions.handleInputChange}
-            onKeyDown={handleInputKeyDown}
-            onCompositionStart={() => setTimeout(() => {
-              // To deal with the situation CompositionEnd then CompositionStart, both needs timeout
-              // console.log('start', new Date)
-              setIsUsingIME(true)
-            }, 0)}
-            onCompositionEnd={() => setTimeout(() => {
-              // Needs timeout as Safari triggers CompositionEnd before KeyDown when pushing Enter
-              // console.log('end', new Date)
-              setIsUsingIME(false)
-            }, 0)}
+            onEnter={() => {
+              if (formRef.current)
+                formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+            }}
             placeholder="Say something to this model..."
-          />
+             />
 
           {/* disabled is useful to stop submitting with enter */}
           <button type="submit" 
