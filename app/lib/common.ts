@@ -29,6 +29,11 @@ export type ModelLabel
     | 'Llama 2 7B Chat' // ?
     | 'Llama 2 13B Chat' // free
     | 'Llama 2 70B Chat' // free
+    | 'Open-Assistant SFT-4 12B'
+    | 'Gemma 2B'
+    | 'Gemma 2B Instruct'
+    | 'Gemma 7B'
+    | 'Gemma 7B Instruct'
 // const modelLabels = [
 //     'GPT-3.5', 
 //     'GPT-4', 
@@ -48,7 +53,7 @@ export type ModelLabel
 
 // export type ModelLabel = typeof modelLabels[number];
 
-export type ModelVendor = 'openai' | 'google' | 'fireworks.ai'
+export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace'
 
 export const allModelValues = [
     'gpt-3.5-turbo', 
@@ -64,7 +69,12 @@ export const allModelValues = [
     'mixtral-8x7b-instruct',
     'llama-v2-7b-chat',
     'llama-v2-13b-chat',
-    'llama-v2-70b-chat'
+    'llama-v2-70b-chat',
+    'oasst-sft-4-pythia-12b-epoch-3.5',
+    'gemma-2b',
+    'gemma-2b-it',
+    'gemma-7b',
+    'gemma-7b-it',
 ] as const;
 
 export type ModelValue = typeof allModelValues[number];
@@ -83,6 +93,11 @@ export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
     | 'accounts/fireworks/models/llama-v2-7b-chat'
     | 'accounts/fireworks/models/llama-v2-13b-chat'
     | 'accounts/fireworks/models/llama-v2-70b-chat'
+    | 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5'
+    | 'google/gemma-2b'
+    | 'google/gemma-2b-it'
+    | 'google/gemma-7b'
+    | 'google/gemma-7b-it'
 
 export type ChatModelData = {
     label: ModelLabel, // for human
@@ -97,7 +112,7 @@ export const DEFAULT_MODEL:ChatModelData
     = {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', recommendScore: 100}
 
 export const allModels:ChatModelData[] = [
-    {label:'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', recommendScore: 80},
+   {label:'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', recommendScore: 80},
     {label:'GPT-4', vendor: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
     {label:'GPT-4 Turbo', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
     {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', recommendScore: 100},
@@ -114,6 +129,12 @@ export const allModels:ChatModelData[] = [
     {label: 'Llama 2 7B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-7b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-7b-chat', recommendScore:20},
     {label: 'Llama 2 13B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-13b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-13b-chat', recommendScore:20},
     {label: 'Llama 2 70B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat', recommendScore:20},
+
+    {label: 'Gemma 2B', vendor: 'HuggingFace', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', recommendScore:20},
+    {label: 'Gemma 2B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', recommendScore:50},
+    {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', recommendScore:20},
+    {label: 'Gemma 7B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', recommendScore:50},
+    {label: 'Open-Assistant SFT-4 12B', vendor: 'HuggingFace', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', recommendScore:50},
 ]
 // models which are choosable with the selection
 export const selectableModels:ChatModelData[] = allModels.filter((modelData) => {

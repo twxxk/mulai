@@ -4,6 +4,9 @@ import { OpenAIStream, GoogleGenerativeAIStream, CohereStream } from 'ai';
 // import does not work with google https://ai.google.dev/tutorials/node_quickstart
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/lib/common';
+import { HfInference } from '@huggingface/inference';
+import { HuggingFaceStream } from 'ai';
+import { experimental_buildOpenAssistantPrompt } from 'ai/prompts';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
@@ -12,6 +15,7 @@ const fireworks = new OpenAI({
     apiKey: process.env.FIREWORKS_API_KEY || '',
     baseURL: 'https://api.fireworks.ai/inference/v1',
 });
+const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -85,6 +89,25 @@ const fireworksChatStream:ChatStreamFunction = async ({ model, messages }) => {
     return stream    
 }
 
+const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
+    const response = Hf.textGenerationStream({
+        model: model,
+        inputs: experimental_buildOpenAssistantPrompt(messages),
+        parameters: {
+          max_new_tokens: 200,
+          // @ts-ignore (this is a valid parameter specifically in OpenAssistant models)
+          typical_p: 0.2,
+          repetition_penalty: 1,
+          truncate: 1000,
+          return_full_text: false,
+        },
+      });
+     
+    // Convert the response into a friendly text-stream
+    const stream = HuggingFaceStream(response);
+    return stream
+}
+
 // factory method
 // might be returned undefined
 function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
@@ -93,6 +116,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
         'openai': openaiChatStream,
         'google': googleChatStream,
         'fireworks.ai': fireworksChatStream,
+        'HuggingFace': huggingFaceStream,
     }
     return vendorMap[vendor as string]
 }
