@@ -16,6 +16,10 @@ const fireworks = new OpenAI({
     baseURL: 'https://api.fireworks.ai/inference/v1',
 });
 const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+const groq = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY || '',
+    baseURL: 'https://api.groq.com/v1',
+})
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -49,7 +53,6 @@ const openaiChatStream:ChatStreamFunction = async({model, messages}) => {
     return stream
 }
 
-
 // Google Gemini
 // https://sdk.vercel.ai/docs/guides/providers/google
 const googleChatStream:ChatStreamFunction = async({model, messages}) => {
@@ -76,10 +79,22 @@ const googleChatStream:ChatStreamFunction = async({model, messages}) => {
 }
 
 // fireworks.ai
-const fireworksChatStream:ChatStreamFunction = async ({ model, messages }) => {
+const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
     // Ask Fireworks for a streaming chat completion using Llama 2 70b model
     // @see https://app.fireworks.ai/models/fireworks/llama-v2-70b-chat
     const response = await fireworks.chat.completions.create({
+        model,
+        stream: true,
+        messages,
+    });
+
+    const stream = OpenAIStream(response);
+    return stream    
+}
+
+const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
+    // @see https://docs.api.groq.com/md/openai.oas.html
+    const response = await groq.chat.completions.create({
         model,
         stream: true,
         messages,
@@ -117,6 +132,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
         'google': googleChatStream,
         'fireworks.ai': fireworksChatStream,
         'HuggingFace': huggingFaceStream,
+        'groq': groqChatStream,
     }
     return vendorMap[vendor as string]
 }
