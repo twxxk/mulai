@@ -34,6 +34,8 @@ export type ModelLabel
     | 'Gemma 2B Instruct'
     | 'Gemma 7B'
     | 'Gemma 7B Instruct'
+    | 'Cohere Command Light Nightly'
+    | 'Cohere Command Nightly'
 // const modelLabels = [
 //     'GPT-3.5', 
 //     'GPT-4', 
@@ -53,7 +55,7 @@ export type ModelLabel
 
 // export type ModelLabel = typeof modelLabels[number];
 
-export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace'
+export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere'
 
 export const allModelValues = [
     'gpt-3.5-turbo', 
@@ -75,6 +77,8 @@ export const allModelValues = [
     'gemma-2b-it',
     'gemma-7b',
     'gemma-7b-it',
+    'cohere-command-light-nightly',
+    'cohere-command-nightly',
 ] as const;
 
 export type ModelValue = typeof allModelValues[number];
@@ -98,6 +102,9 @@ export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
     | 'google/gemma-2b-it'
     | 'google/gemma-7b'
     | 'google/gemma-7b-it'
+    | 'command-light-nightly'
+    | 'command-nightly'
+
 
 export type ChatModelData = {
     label: ModelLabel, // for human
@@ -135,6 +142,9 @@ export const allModels:ChatModelData[] = [
     {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', recommendScore:20},
     {label: 'Gemma 7B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', recommendScore:50},
     {label: 'Open-Assistant SFT-4 12B', vendor: 'HuggingFace', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', recommendScore:50},
+
+    {label: 'Cohere Command Light Nightly', vendor: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', recommendScore:20},
+    {label: 'Cohere Command Nightly', vendor: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', recommendScore:50},
 ]
 // models which are choosable with the selection
 export const selectableModels:ChatModelData[] = allModels.filter((modelData) => {

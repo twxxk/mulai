@@ -123,6 +123,50 @@ const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
     return stream
 }
 
+// Build a prompt from the messages
+function buildCohereGenAIPrompt(messages: { content: string; role: 'system' | 'user' | 'assistant' }[]) {
+  return (
+    messages
+      .map(({ content, role }) => {
+        if (role === 'user') {
+          return `Human: ${content}`;
+        } else {
+          return `Assistant: ${content}`;
+        }
+      })
+      .join('\n\n') + 'Assistant:'
+  );
+}
+
+const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
+  // You need version https://docs.cohere.com/reference/versioning
+  const response = await fetch('https://api.cohere.ai/generate', {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.COHERE_API_KEY}`,
+      'Cohere-Version': '2022-12-06',
+    },
+    body: JSON.stringify({
+      model: model,
+      prompt: buildCohereGenAIPrompt(messages),
+      return_likelihoods: "NONE",
+    //   max_tokens: 200,
+      temperature: 0.9,
+      top_p: 1,
+      stream: true,
+    }),
+  })
+  
+    // const result = await response.json() // when stream: false
+    // const stream = stringToReadableStream(result.generations[0].text.substring(0))
+
+    const stream = CohereStream(response);
+    return stream
+}
+
+
 // factory method
 // might be returned undefined
 function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
@@ -133,6 +177,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
         'fireworks.ai': fireworksChatStream,
         'HuggingFace': huggingFaceStream,
         'groq': groqChatStream,
+        'cohere': cohereChatStream,
     }
     return vendorMap[vendor as string]
 }
