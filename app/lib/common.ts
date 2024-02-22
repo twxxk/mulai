@@ -29,6 +29,7 @@ export type ModelLabel
     | 'Llama 2 7B Chat' // ?
     | 'Llama 2 13B Chat' // free
     | 'Llama 2 70B Chat' // free
+    | 'Llama 2 70B Code Llama instruct'
     | 'Open-Assistant SFT-4 12B'
     | 'Gemma 2B'
     | 'Gemma 2B Instruct'
@@ -36,6 +37,10 @@ export type ModelLabel
     | 'Gemma 7B Instruct'
     | 'Cohere Command Light Nightly'
     | 'Cohere Command Nightly'
+    | 'Capybara 34B'
+    | 'Mistral 7B Instruct'
+    | 'StableLM Zephyr 3B'
+
 // const modelLabels = [
 //     'GPT-3.5', 
 //     'GPT-4', 
@@ -79,6 +84,10 @@ export const allModelValues = [
     'gemma-7b-it',
     'cohere-command-light-nightly',
     'cohere-command-nightly',
+    'yi-34b-200k-capybara',
+    'mistral-7b-instruct-4k',
+    'llama-v2-70b-code-instruct',
+    'stablelm-zephyr-3b',
 ] as const;
 
 export type ModelValue = typeof allModelValues[number];
@@ -104,7 +113,10 @@ export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
     | 'google/gemma-7b-it'
     | 'command-light-nightly'
     | 'command-nightly'
-
+    | 'accounts/fireworks/models/yi-34b-200k-capybara'
+    | 'accounts/fireworks/models/mistral-7b-instruct-4k'
+    | 'accounts/fireworks/models/llama-v2-70b-code-instruct'
+    | 'accounts/stability/models/stablelm-zephyr-3b'
 
 export type ChatModelData = {
     label: ModelLabel, // for human
@@ -124,31 +136,40 @@ export const allModels:ChatModelData[] = [
     {label:'GPT-4 Turbo', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', recommendScore: 100},
     {label:'Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', recommendScore: 100},
     {label:'Gemini Pro Latest', vendor: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', recommendScore: 100},
+
     {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', recommendScore:50},
     {label: 'FireLLaVA 13B', vendor: 'fireworks.ai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', recommendScore:50},
 
-    // # japanese
     {label: 'Japanese Stable LM Instruct Gamma 7B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', recommendScore:20},
-    {label: 'Qwen 14B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-14b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-14b-chat', recommendScore:20},
-    {label: 'Qwen 72B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-72b-chat', recommendScore:20},
-    // # non-japanese output
-    {label: 'Mixtral MoE 8x7B Instruct', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', recommendScore:20},
-    {label: 'Llama 2 7B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-7b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-7b-chat', recommendScore:20},
-    {label: 'Llama 2 13B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-13b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-13b-chat', recommendScore:20},
-    {label: 'Llama 2 70B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat', recommendScore:20},
+    {label: 'StableLM Zephyr 3B', vendor: 'fireworks.ai', modelValue: 'stablelm-zephyr-3b', sdkModelValue: 'accounts/stability/models/stablelm-zephyr-3b', recommendScore:20},
+
+    {label: 'Cohere Command Light Nightly', vendor: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', recommendScore:20},
+    {label: 'Cohere Command Nightly', vendor: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', recommendScore:50},
 
     {label: 'Gemma 2B', vendor: 'HuggingFace', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', recommendScore:20},
     {label: 'Gemma 2B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', recommendScore:50},
     {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', recommendScore:20},
     {label: 'Gemma 7B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', recommendScore:50},
-    {label: 'Open-Assistant SFT-4 12B', vendor: 'HuggingFace', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', recommendScore:50},
 
-    {label: 'Cohere Command Light Nightly', vendor: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', recommendScore:20},
-    {label: 'Cohere Command Nightly', vendor: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', recommendScore:50},
+    {label: 'Qwen 14B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-14b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-14b-chat', recommendScore:20},
+    {label: 'Qwen 72B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-72b-chat', recommendScore:20},
+
+    // # non-japanese output
+    {label: 'Mistral 7B Instruct', vendor: 'fireworks.ai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', recommendScore:20},
+    {label: 'Mixtral MoE 8x7B Instruct', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', recommendScore:20},
+
+    {label: 'Llama 2 7B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-7b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-7b-chat', recommendScore:20},
+    {label: 'Llama 2 13B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-13b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-13b-chat', recommendScore:20},
+    {label: 'Llama 2 70B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat', recommendScore:20},
+    {label: 'Llama 2 70B Code Llama instruct', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-code-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-code-instruct', recommendScore:20},
+
+    {label: 'Capybara 34B', vendor: 'fireworks.ai', modelValue: 'yi-34b-200k-capybara', sdkModelValue: 'accounts/fireworks/models/yi-34b-200k-capybara', recommendScore:20},
+    {label: 'Open-Assistant SFT-4 12B', vendor: 'HuggingFace', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', recommendScore:50},
 ]
+
 // models which are choosable with the selection
 export const selectableModels:ChatModelData[] = allModels.filter((modelData) => {
-    // all models are selectable
+    // currently all models are selectable
     return modelData.recommendScore >= 0
 })
 
