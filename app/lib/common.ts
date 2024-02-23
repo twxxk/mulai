@@ -12,6 +12,10 @@
 // # fireworks.ai
 //   https://readme.fireworks.ai/page/pricing
 //   https://fireworks.ai/models
+// # AWS Bedrock Anthropic Claude
+//   https://ap-northeast-1.console.aws.amazon.com/bedrock/home?region=ap-northeast-1#/providers?model=anthropic.claude-v2:1
+// # Mistral
+//   https://docs.mistral.ai/platform/endpoints/
 export type ModelLabel 
     = 'GPT-3.5' // in $0.0005/1K tokens, out $0.0015/1K tokens
     | 'GPT-4' // in $0.03/1K tokens, out $0.06/1K tokens
@@ -21,7 +25,6 @@ export type ModelLabel
     // fireworks.ai is free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
     | 'Japanese StableLM Instruct Beta 70B' // free
     | 'FireLLaVA 13B' // free. OSS based
-    // additional
     | 'Japanese Stable LM Instruct Gamma 7B' // free. very low quality
     | 'Qwen 14B Chat' // in:$0.2/M out:$0.8/M
     | 'Qwen 72B Chat' // in:$0.7/M out:$2.8/M
@@ -44,27 +47,17 @@ export type ModelLabel
     | 'Anthropic Claude'
     | 'Anthropic Claude Instant'
     | 'Titan Text G1 - Express'
+    | 'Mistral Tiny' // in 0.14€/M, out 0.42€/M
+    | 'Mistral Small'
+    | 'Mistral Medium' // in 2.5€/M, out 7.5€/M
 
 // const modelLabels = [
 //     'GPT-3.5', 
 //     'GPT-4', 
-//     'Gemini Pro', 
-//     'Gemini Pro Latest',
-//     'Japanese StableLM Instruct Beta 70B', // free
-//     'FireLLaVA 13B', // free. OSS based
-//     // additional  
-//     'Japanese Stable LM Instruct Gamma 7B', // free. very low quality
-//     'Qwen 14B Chat', // in:$0.2/M out:$0.8/M
-//     'Qwen 72B Chat', // in:$0.7/M out:$2.8/M
-//     'Mixtral MoE 8x7B Instruct', 
-//     'Llama 2 7B Chat', 
-//     'Llama 2 13B Chat', 
-//     'Llama 2 70B Chat' // english only
 // ] as const;
-
 // export type ModelLabel = typeof modelLabels[number];
 
-export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws'
+export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral'
 
 export const allModelValues = [
     'gpt-3.5-turbo', 
@@ -95,6 +88,9 @@ export const allModelValues = [
     'stablelm-zephyr-3b',
     'anthropic.claude-v2:1',
     'anthropic.claude-instant-v1',
+    'mistral-medium',
+    'mistral-small',
+    'mistral-tiny',
 ] as const;
 
 export type ModelValue = typeof allModelValues[number];
@@ -127,6 +123,9 @@ export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
     | 'accounts/stability/models/stablelm-zephyr-3b'
     | 'anthropic.claude-v2:1'
     | 'anthropic.claude-instant-v1'
+    | 'mistral-medium'
+    | 'mistral-small'
+    | 'mistral-tiny'
 
 export type ChatModelData = {
     label: ModelLabel, // for human
@@ -153,6 +152,10 @@ export const allModels:ChatModelData[] = [
     {label: 'Anthropic Claude Instant', vendor: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64},
     {label: 'Anthropic Claude', vendor: 'aws', modelValue: 'anthropic.claude-v2:1', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
 
+    {label: 'Mistral Medium', vendor: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
+    {label: 'Mistral Small', vendor: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 50, japaneseScore:5},
+    {label: 'Mistral Tiny', vendor: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 50, japaneseScore:5},
+
     {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 50, japaneseScore:37},
 
     {label: 'Qwen 72B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
@@ -168,7 +171,6 @@ export const allModels:ChatModelData[] = [
     {label: 'Mixtral 8x7b MoE (Hugging Face)', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct-hf', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct-hf', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mixtral MoE 8x7B Instruct', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mistral 7B Instruct', vendor: 'fireworks.ai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', qualityScore: 152/256*100, japaneseScore:0},
-
     {label: 'Cohere Command Light Nightly', vendor: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', qualityScore: 50, japaneseScore:0},
     {label: 'Cohere Command Nightly', vendor: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', qualityScore: 50, japaneseScore:0},
 

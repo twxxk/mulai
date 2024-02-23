@@ -7,6 +7,10 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { HfInference } from '@huggingface/inference';
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
 import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/lib/common';
+// Note: There are no types for the Mistral API client yet.
+// @ts-ignore
+import MistralClient from '@mistralai/mistralai';
+import { ChatCompletionChunk } from 'openai/resources/index.mjs';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
@@ -27,6 +31,7 @@ const groq = new OpenAI({
     apiKey: process.env.GROQ_API_KEY || '',
     baseURL: 'https://api.groq.com/v1',
 })
+const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -130,6 +135,18 @@ const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
     return stream    
 }
 
+const mistralChatStream:ChatStreamFunction = async ({model, messages}) => {
+    // @see https://sdk.vercel.ai/docs/guides/providers/mistral
+    const chatStream = await mistral.chatStream({
+      model: model,
+      messages,
+    });
+    const asyncIterable = chatStream as AsyncIterable<ChatCompletionChunk>;
+
+    const stream = OpenAIStream(asyncIterable);    
+    return stream
+}
+
 const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
     const response = Hf.textGenerationStream({
         model: model,
@@ -203,6 +220,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
         'groq': groqChatStream,
         'cohere': cohereChatStream,
         'aws': awsAnthropicChatStream,
+        'mistral': mistralChatStream,
     }
     return vendorMap[vendor as string]
 }

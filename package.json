@@ -13,6 +13,7 @@
     "@formatjs/intl-localematcher": "^0.5.4",
     "@google/generative-ai": "^0.2.0",
     "@huggingface/inference": "^2.6.4",
+    "@mistralai/mistralai": "^0.0.10",
     "@tailwindcss/typography": "^0.5.10",
     "ai": "^2.2.34",
     "lucide-react": "^0.325.0",
