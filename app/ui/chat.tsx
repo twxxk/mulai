@@ -118,7 +118,6 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
 
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
 
-  // FIXME Warning: React Hook useEffect has a missing dependency: 'initMessages'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   const initMessages = () => {
     setCharacterMessages(initialCharacterValue as CharacterValue)
   }
@@ -136,6 +135,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     setIsSplitLoaded(true)
   }, [])
 
+  // 141:6  Warning: React Hook useEffect has missing dependencies: 'initialCharacterValue' and 'setCharacterMessages'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
   useEffect(() => {
     setCharacterMessages(initialCharacterValue as CharacterValue)
   }, [])

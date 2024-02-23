@@ -23,7 +23,7 @@ export default function ChatsArea({locale}:{locale:string}) {
   const [modelCharacterValues, setModelCharacterValues] = useState(getModelCharacterValues(modelsParam ?? ''))
 
   const [parentInput, setParentInput] = useState('')
-  const [splitSizes, setSplitSizes] = useState(splitToArray(modelCharacterValues.length))
+  let splitSizes = splitToArray(modelCharacterValues.length)
 
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
@@ -90,7 +90,7 @@ export default function ChatsArea({locale}:{locale:string}) {
     const newValues = modelCharacterValues.filter((_, i) => i !== index)
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
-    setSplitSizes(splitToArray(newValues.length))
+    splitSizes = splitToArray(newValues.length)
   }
 
   const addModel = () => {
@@ -100,8 +100,7 @@ export default function ChatsArea({locale}:{locale:string}) {
     ]
     console.log('changing to new models', newValues, splitToArray(newValues.length))
     setModelCharacterValues(newValues)
-    const newSplitSizes = splitToArray(newValues.length)
-    setSplitSizes(newSplitSizes)
+    splitSizes = splitToArray(newValues.length)
   }
 
   // You can debug by adding onDragStart={onDragStart} to with <Split />
@@ -134,7 +133,7 @@ export default function ChatsArea({locale}:{locale:string}) {
     }
     const calcSizes = operations[operation] as (updateIndex:number) => number[]
     const newSizes = calcSizes(updateIndex)
-    setSplitSizes(newSizes)
+    splitSizes = newSizes
 
     function calcMinimizePaneSizes(updateIndex:number) {
       // e.g. [33.3, 33.3, 33.3] => [50, 50, 0]
