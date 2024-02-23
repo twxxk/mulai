@@ -1,15 +1,23 @@
-import { useRef } from "react"
+import { useEffect, useRef } from "react"
 
-export default function EnterableTextarea({className = '', autoFocus, value = '', onChange, onEnter, onCompositeChange, placeholder = ''}:{
+export default function EnterableTextarea({className = '', autoFocus, value = '', onChange, onEnter, onCompositeChange, placeholder = '', disabled}:{
     className:string,
     autoFocus?:boolean,
     value:string, 
     onChange:(e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>)=>void, 
     onEnter:()=>void,
     onCompositeChange?:(newValue:boolean)=>void,
-    placeholder:string},
+    placeholder:string,
+    disabled?:boolean,
+  },
 ) {
     const isUsingIME = useRef(false)
+    const textareaRef = useRef(null)
+
+    useEffect(() => {
+      if (!disabled && textareaRef?.current)
+        (textareaRef.current as HTMLTextAreaElement).focus()
+    }, [disabled])
     
     // trigger enter key
     const onKeyDown = (e: React.KeyboardEvent<HTMLInputElement> | React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -49,6 +57,8 @@ export default function EnterableTextarea({className = '', autoFocus, value = ''
           if (onCompositeChange) onCompositeChange(false)
         }, 0)}
         placeholder={placeholder}
+        disabled={!!disabled}
+        ref={textareaRef}
       />
     )    
 }

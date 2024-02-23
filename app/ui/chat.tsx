@@ -309,13 +309,14 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
         </div>
         <div className='flex w-full'>
           <EnterableTextarea 
-            className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none overflow-hidden"
+            className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none overflow-hidden disabled:text-gray-300"
             value={chatOptions.input}
             onChange={chatOptions.handleInputChange}
             onEnter={() => {
               if (formRef.current)
                 formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             }}
+            disabled={acceptsBroadcast}
             onCompositeChange={onCompositeChange}
             placeholder="Say something to this model..."
              />
