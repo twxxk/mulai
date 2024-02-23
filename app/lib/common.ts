@@ -142,19 +142,17 @@ export const DEFAULT_MODEL:ChatModelData
 
 // models will be displayed in this order
 export const allModels:ChatModelData[] = [
-    {label: 'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67},
+    {label: 'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67}, // fast
     {label: 'GPT-4', vendor: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 254/256*100, japaneseScore: 76},
     {label: 'GPT-4 Turbo', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77},
     
     {label: 'Google Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Latest', vendor: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
 
-    {label: 'Anthropic Claude Instant', vendor: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64},
+    {label: 'Anthropic Claude Instant', vendor: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
     {label: 'Anthropic Claude', vendor: 'aws', modelValue: 'anthropic.claude-v2:1', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
 
     {label: 'Mistral Medium', vendor: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
-    {label: 'Mistral Small', vendor: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 50, japaneseScore:5},
-    {label: 'Mistral Tiny', vendor: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 50, japaneseScore:5},
 
     {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 50, japaneseScore:37},
 
@@ -168,6 +166,8 @@ export const allModels:ChatModelData[] = [
     {label: 'Gemma 2B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', qualityScore: 50, japaneseScore:0},
     {label: 'Gemma 2B', vendor: 'HuggingFace', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 50, japaneseScore:0},
 
+    {label: 'Mistral Small', vendor: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 50, japaneseScore:5},
+    {label: 'Mistral Tiny', vendor: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 50, japaneseScore:10},
     {label: 'Mixtral 8x7b MoE (Hugging Face)', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct-hf', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct-hf', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mixtral MoE 8x7B Instruct', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mistral 7B Instruct', vendor: 'fireworks.ai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', qualityScore: 152/256*100, japaneseScore:0},

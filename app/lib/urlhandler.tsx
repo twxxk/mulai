@@ -11,12 +11,11 @@ const freeValues:ModelCharacterPair[] = [
   ]
   // for production
   const bestQualityValues:ModelCharacterPair[] = [
+    {modelValue: 'anthropic.claude-instant-v1', characterValue: ''},
     {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-    {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-    {modelValue: 'gemini-pro', characterValue: ''},
-    {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
-    {modelValue: 'firellava-13b', characterValue: ''},
+    {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+    {modelValue: 'gpt-4', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [
@@ -37,7 +36,7 @@ const freeValues:ModelCharacterPair[] = [
   // ]
   
   const specialPairs:{[key:string]:ModelCharacterPair[]} = {
-    default: (process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues).slice(0, 3),
+    default: (process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues).slice(0, 4),
     magi: [
       {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
       {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
