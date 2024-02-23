@@ -3,7 +3,7 @@
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
 import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
 import ModelSelector from './modelSelector';
@@ -82,48 +82,68 @@ const getAvailableCharacters = (modelValue:string):Character[] => {
   // Currently returning the same characters for any models
   return allCharacters
 }
-const getCharacter = (characterValue:CharacterValue) => {
-  return allCharacters.find((character) => character.value === characterValue)
+export const getCharacter = (characterValue:CharacterValue) => {
+  return allCharacters.find((character) => character.value === characterValue) as Character
 }
 
-const getAILabel = (modelValue:ModelValue, characterValue:CharacterValue) => {
+const getAILabel = (modelValue:ModelValue, character:Character) => {
   const modelLabel = getModelByValue(modelValue)?.label
-  if (characterValue !== '') {
-    const characterLabel = getCharacter(characterValue)?.label
+  if (character.value !== '') {
+    const characterLabel = character.label
     return `${modelLabel} (${characterLabel})`  
   } else {
     return modelLabel
   }
 }
 
-export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, changeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
-  modelValue:ModelValue,
-  initialCharacterValue:CharacterValue,
+function getLocalizedPromptMessages(locale:string, character: Character) { 
+  // console.log('loc:', locale)
+  const localizedPromptContent = locale === 'ja' ? character?.promptContent_ja : character?.promptContent
+  const assistantPromptContent = locale === 'ja' 
+    ? (character?.assistantPromptContent_ja ?? defaultAssistantPromptContent_ja)
+    : (character?.assistantPromptContent ?? defaultAssistantPromptContent)
+  
+  return [
+    // GPT understands the system message but gemini prefers conversations
+    // {role: 'system', content:localizedPromptContent} as Message, 
+    {role: 'user', content:localizedPromptContent} as Message,
+    {role: 'assistant', content:assistantPromptContent} as Message,
+  ]
+}
+
+
+export default function Chat({modelValue, initialCharacter, index, hasClosePaneButton, hasAddPaneButton, locale, updatePaneSize, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
   index:number, 
-  totalLength:number,
   locale:string,
+  modelValue:ModelValue,
+  initialCharacter:Character,
+  hasClosePaneButton:boolean,
+  hasAddPaneButton:boolean,
   updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
   setChatOptions:(index:number, value:ChatOptions)=>void,
-  changeModel:(index:number, newModelValue:ModelValue)=>void,
-  changeCharacter:(index:number, newCharacterValue:CharacterValue)=>void,
+  onChangeModel:(index:number, newModelValue:ModelValue)=>void,
+  onChangeCharacter:(index:number, newCharacter:Character)=>void,
   changeChatLoading:(index:number, newLoadingValue:boolean)=>void,
   addPane:()=>void,
   removePane:(index:number)=>void,
   onCompositeChange?:(newValue:boolean)=>void,
 }) 
 {
-  const [characterValue, setCharacterValue] = useState(initialCharacterValue ?? '' as CharacterValue)
+  const [character, setCharacter] = useState(initialCharacter)
+  const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
+
+  // reset chat messages
+  // XXX Warning: React Hook useCallback has a missing dependency: 'chatOptions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+  const resetMessages = useCallback(() => {
+    const initialMessages = getLocalizedPromptMessages(locale, character)
+    chatOptions.setMessages(initialMessages)
+  }, [locale, character])
+  const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast, setAcceptsBroadcast, resetMessages}
+  const [isSplitLoaded, setIsSplitLoaded] = useState(false)
+
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
-
-  const initMessages = () => {
-    setCharacterMessages(initialCharacterValue as CharacterValue)
-  }
-
-  const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast: acceptsBroadcast, setAcceptsBroadcast: setAcceptsBroadcast, initMessages}
-  const [isSplitLoaded, setIsSplitLoaded] = useState(false)
 
   // console.log('chat is being initialized with=' + modelValue)
   setChatOptions(index, chatOptions)
@@ -135,15 +155,14 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     setIsSplitLoaded(true)
   }, [])
 
-  // 141:6  Warning: React Hook useEffect has missing dependencies: 'initialCharacterValue' and 'setCharacterMessages'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
   useEffect(() => {
-    setCharacterMessages(initialCharacterValue as CharacterValue)
-  }, [])
+    resetMessages()
+  }, [resetMessages])
 
-  // FIXME Warning: React Hook useEffect has a missing dependency: 'changeChatLoading'. Either include it or remove the dependency array. If 'changeChatLoading' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
   useEffect(() => {
+    // console.log('change chat loading ', index)
     changeChatLoading(index, chatOptions.isLoading)
-  }, [index, chatOptions.isLoading])
+  }, [changeChatLoading, index, chatOptions.isLoading])
 
   useEffect(() => {
     if (historyElementRef.current) {
@@ -219,44 +238,24 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
     removePane(index)
   }
 
-  function setCharacterMessages(value: CharacterValue) {
-    const character = getCharacter(value)
-    if (character?.promptContent === '') {
-      // FIXME if you change to a different value and then back to normal, the value should be reset
-      return
-    }
-
-    // console.log('loc:', locale)
-    const localizedPromptContent = locale === 'ja' ? character?.promptContent_ja : character?.promptContent
-    const assistantPromptContent = locale === 'ja' 
-      ? (character?.assistantPromptContent_ja ?? defaultAssistantPromptContent_ja)
-      : (character?.assistantPromptContent ?? defaultAssistantPromptContent)
-    chatOptions.setMessages([
-      // GPT understands the system message but gemini prefers conversations
-      // {role: 'system', content:localizedPromptContent} as Message, 
-      {role: 'user', content:localizedPromptContent} as Message,
-      {role: 'assistant', content:assistantPromptContent} as Message,
-    ])
-    setCharacterValue(value)
-  }
-
-  function handleCharacterChange(e:React.ChangeEvent<HTMLSelectElement>) {
+  function handleChangeCharacter(e:React.ChangeEvent<HTMLSelectElement>) {
     const characterValue = e.target.value as CharacterValue
-    setCharacterMessages(characterValue)
-    changeCharacter(index, characterValue)
+    const character = getCharacter(characterValue)
+    setCharacter(character)
+    onChangeCharacter(index, character)
   }
 
-  function handleModelChange(e:React.ChangeEvent<HTMLSelectElement>) {
+  function handleChangeModel(e:React.ChangeEvent<HTMLSelectElement>) {
     const modelValue = e.target.value as ModelValue
     console.log('changing model to:', modelValue)
-    changeModel(index, modelValue)
+    onChangeModel(index, modelValue)
   }
 
   return (<>
     <article className="flex flex-col w-full pt-2 h-full">
       <div className='px-3'>
-        <ModelSelector selectedValue={modelValue} onChange={handleModelChange} /> 
-        <CharacterSelector selectedValue={characterValue} characters={characters} onChange={handleCharacterChange} />
+        <ModelSelector selectedValue={modelValue} onChange={handleChangeModel} /> 
+        <CharacterSelector selectedValue={character.value} characters={characters} onChange={handleChangeCharacter} />
       </div>
       <div className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
       {chatOptions.messages.map((m, index) => (
@@ -284,7 +283,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
       <form ref={formRef} onSubmit={handleChatSubmit} className={(isSplitLoaded ? 'opacity-100 ' : 'opacity-0 ') + 'transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'}>
         <div className='flex flex-row w-full'>
           <div className="flex-1 whitespace-nowrap overflow-hidden">
-            <strong>{getAILabel(modelValue, characterValue)}</strong>
+            <strong>{getAILabel(modelValue, character)}</strong>
           </div>
           <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />
@@ -295,13 +294,13 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
             <span className="sr-only">Maximize</span>
           </button>
           <button className='ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
-            disabled={totalLength <= 1} 
+            disabled={!hasClosePaneButton} 
             onClick={handleClosePane}>
             <XIcon className="h-3 w-3" />
             <span className='sr-only'>Close</span>
           </button>  
           <button className='ml-1 disabled:hidden enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
-            disabled={index !== totalLength - 1} 
+            disabled={!hasAddPaneButton} 
             onClick={addPane}>
             <PlusIcon className="h-3 w-3" />
             <span className='sr-only'>Add</span>

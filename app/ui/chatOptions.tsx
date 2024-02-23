@@ -4,5 +4,5 @@ import { Dispatch, SetStateAction } from 'react';
 export type ChatOptions = UseChatHelpers & { 
     acceptsBroadcast: boolean, 
     setAcceptsBroadcast: Dispatch<SetStateAction<boolean>>,
-    initMessages: ()=>void,
+    resetMessages: ()=>void,
 }

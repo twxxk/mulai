@@ -1,13 +1,13 @@
 'use client';
 
 import { ChatRequestOptions } from 'ai';
-import Chat from './chat'
+import Chat, { getCharacter } from './chat'
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import Split from 'react-split'
-import { CharacterValue, DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, validateModelCharacter } from '@/app/lib/common';
+import { CharacterValue, DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, validateModelCharacter, Character } from '@/app/lib/common';
 import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
@@ -36,11 +36,12 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   // generate browser url based on models and characters
   useEffect(() => {
+    // console.log('checking url')
     router.replace(urlToReplace)
   }, [router, urlToReplace])
 
   // trap escape key to interrupt responses
-  // FIXME Warning: React Hook useEffect has missing dependencies: 'handleStop' and 'isUsingIME'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+  // FIXME Warning: React Hook useEffect has a missing dependency: 'handleStop'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   useEffect(() => {
     const handleKeyDown = (e:any) => {
       const event = e as React.KeyboardEvent
@@ -70,15 +71,15 @@ export default function ChatsArea({locale}:{locale:string}) {
     chats[index] = chat
   }
 
-  const changeCharacter = (index:number, characterValue:CharacterValue) => {
+  const onChangeCharacter = (index:number, character:Character) => {
     const newValues = modelCharacterValues.map((value, i) =>
-      i !== index ? value : {modelValue: value.modelValue, characterValue:characterValue}
+      i !== index ? value : {modelValue: value.modelValue, characterValue:character.value}
     )
     console.log('changing to new character', newValues)
     setModelCharacterValues(newValues)
   }
 
-  const changeModel = (index:number, modelValue:ModelValue) => {
+  const onChangeModel = (index:number, modelValue:ModelValue) => {
     const newValues = modelCharacterValues.map((value, i) =>
       i !== index ? value : {modelValue: modelValue, characterValue:value.characterValue}
     )
@@ -226,22 +227,28 @@ export default function ChatsArea({locale}:{locale:string}) {
     console.log('trashing')
     chats.map((chat:ChatOptions) => {
       chat.setInput('')
-      chat.initMessages()
+      chat.resetMessages()
     })
   }
 
   return (<>
   <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col min-h-0" key={modelCharacterValues.length}>
     <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1 min-h-0">
-      {modelCharacterValues.map((value:ModelCharacterPair, index:number) => (
-        <Chat key={index} index={index} totalLength={modelCharacterValues.length} locale={locale}
-          modelValue={value.modelValue} initialCharacterValue={value.characterValue}
-          setChatOptions={setChatOptions} changeModel={changeModel} changeCharacter={changeCharacter}
-          changeChatLoading={changeChatLoading}
-          addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} 
-          onCompositeChange={(value)=>isUsingIME.current = value}
-          />
-      ))}
+      {modelCharacterValues.map((value:ModelCharacterPair, index:number) => {
+        // XXX not reload the component even if model or character is updated, not to break split
+        const key = index // + ':' + value.modelValue + ':' + value.characterValue
+        const hasClosePaneButton = modelCharacterValues.length > 1
+        const hasAddPaneButton = index === modelCharacterValues.length - 1
+        return (
+          <Chat key={key} index={index} locale={locale}
+            hasClosePaneButton={hasClosePaneButton} hasAddPaneButton={hasAddPaneButton}
+            modelValue={value.modelValue} initialCharacter={getCharacter(value.characterValue)}
+            setChatOptions={setChatOptions} onChangeModel={onChangeModel} onChangeCharacter={onChangeCharacter}
+            changeChatLoading={changeChatLoading}
+            addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} 
+            onCompositeChange={(value)=>isUsingIME.current = value}
+            />
+      )})}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
       <EnterableTextarea 
