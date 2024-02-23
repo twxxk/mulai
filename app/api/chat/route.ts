@@ -7,6 +7,12 @@ import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/l
 import { HfInference } from '@huggingface/inference';
 import { HuggingFaceStream } from 'ai';
 import { experimental_buildOpenAssistantPrompt } from 'ai/prompts';
+import {
+    BedrockRuntimeClient,
+    InvokeModelWithResponseStreamCommand,
+  } from '@aws-sdk/client-bedrock-runtime';
+  import { AWSBedrockAnthropicStream } from 'ai';
+  import { experimental_buildAnthropicPrompt } from 'ai/prompts';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
@@ -16,6 +22,13 @@ const fireworks = new OpenAI({
     baseURL: 'https://api.fireworks.ai/inference/v1',
 });
 const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
+const bedrockClient = new BedrockRuntimeClient({
+    region: process.env.AWS_REGION ?? 'us-east-1',
+    credentials: {
+      accessKeyId: process.env.AWS_ACCESS_KEY_ID ?? '',
+      secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
+    },
+});
 const groq = new OpenAI({
     apiKey: process.env.GROQ_API_KEY || '',
     baseURL: 'https://api.groq.com/v1',
@@ -92,6 +105,25 @@ const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
     return stream    
 }
 
+const awsAnthropicChatStream:ChatStreamFunction = async ({model, messages})=>{
+    // @see https://sdk.vercel.ai/docs/guides/providers/aws-bedrock
+    // Ask Claude for a streaming chat completion given the prompt
+    const bedrockResponse = await bedrockClient.send(
+        new InvokeModelWithResponseStreamCommand({
+            modelId: model,
+            contentType: 'application/json',
+            accept: 'application/json',
+            body: JSON.stringify({
+            prompt: experimental_buildAnthropicPrompt(messages),
+            max_tokens_to_sample: 4000, // https://docs.aws.amazon.com/ja_jp/bedrock/latest/userguide/model-parameters-claude.html
+            }),
+        }),
+    );
+ 
+    const stream = AWSBedrockAnthropicStream(bedrockResponse);
+    return stream    
+}
+
 const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
     // @see https://docs.api.groq.com/md/openai.oas.html
     const response = await groq.chat.completions.create({
@@ -109,11 +141,9 @@ const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
         model: model,
         inputs: experimental_buildOpenAssistantPrompt(messages),
         parameters: {
-          max_new_tokens: 200,
           // @ts-ignore (this is a valid parameter specifically in OpenAssistant models)
           typical_p: 0.2,
           repetition_penalty: 1,
-          truncate: 1000,
           return_full_text: false,
         },
       });
@@ -178,6 +208,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
         'HuggingFace': huggingFaceStream,
         'groq': groqChatStream,
         'cohere': cohereChatStream,
+        'aws': awsAnthropicChatStream,
     }
     return vendorMap[vendor as string]
 }

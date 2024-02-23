@@ -19,8 +19,8 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
             {selectableModels.map((value) => (
                 // show non recommended model with weak colors
                 <option key={value.label} value={value.modelValue} 
-                    className={value.recommendScore >= 70 ? 'text-black' 
-                        : value.recommendScore >= 50 ? 'text-gray-400'
+                    className={value.japaneseScore >= 50 ? 'text-black' 
+                        : value.japaneseScore >= 10 ? 'text-gray-400'
                         : 'text-gray-200'}
                 >
                     {value.label}
