@@ -96,7 +96,7 @@ const getAILabel = (modelValue:ModelValue, characterValue:CharacterValue) => {
   }
 }
 
-export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, changeCharacter, changeChatLoading, addPane, removePane}:{
+export default function Chat({modelValue, initialCharacterValue, index, totalLength, locale, updatePaneSize, setChatOptions, changeModel, changeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
   modelValue:ModelValue,
   initialCharacterValue:CharacterValue,
   index:number, 
@@ -109,6 +109,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
   changeChatLoading:(index:number, newLoadingValue:boolean)=>void,
   addPane:()=>void,
   removePane:(index:number)=>void,
+  onCompositeChange?:(newValue:boolean)=>void,
 }) 
 {
   const [characterValue, setCharacterValue] = useState(initialCharacterValue ?? '' as CharacterValue)
@@ -315,6 +316,7 @@ export default function Chat({modelValue, initialCharacterValue, index, totalLen
               if (formRef.current)
                 formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             }}
+            onCompositeChange={onCompositeChange}
             placeholder="Say something to this model..."
              />
 

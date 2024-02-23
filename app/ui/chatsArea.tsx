@@ -27,6 +27,7 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
+  const isUsingIME = useRef(false)
 
   const chats:ChatOptions[] = []
 
@@ -34,10 +35,9 @@ export default function ChatsArea({locale}:{locale:string}) {
   const urlToReplace = generateUrlToReplace(searchParams, modelCharacterValues)
 
   // generate browser url based on models and characters
-  // FIXME Warning: React Hook useEffect has a missing dependency: 'router'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   useEffect(() => {
     router.replace(urlToReplace)
-  }, [urlToReplace])
+  }, [router, urlToReplace])
 
   // trap escape key to interrupt responses
   // FIXME Warning: React Hook useEffect has missing dependencies: 'handleStop' and 'isUsingIME'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
@@ -47,10 +47,11 @@ export default function ChatsArea({locale}:{locale:string}) {
       if (event.key !== "Escape") {
         return;
       }
-      // if (isUsingIME.current) {
-      //   // console.log('using ime', new Date)
-      //   return;
-      // }
+      // if commented out, not work with safari with IME
+      if (isUsingIME.current) {
+        // console.log('using ime', new Date)
+        return;
+      }
       e.preventDefault();
       handleStop()
     };
@@ -238,7 +239,9 @@ export default function ChatsArea({locale}:{locale:string}) {
           modelValue={value.modelValue} initialCharacterValue={value.characterValue}
           setChatOptions={setChatOptions} changeModel={changeModel} changeCharacter={changeCharacter}
           changeChatLoading={changeChatLoading}
-          addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} />
+          addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} 
+          onCompositeChange={(value)=>isUsingIME.current = value}
+          />
       ))}
     </Split>
     <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
@@ -251,6 +254,7 @@ export default function ChatsArea({locale}:{locale:string}) {
           if (formRef.current)
             formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
         }}
+        onCompositeChange={(value)=>isUsingIME.current = value}
         placeholder="Say something to all models..."
       />
       {/* disabled is useful to stop submitting with enter */}
