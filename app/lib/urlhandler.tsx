@@ -63,37 +63,32 @@ const freeValues:ModelCharacterPair[] = [
     ],
   }
   
-  function deepCopy(originalObject:object) {
-    return JSON.parse(JSON.stringify(originalObject));
-  }
-  
 export function getModelCharacterValues(modelsParam: string): ModelCharacterPair[] {
     // console.log('param:', modelsParam)
     // for debug
     // if (modelsParam === '') 
     //   return allValues.slice(10, 10+3)
 
-    // needs deep copy to return the special pairs as changing models update the original object
     // default, no params
     if (modelsParam === '') {
-        return deepCopy(specialPairs.default)
+        return specialPairs.default
     }
 
     // Evangelion
     if (modelsParam === 'magi') {
-        return deepCopy(specialPairs.magi)
+        return specialPairs.magi
     }
     if (modelsParam === 'optpess') {
-        return deepCopy(specialPairs.optpess)
+        return specialPairs.optpess
     }
     if (modelsParam === 'gemini') {
-        return deepCopy(specialPairs.gemini)
+        return specialPairs.gemini
     }
     if (modelsParam === 'gpt') {
-        return deepCopy(specialPairs.gpt)
+        return specialPairs.gpt
     }
     if (modelsParam == 'gemma') {
-        return deepCopy(specialPairs.gemma)
+        return specialPairs.gemma
     }
 
     // 1..5. Only shorthand to longhand. No generate this url.
