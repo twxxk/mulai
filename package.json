@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@aws-sdk/client-bedrock-runtime": "^3.515.0",
     "@formatjs/intl-localematcher": "^0.5.4",
     "@google/generative-ai": "^0.2.0",
     "@huggingface/inference": "^2.6.4",

@@ -1,18 +1,12 @@
-import OpenAI from 'openai';
 import { StreamingTextResponse, Message } from 'ai';
-import { OpenAIStream, GoogleGenerativeAIStream, CohereStream } from 'ai';
+import { OpenAIStream, GoogleGenerativeAIStream, CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
+import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt } from 'ai/prompts';
+import OpenAI from 'openai';
 // import does not work with google https://ai.google.dev/tutorials/node_quickstart
 const { GoogleGenerativeAI } = require("@google/generative-ai");
-import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/lib/common';
 import { HfInference } from '@huggingface/inference';
-import { HuggingFaceStream } from 'ai';
-import { experimental_buildOpenAssistantPrompt } from 'ai/prompts';
-import {
-    BedrockRuntimeClient,
-    InvokeModelWithResponseStreamCommand,
-  } from '@aws-sdk/client-bedrock-runtime';
-  import { AWSBedrockAnthropicStream } from 'ai';
-  import { experimental_buildAnthropicPrompt } from 'ai/prompts';
+import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
+import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/lib/common';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
