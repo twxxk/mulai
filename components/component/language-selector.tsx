@@ -35,7 +35,10 @@ export function LanguageSelector({locale, className}:{locale:string, className:s
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className={className}><GlobeIcon /></button>
+        <button className={className}>
+          <GlobeIcon />
+          <span className="sr-only">Language</span>
+        </button>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuGroup>
