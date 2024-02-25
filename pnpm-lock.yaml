@@ -8,6 +8,9 @@ dependencies:
   '@aws-sdk/client-bedrock-runtime':
     specifier: ^3.515.0
     version: 3.515.0
+  '@devbookhq/splitter':
+    specifier: ^1.4.2
+    version: 1.4.2
   '@formatjs/intl-localematcher':
     specifier: ^0.5.4
     version: 0.5.4
@@ -47,9 +50,6 @@ dependencies:
   react-markdown-it:
     specifier: ^1.0.2
     version: 1.0.2
-  react-split:
-    specifier: ^2.0.14
-    version: 2.0.14(react@18.2.0)
 
 devDependencies:
   '@types/negotiator':
@@ -621,6 +621,12 @@ packages:
       '@babel/helper-string-parser': 7.23.4
       '@babel/helper-validator-identifier': 7.22.20
       to-fast-properties: 2.0.0
+    dev: false
+
+  /@devbookhq/splitter@1.4.2:
+    resolution: {integrity: sha512-DqJXsL7WNeDn/DyCeyoeeSpFHHoYBXscYlKNd3cJQ5d1xur73MPezHpyR2OID6Kh40TZ4KAb4hYjl5nL2+5M1g==}
+    dependencies:
+      react-is: 17.0.2
     dev: false
 
   /@eslint-community/eslint-utils@4.4.0(eslint@8.56.0):
@@ -3521,6 +3527,7 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
+    dev: true
 
   /punycode@2.3.1:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
@@ -3542,22 +3549,17 @@ packages:
 
   /react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
+    dev: true
+
+  /react-is@17.0.2:
+    resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
+    dev: false
 
   /react-markdown-it@1.0.2:
     resolution: {integrity: sha512-Bzo/9UCCxlL2D7rYiVlxEqiOU66mqmLTzjxN0JLlioEhZhp7amzSq1YNS0+Jf0YKQmpBb5rfI9nh5s3wBsKnww==}
     dependencies:
       markdown-it: 4.4.0
       strip-indent: 1.0.1
-    dev: false
-
-  /react-split@2.0.14(react@18.2.0):
-    resolution: {integrity: sha512-bKWydgMgaKTg/2JGQnaJPg51T6dmumTWZppFgEbbY0Fbme0F5TuatAScCLaqommbGQQf/ZT1zaejuPDriscISA==}
-    peerDependencies:
-      react: '*'
-    dependencies:
-      prop-types: 15.8.1
-      react: 18.2.0
-      split.js: 1.6.5
     dev: false
 
   /react@18.2.0:
@@ -3771,10 +3773,6 @@ packages:
   /source-map-js@1.0.2:
     resolution: {integrity: sha512-R0XvVJ9WusLiqTCEiGCmICCMplcCkIwwR11mOSD9CR5u+IXYdiseeEuXCVAjS54zqwkLcPNnmU4OeJ6tUrWhDw==}
     engines: {node: '>=0.10.0'}
-
-  /split.js@1.6.5:
-    resolution: {integrity: sha512-mPTnGCiS/RiuTNsVhCm9De9cCAUsrNFFviRbADdKiiV+Kk8HKp/0fWu7Kr8pi3/yBmsqLFHuXGT9UUZ+CNLwFw==}
-    dev: false
 
   /sprintf-js@1.0.3:
     resolution: {integrity: sha512-D9cPgkvLlV3t3IzL0D0YLvGA9Ahk4PcvVwUbN0dSGr1aP0Nrt4AEnTUbuGvquEC0mA64Gqt1fzirlRs5ibXx8g==}

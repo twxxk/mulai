@@ -6,11 +6,11 @@ import { useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
-import Split from 'react-split'
-import { CharacterValue, DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, validateModelCharacter, Character } from '@/app/lib/common';
+import { DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, Character } from '@/app/lib/common';
 import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
+import Splitter, { SplitDirection } from '@devbookhq/splitter'
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -21,6 +21,7 @@ export default function ChatsArea({locale}:{locale:string}) {
   const searchParams = useSearchParams()
   const modelsParam = searchParams.get('models')
   const [modelCharacterValues, setModelCharacterValues] = useState(getModelCharacterValues(modelsParam ?? ''))
+  // console.log('mc', modelCharacterValues)
 
   const [parentInput, setParentInput] = useState('')
   let splitSizes = splitToArray(modelCharacterValues.length)
@@ -33,6 +34,13 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   const router = useRouter()
   const urlToReplace = generateUrlToReplace(searchParams, modelCharacterValues)
+
+  const [verticalSizes, setVerticalSizes] = useState([95, 5]);
+  const [horizontalSizes, setHorizontalSizes] = useState([] as number[]);
+
+  // useEffect(() => {
+  //   console.log('Re-rendered form');
+  // }, [formRef.current]);   
 
   // generate browser url based on models and characters
   useEffect(() => {
@@ -110,74 +118,74 @@ export default function ChatsArea({locale}:{locale:string}) {
   // }
 
   const updatePaneSize = (updateIndex:number, operation:'minimize' | 'maximize' | 'restore') => {
-    const currentValue = splitSizes[updateIndex]
-    // console.log('index=', updateIndex, ', operation=' + operation, 'currentValue=', currentValue)
+    // const currentValue = splitSizes[updateIndex]
+    // // console.log('index=', updateIndex, ', operation=' + operation, 'currentValue=', currentValue)
 
-    // check current state and overwrite operation
-    switch (operation) {
-      case 'minimize':
-        if (currentValue === 0) operation = 'restore'
-        break;
-      case 'maximize':
-        if (currentValue === 100) operation = 'restore'
-        break;
-      default:
-        console.log('unexpected operation=' + operation + ', index=' + updateIndex)
-        break;
-    }
+    // // check current state and overwrite operation
+    // switch (operation) {
+    //   case 'minimize':
+    //     if (currentValue === 0) operation = 'restore'
+    //     break;
+    //   case 'maximize':
+    //     if (currentValue === 100) operation = 'restore'
+    //     break;
+    //   default:
+    //     console.log('unexpected operation=' + operation + ', index=' + updateIndex)
+    //     break;
+    // }
 
-    // do the actual operation
-    const operations:any = {
-      'minimize': calcMinimizePaneSizes, 
-      'maximize': calcMaximizePaneSizes, 
-      'restore': calcRestorePaneSizes
-    }
-    const calcSizes = operations[operation] as (updateIndex:number) => number[]
-    const newSizes = calcSizes(updateIndex)
-    splitSizes = newSizes
+    // // do the actual operation
+    // const operations:any = {
+    //   'minimize': calcMinimizePaneSizes, 
+    //   'maximize': calcMaximizePaneSizes, 
+    //   'restore': calcRestorePaneSizes
+    // }
+    // const calcSizes = operations[operation] as (updateIndex:number) => number[]
+    // const newSizes = calcSizes(updateIndex)
+    // splitSizes = newSizes
 
-    function calcMinimizePaneSizes(updateIndex:number) {
-      // e.g. [33.3, 33.3, 33.3] => [50, 50, 0]
-      const updateSize = 0
-      const otherSize = 100/(splitSizes.length - 1)
+    // function calcMinimizePaneSizes(updateIndex:number) {
+    //   // e.g. [33.3, 33.3, 33.3] => [50, 50, 0]
+    //   const updateSize = 0
+    //   const otherSize = 100/(splitSizes.length - 1)
 
-      const newSizes = splitSizes.map((size, index) => 
-        index === updateIndex ? updateSize : otherSize
-      )
+    //   const newSizes = splitSizes.map((size, index) => 
+    //     index === updateIndex ? updateSize : otherSize
+    //   )
 
-      // console.log('min=', newSizes)
-      return newSizes
-    }
-    function calcMaximizePaneSizes(updateIndex:number) {
-      // e.g. [33.3, 33.3, 33.3] => [0, 0, 100] 
-      // sizes will be adjusted to min by the library automatically
-      const updateSize = 100
-      const otherSize = 0
+    //   // console.log('min=', newSizes)
+    //   return newSizes
+    // }
+    // function calcMaximizePaneSizes(updateIndex:number) {
+    //   // e.g. [33.3, 33.3, 33.3] => [0, 0, 100] 
+    //   // sizes will be adjusted to min by the library automatically
+    //   const updateSize = 100
+    //   const otherSize = 0
 
-      const newSizes = splitSizes.map((size, index) => 
-        index === updateIndex ? updateSize : otherSize
-      )
+    //   const newSizes = splitSizes.map((size, index) => 
+    //     index === updateIndex ? updateSize : otherSize
+    //   )
 
-      // console.log('max=', newSizes)
-      return newSizes
-    }
-    function calcRestorePaneSizes(updateIndex:number) {
-      // e.g. [50, 50, 0] => [33.3, 33.3, 33.3]
-      // [0, 0, 100] => [33.3, 33.3, 33.3]
-      const averageSize = 100/(splitSizes.length) // 33.3
-      if (splitSizes.length === 1) {
-        console.log('unexpected splitSizes')
-        return;
-      }
-      const adjustValue = (currentValue - averageSize)/(splitSizes.length - 1) // -33.3/2
+    //   // console.log('max=', newSizes)
+    //   return newSizes
+    // }
+    // function calcRestorePaneSizes(updateIndex:number) {
+    //   // e.g. [50, 50, 0] => [33.3, 33.3, 33.3]
+    //   // [0, 0, 100] => [33.3, 33.3, 33.3]
+    //   const averageSize = 100/(splitSizes.length) // 33.3
+    //   if (splitSizes.length === 1) {
+    //     console.log('unexpected splitSizes')
+    //     return;
+    //   }
+    //   const adjustValue = (currentValue - averageSize)/(splitSizes.length - 1) // -33.3/2
 
-      const newSizes = splitSizes.map((size, index) => 
-        index === updateIndex ? averageSize : size + adjustValue
-      )
+    //   const newSizes = splitSizes.map((size, index) => 
+    //     index === updateIndex ? averageSize : size + adjustValue
+    //   )
 
-      // console.log('restore=', newSizes)
-      return newSizes
-    }
+    //   // console.log('restore=', newSizes)
+    //   return newSizes
+    // }
   }
 
   const parentHandleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -231,26 +239,38 @@ export default function ChatsArea({locale}:{locale:string}) {
     })
   }
 
-  return (<>
-  <Split minSize={50} sizes={[95, 5]} direction="vertical" className="flex-1 w-full m-0 flex flex-col min-h-0" key={modelCharacterValues.length}>
-    <Split gutterSize={8} minSize={180} sizes={splitSizes} className="flex flex-row text-xs overflow-auto flex-1 min-h-0">
+  // Need to set the initialsizes to keep the resizes after updating the inputs
+  function handleVerticalResize(gutterIdx: number, allSizes: number[]) {
+    // console.log('gutterIdx', gutterIdx);
+    // console.log('vertical allSizes in %', allSizes);
+    setVerticalSizes(allSizes);
+  }
+  function handleHorizontalResize(gutterIdx: number, allSizes: number[]) {
+    // console.log('gutterIdx', gutterIdx);
+    // console.log('horizontal allSizes in %', allSizes);
+    setHorizontalSizes(allSizes);
+  }
+    
+  return (
+  <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex flex-row text-xs overflow-auto flex-1 min-h-0', 'w-screen h-12 bottom-0 flex min-h-16']} onResizeFinished={handleVerticalResize}
+  >
+    <Splitter initialSizes={horizontalSizes} direction={SplitDirection.Horizontal} minWidths={Array(modelCharacterValues.length).fill(180)}  draggerClassName='dragger-horizontal' gutterClassName="gutter gutter-horizontal" onResizeFinished={handleHorizontalResize}>
       {modelCharacterValues.map((value:ModelCharacterPair, index:number) => {
-        // XXX not reload the component even if model or character is updated, not to break split
-        const key = index // + ':' + value.modelValue + ':' + value.characterValue
+        const key = index + ':' + value.modelValue + ':' + value.characterValue
         const hasClosePaneButton = modelCharacterValues.length > 1
         const hasAddPaneButton = index === modelCharacterValues.length - 1
         return (
           <Chat key={key} index={index} locale={locale}
             hasClosePaneButton={hasClosePaneButton} hasAddPaneButton={hasAddPaneButton}
-            modelValue={value.modelValue} initialCharacter={getCharacter(value.characterValue)}
+            modelValue={value.modelValue} character={getCharacter(value.characterValue)}
             setChatOptions={setChatOptions} onChangeModel={onChangeModel} onChangeCharacter={onChangeCharacter}
             changeChatLoading={changeChatLoading}
-            addPane={addModel} removePane={removeModel} updatePaneSize={updatePaneSize} 
+            addPane={addModel} removePane={removeModel} 
             onCompositeChange={(value)=>isUsingIME.current = value}
             />
       )})}
-    </Split>
-    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen h-12 bottom-0 flex text-xs'>
+    </Splitter>
+    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen bottom-0 flex text-xs'>
       <EnterableTextarea 
         autoFocus={true}
         className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none overflow-hidden"
@@ -283,6 +303,6 @@ export default function ChatsArea({locale}:{locale:string}) {
         <span className="sr-only">Trash</span>
       </button>
     </form>
-  </Split>
-  </>);
+  </Splitter>
+  );
 }

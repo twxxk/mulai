@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.515.0",
+    "@devbookhq/splitter": "^1.4.2",
     "@formatjs/intl-localematcher": "^0.5.4",
     "@google/generative-ai": "^0.2.0",
     "@huggingface/inference": "^2.6.4",
@@ -22,8 +23,7 @@
     "openai": "^4.27.0",
     "react": "^18",
     "react-dom": "^18",
-    "react-markdown-it": "^1.0.2",
-    "react-split": "^2.0.14"
+    "react-markdown-it": "^1.0.2"
   },
   "devDependencies": {
     "@types/negotiator": "^0.6.3",

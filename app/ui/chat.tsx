@@ -112,14 +112,13 @@ function getLocalizedPromptMessages(locale:string, character: Character) {
 }
 
 
-export default function Chat({modelValue, initialCharacter, index, hasClosePaneButton, hasAddPaneButton, locale, updatePaneSize, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
+export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, locale, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
   index:number, 
   locale:string,
   modelValue:ModelValue,
-  initialCharacter:Character,
+  character:Character,
   hasClosePaneButton:boolean,
   hasAddPaneButton:boolean,
-  updatePaneSize:(index:number, operation:'minimize' | 'maximize' | 'restore')=>void,
   setChatOptions:(index:number, value:ChatOptions)=>void,
   onChangeModel:(index:number, newModelValue:ModelValue)=>void,
   onChangeCharacter:(index:number, newCharacter:Character)=>void,
@@ -129,17 +128,15 @@ export default function Chat({modelValue, initialCharacter, index, hasClosePaneB
   onCompositeChange?:(newValue:boolean)=>void,
 }) 
 {
-  const [character, setCharacter] = useState(initialCharacter)
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
 
   // reset chat messages
   // XXX Warning: React Hook useCallback has a missing dependency: 'chatOptions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   const resetMessages = useCallback(() => {
-    const initialMessages = getLocalizedPromptMessages(locale, character)
+    const initialMessages = getLocalizedPromptMessages(locale, character)    
     chatOptions.setMessages(initialMessages)
   }, [locale, character])
   const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast, setAcceptsBroadcast, resetMessages}
-  const [isSplitLoaded, setIsSplitLoaded] = useState(false)
 
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -149,11 +146,6 @@ export default function Chat({modelValue, initialCharacter, index, hasClosePaneB
   setChatOptions(index, chatOptions)
 
   let characters = getAvailableCharacters(modelValue)
-
-  useEffect(() => {
-    // Not checking the load status but wait for a while to improve UX
-    setIsSplitLoaded(true)
-  }, [])
 
   useEffect(() => {
     resetMessages()
@@ -226,13 +218,13 @@ export default function Chat({modelValue, initialCharacter, index, hasClosePaneB
     chatOptions.reload(options)
   }
 
-  const handleMinimizePaneSize = () => {
-    updatePaneSize(index, "minimize")
-  }
+  // const handleMinimizePaneSize = () => {
+  //   updatePaneSize(index, "minimize")
+  // }
 
-  const handleMaxmizePaneSize = () => {
-    updatePaneSize(index, "maximize")
-  }
+  // const handleMaxmizePaneSize = () => {
+  //   updatePaneSize(index, "maximize")
+  // }
 
   const handleClosePane = () => {
     removePane(index)
@@ -241,7 +233,6 @@ export default function Chat({modelValue, initialCharacter, index, hasClosePaneB
   function handleChangeCharacter(e:React.ChangeEvent<HTMLSelectElement>) {
     const characterValue = e.target.value as CharacterValue
     const character = getCharacter(characterValue)
-    setCharacter(character)
     onChangeCharacter(index, character)
   }
 
@@ -280,19 +271,19 @@ export default function Chat({modelValue, initialCharacter, index, hasClosePaneB
       ))}
       </div>
  
-      <form ref={formRef} onSubmit={handleChatSubmit} className={(isSplitLoaded ? 'opacity-100 ' : 'opacity-0 ') + 'transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'}>
+      <form ref={formRef} onSubmit={handleChatSubmit} className='transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1 whitespace-nowrap overflow-hidden">
             <strong>{getAILabel(modelValue, character)}</strong>
           </div>
-          <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
+          {/* <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />
             <span className="sr-only">Minimize</span>
           </button>
           <button className="ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMaxmizePaneSize}>
             <Maximize2Icon className="h-3 w-3" />
             <span className="sr-only">Maximize</span>
-          </button>
+          </button> */}
           <button className='ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
             disabled={!hasClosePaneButton} 
             onClick={handleClosePane}>
