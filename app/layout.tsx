@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import DiceLink from "./ui/dicelink";
 import { Suspense } from "react";
+import { LanguageSelector } from "@/components/component/language-selector";
+import { headers } from 'next/headers'
 
 export const metadata: Metadata = {
   title: (process.env.NODE_ENV === 'development' ? '(dev) ' : '')
@@ -14,6 +16,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = headers().get('x-negotiated-locale') as string
+
   return (
     // suppressHydrationWarnings to deal with grammarly and other extentions
     // https://stackoverflow.com/questions/75337953/what-causes-nextjs-warning-extra-attributes-from-the-server-data-new-gr-c-s-c
@@ -23,11 +27,12 @@ export default function RootLayout({
           <a className='flex-1 text-xl hover:text-teal-100 active:text-teal-50  whitespace-nowrap' href="/"><h1>
             <strong className="font-bold">MulAI</strong> - Chat with Multiple genAIs
           </h1></a>
-          <Suspense>
-            <DiceLink className="px-2 hover:text-teal-100 active:text-teal-50" />
-          </Suspense>
           {/* copyright @twk all rights reserved */}
           <a className='pt-1 text-teal-700 whitespace-nowrap overflow-x-hidden' href="https://twitter.com/twk" target="_blank" rel="noopener noreferrer">author: @twk</a>
+          <Suspense>
+            <DiceLink className="ml-3 mr-1 hover:text-teal-100 active:text-teal-50" />
+            <LanguageSelector locale={locale} className="ml-1 hover:text-teal-100 active:text-teal-50" />
+          </Suspense>
         </header>
         {children}
       </body>
