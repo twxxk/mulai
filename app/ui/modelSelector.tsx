@@ -22,12 +22,11 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
                 </option>)}
             {selectableModels.map((value) => (
                 // show non recommended model with weak colors
-                <option key={value.label} value={value.modelValue} 
-                    className={value.japaneseScore >= 50 ? 'text-black' 
-                        : value.japaneseScore >= 10 ? 'text-gray-400'
-                        : 'text-gray-200'}
-                >
-                    {value.label}
+                <option key={value.label} value={value.modelValue} className={locale == 'ja' 
+                    ? (value.japaneseScore >= 50 ? 'text-black' : value.japaneseScore >= 15 ? 'text-gray-400' : 'text-gray-200') 
+                    : (value.qualityScore > 50 ? 'text-black' : value.qualityScore >= 40 ? 'text-gray-400' : 'text-gray-200')
+                }>
+                    {value.label} {/*value.qualityScore*/}
                 </option>
             ))}
         </select>

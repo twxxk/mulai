@@ -162,38 +162,38 @@ export const allModels:ChatModelData[] = [
 
     {label: 'Mistral Medium', vendor: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
 
-    {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 50, japaneseScore:37},
+    {label: 'Japanese StableLM Instruct Beta 70B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
 
     {label: 'Qwen 72B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
     {label: 'Qwen 14B Chat', vendor: 'fireworks.ai', modelValue: 'qwen-14b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-14b-chat', qualityScore: 35/256*100, japaneseScore:10},
 
     {label: 'FireLLaVA 13B', vendor: 'fireworks.ai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15},
 
-    {label: 'Gemma 7B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', qualityScore: 50, japaneseScore:10},
-    {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 50, japaneseScore:10},
-    {label: 'Gemma 2B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', qualityScore: 50, japaneseScore:0},
-    {label: 'Gemma 2B', vendor: 'HuggingFace', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 50, japaneseScore:0},
+    {label: 'Gemma 7B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', qualityScore: 40, japaneseScore:10},
+    {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 40-1, japaneseScore:10},
+    {label: 'Gemma 2B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', qualityScore: 40/7*2, japaneseScore:0},
+    {label: 'Gemma 2B', vendor: 'HuggingFace', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 40/7*2-1, japaneseScore:0},
 
-    {label: 'Groq Mixtral 8x7b', vendor: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 120/256*100, japaneseScore:5},
-    {label: 'Groq Llama 2 70B Chat', vendor: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 51, japaneseScore:5},
+    {label: 'Groq Mixtral 8x7b', vendor: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
+    {label: 'Groq Llama 2 70B Chat', vendor: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
 
-    {label: 'Mistral Small', vendor: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 50, japaneseScore:5},
-    {label: 'Mistral Tiny', vendor: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 50, japaneseScore:10},
+    {label: 'Mistral Small', vendor: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 40, japaneseScore:5},
+    {label: 'Mistral Tiny', vendor: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 40, japaneseScore:10},
     {label: 'Mixtral 8x7b MoE (Hugging Face)', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct-hf', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct-hf', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mixtral MoE 8x7B Instruct', vendor: 'fireworks.ai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mistral 7B Instruct', vendor: 'fireworks.ai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', qualityScore: 152/256*100, japaneseScore:0},
-    {label: 'Cohere Command Light Nightly', vendor: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', qualityScore: 50, japaneseScore:0},
-    {label: 'Cohere Command Nightly', vendor: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', qualityScore: 50, japaneseScore:0},
+    {label: 'Cohere Command Nightly', vendor: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', qualityScore: 40, japaneseScore:0},
+    {label: 'Cohere Command Light Nightly', vendor: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', qualityScore: 40, japaneseScore:0},
 
-    {label: 'Llama 2 70B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat', qualityScore: 50, japaneseScore:5},
+    {label: 'Llama 2 70B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat', qualityScore: 82/256*100+1, japaneseScore:5},
     {label: 'Llama 2 70B Code Llama instruct', vendor: 'fireworks.ai', modelValue: 'llama-v2-70b-code-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-code-instruct', qualityScore: 82/256*100, japaneseScore:5},
     {label: 'Llama 2 13B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-13b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-13b-chat', qualityScore: 45/256*100, japaneseScore:5},
     {label: 'Llama 2 7B Chat', vendor: 'fireworks.ai', modelValue: 'llama-v2-7b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-7b-chat', qualityScore: 27/256*100, japaneseScore:5},
 
     {label: 'Capybara 34B', vendor: 'fireworks.ai', modelValue: 'yi-34b-200k-capybara', sdkModelValue: 'accounts/fireworks/models/yi-34b-200k-capybara', qualityScore: 111/256*100, japaneseScore:5},
-    {label: 'Open-Assistant SFT-4 12B', vendor: 'HuggingFace', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', qualityScore: 50, japaneseScore:0},
-    // {label: 'Japanese Stable LM Instruct Gamma 7B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', qualityScore: 50, japaneseScore:20}, // only work with 1 or 2 messages
-    {label: 'StableLM Zephyr 3B', vendor: 'fireworks.ai', modelValue: 'stablelm-zephyr-3b', sdkModelValue: 'accounts/stability/models/stablelm-zephyr-3b', qualityScore: 50, japaneseScore:0},
+    {label: 'Open-Assistant SFT-4 12B', vendor: 'HuggingFace', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', qualityScore: 40, japaneseScore:0},
+    // {label: 'Japanese Stable LM Instruct Gamma 7B', vendor: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', qualityScore: 40, japaneseScore:20}, // only work with 1 or 2 messages
+    {label: 'StableLM Zephyr 3B', vendor: 'fireworks.ai', modelValue: 'stablelm-zephyr-3b', sdkModelValue: 'accounts/stability/models/stablelm-zephyr-3b', qualityScore: 40, japaneseScore:0},
 
     // Vercel AI SDK for AWS supports Claude body format (prompt) but not titan (inputText)
     // {label: 'Titan Text G1 - Express', vendor: 'aws', modelValue: 'amazon.titan-text-express-v1', sdkModelValue: 'amazon.titan-text-express-v1', recommendScore:20},  
