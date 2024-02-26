@@ -1,14 +1,17 @@
 import { match } from '@formatjs/intl-localematcher';
 import Negotiator from 'negotiator';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers'
 
-// get locale for the app based on the search parameter (?locale=ja|en) and the request header (by browser)
+const supportedLocales = ['en', 'ja'];
+const defaultLocale = 'en';
+const COOKIE_NAME_LOCALE = 'locale'
+
+// search parameter (?locale=ja|en) > cookie (locale) > browser accept-language (accept-language)
 function getLocale(req:NextRequest) {
-    const supportedLocales = ['en', 'ja'];
-    const defaultLocale = 'en';
-
-    const specifiedLocale = req.nextUrl.searchParams.get('locale')
-    const headerMap:any = { 'accept-language': specifiedLocale ?? req.headers.get('accept-language') };    
+    const headerMap:any = { 'accept-language': 
+        getLocaleFromSearchParam(req) ?? getLocaleFromCookie() ?? getLocaleFromHeader(req) 
+    };
     // console.log(headerMap)
 
     const negotiator = new Negotiator({ headers:headerMap });
@@ -18,12 +21,35 @@ function getLocale(req:NextRequest) {
     return locale
 }
 
+function getLocaleFromSearchParam(req:NextRequest) {
+    const specifiedLocale = req.nextUrl.searchParams.get('locale')
+    return specifiedLocale 
+}
+
+function getLocaleFromCookie() {
+    const cookieStore = cookies()
+    const cookie = cookieStore.get(COOKIE_NAME_LOCALE)
+    return cookie?.value
+}
+
+function getLocaleFromHeader(req:NextRequest) {
+    return req.headers.get('accept-language')
+}
+
 export default function middleware(req:NextRequest) {
-    // clone and add REQUEST header
-    // https://vercel.com/templates/next.js/edge-functions-modify-request-header
+    const locale = getLocale(req)
+    // console.log('loc=' + locale)
+
+    // app uses req header
+    // clone and add REQUEST header https://vercel.com/templates/next.js/edge-functions-modify-request-header
     const requestHeaders = new Headers(req.headers)
-    requestHeaders.set('x-negotiated-locale', getLocale(req))  
-    return NextResponse.next({
-        request: { headers: requestHeaders },
-    })    
+    requestHeaders.set('x-negotiated-locale', locale)  
+
+    const res = NextResponse.next({request: { headers: requestHeaders }})
+
+    // cookie is for the next access
+    // one month - confirmed Max-Age browser header is set in seconds
+    res.cookies.set(COOKIE_NAME_LOCALE, locale, {maxAge: 60 * 24 * 30})
+
+    return res
 }
