@@ -1,5 +1,6 @@
-import { ChangeEventHandler } from "react"
+import { ChangeEventHandler, useContext } from "react"
 import { selectableModels, allModels } from "../lib/common"
+import { LocaleContext, getTranslations } from "../lib/LocaleContext"
 
 export default function ModelSelector({selectedValue, onChange: handleChange}:{selectedValue:string,  onChange:ChangeEventHandler<HTMLSelectElement>}) {
     // console.log('modelselector is initialized with', selectedValue)
@@ -10,8 +11,11 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
         ? !!selectableModels.find((value) => value.modelValue === selectedValue)
         : false
 
+    const locale = useContext(LocaleContext)
+    const {t} = getTranslations(locale)
+
     return (<div className="whitespace-nowrap overflow-hidden">
-        Model: <select value={selectedValue} onChange={handleChange} className="font-bold">
+        {t('model')} <select value={selectedValue} onChange={handleChange} className="font-bold">
             {(!isModelSelectable && modelData) &&
                 (<option key={modelData?.label} value={modelData?.modelValue}>
                     {modelData?.label}

@@ -49,7 +49,7 @@ export function LanguageSelector({locale, className}:{locale:string, className:s
               </DropdownMenuItem>
             } else {
               return <DropdownMenuItem key={item.value}>
-                <a href={pathname + '?' + createQueryString('locale', item.value)}>{item.label}</a>
+                <a className="w-full h-full" href={pathname + '?' + createQueryString('locale', item.value)}>{item.label}</a>
               </DropdownMenuItem> 
             }
           })}

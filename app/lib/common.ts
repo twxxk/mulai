@@ -206,6 +206,7 @@ export const DEFAULT_CHARACTER_VALUE:CharacterValue = ''
 export type Character = {
     value: CharacterValue,
     label: string,
+    label_ja: string,
     promptContent: string,
     promptContent_ja: string,
     assistantPromptContent?: string,

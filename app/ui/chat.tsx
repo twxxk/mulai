@@ -3,12 +3,13 @@
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon } from 'lucide-react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
 import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
+import { LocaleContext, getTranslations } from '../lib/LocaleContext';
 const Markdown = require('react-markdown-it')
 
 const defaultAssistantPromptContent = 'Understood.'
@@ -17,6 +18,7 @@ const allCharacters:Character[] = [
   {
     "value": "",
     "label": "Normal",
+    "label_ja": "通常",
     "promptContent_ja": "こんにちは。よろしくお願いしますね。",
     "promptContent": "Hello.",
     assistantPromptContent_ja: 'こんにちは！何かお手伝いできることはありますか？',
@@ -25,54 +27,63 @@ const allCharacters:Character[] = [
   {
     "value": "child",
     "label": "Child",
+    "label_ja": "小学生",
     "promptContent_ja": "小学生でもわかるように説明してください。",
     "promptContent": "Please explain in a way that even an elementary school student would understand."
   },
   {
     "value": "bullets",
     "label": "Bullets",
+    "label_ja": "箇条書き",
     "promptContent_ja": "箇条書きで簡潔に答えて",
     "promptContent": "Answer concisely in bullet points."
   },
   {
     "value": "steps",
     "label": "Steps",
+    "label_ja": "ステップ",
     "promptContent_ja": "ステップバイステップで答えてください。",
     "promptContent": "Please answer step by step."
   },
   {
     "value": "proofreading",
     "label": "Proofread",
+    "label_ja": "校正",
     "promptContent_ja": "次の文章を校正して、校正箇所について日本語で理由を教えてください。",
     "promptContent": "Please correct the following sentences and explain the reasons in English for the corrections."
   },
   {
     "value": "optimist",
     "label": "Optimist",
+    "label_ja": "楽観的",
     "promptContent_ja": "楽観的な観点で、物事がうまく行く可能性を前向きに考えて回答してください。",
     "promptContent": "From an optimistic viewpoint, please answer with a positive outlook on the possibilities of things going well."
   },
   {
     "value": "pessimist",
     "label": "Pessimist",
+    "label_ja": "悲観的",
     "promptContent_ja": "悲観的な観点で、物事がうまく行かなくなる可能性を注意深く予測して回答してください。",
     "promptContent": "From a pessimistic viewpoint, please answer by carefully predicting the possibilities of things not going well."
   },
   {
     "value": "melchior",
     "label": "Scientist",
+    "label_ja": "科学者",
     "promptContent_ja": "科学者の側面から、論理的かつ分析的に回答してください。",
     "promptContent": "From a scientist's perspective, please answer logically and analytically."
   },
   {
     "value": "balthasar",
     "label": "Mother",
+    "label_ja": "母親",
     "promptContent_ja": "母の側面から、保護的かつ愛情深く回答してください。",
     "promptContent": "From a mother's perspective, please answer protectively and with deep affection."
   },
   {
     "value": "caspar",
     "label": "Woman",
+    "label_ja": "女性",
     "promptContent_ja": "女性としての側面から、直感的かつ柔軟な思考で回答してください。",
     "promptContent": "From a woman’s perspective, please answer with intuitive and flexible thinking."
   }
@@ -86,10 +97,10 @@ export const getCharacter = (characterValue:CharacterValue) => {
   return allCharacters.find((character) => character.value === characterValue) as Character
 }
 
-const getAILabel = (modelValue:ModelValue, character:Character) => {
+const getAILabel = (modelValue:ModelValue, character:Character, locale:string) => {
   const modelLabel = getModelByValue(modelValue)?.label
   if (character.value !== '') {
-    const characterLabel = character.label
+    const characterLabel = locale == 'ja' ? character.label_ja : character.label
     return `${modelLabel} (${characterLabel})`  
   } else {
     return modelLabel
@@ -112,9 +123,8 @@ function getLocalizedPromptMessages(locale:string, character: Character) {
 }
 
 
-export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, locale, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
+export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
   index:number, 
-  locale:string,
   modelValue:ModelValue,
   character:Character,
   hasClosePaneButton:boolean,
@@ -128,6 +138,9 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   onCompositeChange?:(newValue:boolean)=>void,
 }) 
 {
+	const locale = useContext(LocaleContext)
+  const {t} = getTranslations(locale)
+
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
 
   // reset chat messages
@@ -140,7 +153,6 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
 
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
-
 
   // console.log('chat is being initialized with=' + modelValue)
   setChatOptions(index, chatOptions)
@@ -260,9 +272,9 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
             ? "hidden" // system
             : "bg-gray-100 text-gray-400"
         )}>
-          <div className='font-bold text-xs'>{m.role === 'user' ? 'User: ' 
-          : m.role === 'assistant' ? 'AI: '
-          : 'System: '}</div>
+          <div className='font-bold text-xs'>{m.role === 'user' ? t('user')
+          : m.role === 'assistant' ? t('ai')
+          : t('system')}</div>
           {m.role === "user" 
             ? <div className='whitespace-pre-wrap'>{m.content}</div>
             : <Markdown source={m.content} />
@@ -274,7 +286,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
       <form ref={formRef} onSubmit={handleChatSubmit} className='transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
         <div className='flex flex-row w-full'>
           <div className="flex-1 whitespace-nowrap overflow-hidden">
-            <strong>{getAILabel(modelValue, character)}</strong>
+            <strong>{getAILabel(modelValue, character, locale)}</strong>
           </div>
           {/* <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />
@@ -308,7 +320,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
             }}
             disabled={acceptsBroadcast}
             onCompositeChange={onCompositeChange}
-            placeholder="Say something to this model..."
+            placeholder={t('childInputPlaceholder')}
              />
 
           {/* disabled is useful to stop submitting with enter */}
@@ -329,7 +341,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
             checked={acceptsBroadcast}
             onChange={() => setAcceptsBroadcast(!acceptsBroadcast)}
           />
-          Accepts Broadcast
+          {t('acceptsBroadCast')}
         </label>
       </form>
     </article>

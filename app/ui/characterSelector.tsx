@@ -1,14 +1,17 @@
-import { ChangeEventHandler } from "react"
+import { ChangeEventHandler, useContext } from "react"
 import { Character } from "../lib/common"
+import { LocaleContext, getTranslations } from "../lib/LocaleContext"
 
 export default function CharacterSelector({selectedValue, characters, onChange: handleChange}:{selectedValue:string, characters:any[], onChange:ChangeEventHandler<HTMLSelectElement>}) {
+	const locale = useContext(LocaleContext)
+    const {t} = getTranslations(locale)
 
-    if (characters.length < 1) return 'Character: Normal'
+    if (characters.length < 1) return ''
 
     return (<div className="whitespace-nowrap overflow-hidden">
-        Character: <select value={selectedValue} onChange={handleChange} className="font-bold">
+            {t('character')} <select value={selectedValue} onChange={handleChange} className="font-bold">
             {characters.map((c:Character, index:number) => (
-                <option key={index} value={c.value}>{c.label}</option>
+                <option key={index} value={c.value}>{locale == 'ja' ? c.label_ja : c.label}</option>
             ))}
         </select>
     </div>)

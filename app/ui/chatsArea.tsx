@@ -2,7 +2,7 @@
 
 import { ChatRequestOptions } from 'ai';
 import Chat, { getCharacter } from './chat'
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
 import Splitter, { SplitDirection } from '@devbookhq/splitter'
+import { LocaleContext, getTranslations } from '../lib/LocaleContext';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -37,6 +38,8 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   const [verticalSizes, setVerticalSizes] = useState([95, 5]);
   const [horizontalSizes, setHorizontalSizes] = useState([] as number[]);
+
+  const {t} = getTranslations(locale)
 
   // useEffect(() => {
   //   console.log('Re-rendered form');
@@ -252,6 +255,7 @@ export default function ChatsArea({locale}:{locale:string}) {
   }
     
   return (
+  <LocaleContext.Provider value={locale}>
   <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex flex-row text-xs overflow-auto flex-1 min-h-0', 'w-screen h-12 bottom-0 flex min-h-16']} onResizeFinished={handleVerticalResize}
   >
     <Splitter initialSizes={horizontalSizes} direction={SplitDirection.Horizontal} minWidths={Array(modelCharacterValues.length).fill(180)}  draggerClassName='dragger-horizontal' gutterClassName="gutter gutter-horizontal" onResizeFinished={handleHorizontalResize}>
@@ -260,7 +264,7 @@ export default function ChatsArea({locale}:{locale:string}) {
         const hasClosePaneButton = modelCharacterValues.length > 1
         const hasAddPaneButton = index === modelCharacterValues.length - 1
         return (
-          <Chat key={key} index={index} locale={locale}
+          <Chat key={key} index={index} 
             hasClosePaneButton={hasClosePaneButton} hasAddPaneButton={hasAddPaneButton}
             modelValue={value.modelValue} character={getCharacter(value.characterValue)}
             setChatOptions={setChatOptions} onChangeModel={onChangeModel} onChangeCharacter={onChangeCharacter}
@@ -281,7 +285,7 @@ export default function ChatsArea({locale}:{locale:string}) {
             formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
         }}
         onCompositeChange={(value)=>isUsingIME.current = value}
-        placeholder="Say something to all models..."
+        placeholder={t('parentInputPlaceholder')}
       />
       {/* disabled is useful to stop submitting with enter */}
       <button type="submit" 
@@ -304,5 +308,6 @@ export default function ChatsArea({locale}:{locale:string}) {
       </button>
     </form>
   </Splitter>
+  </LocaleContext.Provider>
   );
 }
