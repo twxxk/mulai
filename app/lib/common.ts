@@ -16,6 +16,8 @@
 //   https://ap-northeast-1.console.aws.amazon.com/bedrock/home?region=ap-northeast-1#/providers?model=anthropic.claude-v2:1
 // # Mistral
 //   https://docs.mistral.ai/platform/endpoints/
+// # Groq
+//   https://console.groq.com/docs/models
 export type ModelLabel 
     = 'GPT-3.5' // in $0.0005/1K tokens, out $0.0015/1K tokens
     | 'GPT-4' // in $0.03/1K tokens, out $0.06/1K tokens
@@ -50,6 +52,8 @@ export type ModelLabel
     | 'Mistral Tiny' // in 0.14€/M, out 0.42€/M
     | 'Mistral Small'
     | 'Mistral Medium' // in 2.5€/M, out 7.5€/M
+    | 'Groq Llama 2 70B Chat'
+    | 'Groq Mixtral 8x7b'
 
 // const modelLabels = [
 //     'GPT-3.5', 
@@ -57,7 +61,7 @@ export type ModelLabel
 // ] as const;
 // export type ModelLabel = typeof modelLabels[number];
 
-export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral'
+export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral' | 'groq'
 
 export const allModelValues = [
     'gpt-3.5-turbo', 
@@ -91,6 +95,8 @@ export const allModelValues = [
     'mistral-medium',
     'mistral-small',
     'mistral-tiny',
+    'groq-LLaMA2-70b-chat',
+    'groq-Mixtral-8x7b-Instruct-v0.1',
 ] as const;
 
 export type ModelValue = typeof allModelValues[number];
@@ -126,6 +132,8 @@ export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
     | 'mistral-medium'
     | 'mistral-small'
     | 'mistral-tiny'
+    | 'llama2-70b-4096'
+    | 'mixtral-8x7b-32768'
 
 export type ChatModelData = {
     label: ModelLabel, // for human
@@ -165,6 +173,9 @@ export const allModels:ChatModelData[] = [
     {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 50, japaneseScore:10},
     {label: 'Gemma 2B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', qualityScore: 50, japaneseScore:0},
     {label: 'Gemma 2B', vendor: 'HuggingFace', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 50, japaneseScore:0},
+
+    {label: 'Groq Mixtral 8x7b', vendor: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 120/256*100, japaneseScore:5},
+    {label: 'Groq Llama 2 70B Chat', vendor: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 51, japaneseScore:5},
 
     {label: 'Mistral Small', vendor: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 50, japaneseScore:5},
     {label: 'Mistral Tiny', vendor: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 50, japaneseScore:10},

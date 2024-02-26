@@ -29,7 +29,7 @@ const bedrockClient = new BedrockRuntimeClient({
 });
 const groq = new OpenAI({
     apiKey: process.env.GROQ_API_KEY || '',
-    baseURL: 'https://api.groq.com/v1',
+    baseURL: 'https://api.groq.com/openai/v1',
 })
 const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
 
