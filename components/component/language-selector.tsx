@@ -9,10 +9,14 @@ import { GlobeIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback } from "react";
 
-type LocaleInfo = { value: string, label: string, href?: string }
+type LocaleInfo = { value: string, label: string }
+
+const locales:LocaleInfo[] = [
+  {value: 'en', label: 'English'},
+  {value: 'ja', label: '日本語'},
+]
 
 export function LanguageSelector({locale, className}:{locale:string, className:string}) {
-  const router = useRouter()
   const pathname = usePathname();
   const searchParams = useSearchParams()
 
@@ -26,11 +30,6 @@ export function LanguageSelector({locale, className}:{locale:string, className:s
     },
     [searchParams]
   )
-
-  const locales:LocaleInfo[] = [
-    {value: 'en', label: 'English'},
-    {value: 'ja', label: '日本語'},
-  ]
 
   return (
     <DropdownMenu>
@@ -49,7 +48,7 @@ export function LanguageSelector({locale, className}:{locale:string, className:s
               </DropdownMenuItem>
             } else {
               return <DropdownMenuItem key={item.value}>
-                <a className="w-full h-full" href={pathname + '?' + createQueryString('locale', item.value)}>{item.label}</a>
+                <a className="size-full" href={pathname + '?' + createQueryString('locale', item.value)}>{item.label}</a>
               </DropdownMenuItem> 
             }
           })}
