@@ -284,7 +284,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
       </div>
  
       <form ref={formRef} onSubmit={handleChatSubmit} className='transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
-        <div className='flex flex-row w-full'>
+        <div className='flex flex-row mb-1 w-full'>
           <div className="flex-1 whitespace-nowrap overflow-hidden">
             <strong>{getAILabel(modelValue, character, locale)}</strong>
           </div>
@@ -309,7 +309,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
             <span className='sr-only'>Add</span>
           </button>  
         </div>
-        <div className='flex w-full'>
+        <div className={acceptsBroadcast ? 'hidden' : 'flex w-full'}>
           <EnterableTextarea 
             className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none overflow-hidden disabled:text-gray-300"
             value={chatOptions.input}
@@ -318,11 +318,9 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
               if (formRef.current)
                 formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
             }}
-            disabled={acceptsBroadcast}
             onCompositeChange={onCompositeChange}
             placeholder={t('childInputPlaceholder')}
              />
-
           {/* disabled is useful to stop submitting with enter */}
           <button type="submit" 
             className='ml-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600' 

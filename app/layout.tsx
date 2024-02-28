@@ -37,7 +37,7 @@ export default function RootLayout({
           <a className='pt-1 text-teal-700 whitespace-nowrap overflow-x-hidden' href="https://twitter.com/twk" target="_blank" rel="noopener noreferrer">author: @twk</a>
           <Suspense>
             <ModelLinks locale={locale} 
-              className="focus-visible:outline-none ml-3 mr-1 hover:text-teal-100 active:text-teal-50" />
+              className="focus-visible:outline-none ml-2 mr-1 hover:text-teal-100 active:text-teal-50" />
             <LanguageSelector locale={locale} 
               className="focus-visible:outline-none ml-1 hover:text-teal-100 active:text-teal-50" />
           </Suspense>

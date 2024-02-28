@@ -15,7 +15,7 @@ const en:{[key:string]: any} = {
 } as const
 
 const ja:{[key:string]: any} = {
-    character: 'キャラクター: ',
+    character: '性格: ',
 	model: 'モデル: ',
 	user: 'ユーザー: ',
 	ai: 'AI: ',
