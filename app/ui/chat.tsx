@@ -132,6 +132,7 @@ function CodeCopyBtn({children}:{children:React.Component<any, any>}) {
   return (
     <button onClick={handleClick} className="text-teal-600 enabled:hover:text-teal-500 enabled:active:text-teal-100">
       <ClipboardCopyIcon className="h-5 w-5" />
+      <span className='sr-only'>Copy</span>
     </button>
   )
 }
@@ -143,7 +144,7 @@ function ChatMessage({message}:{message:Message}) {
   return (
   <div className={
     /* #2b2b2b=a11yDark */
-    "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:mt-1 prose-pre:mb-3 prose-pre:bg-[#2b2b2b] " + 
+    "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal prose prose-sm prose-p:mt-0 prose-pre:mt-1 prose-pre:mb-1 prose-pre:bg-[#2b2b2b] " + 
     (message.role === "user"
       ? " bg-slate-100"
       : message.role === "assistant"
@@ -152,7 +153,10 @@ function ChatMessage({message}:{message:Message}) {
       ? " hidden" // system
       : " bg-gray-100 text-gray-400"
   )}>
-    <div className='font-bold text-xs'>
+    <div className={'font-bold text-xs ' +
+      (message.role === 'user' ? ' text-slate-800'
+      : ' text-teal-800')
+    }>
       {message.role === 'user' ? t('user')
       : message.role === 'assistant' ? t('ai')
       : t('system')}
@@ -322,21 +326,19 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   }
 
   return (<>
-    <article className="flex flex-col w-full pt-2 h-full">
-      <div className='px-3'>
-        <ModelSelector selectedValue={modelValue} onChange={handleChangeModel} /> 
-        <CharacterSelector selectedValue={character.value} characters={characters} onChange={handleChangeCharacter} />
-      </div>
+    <article className="flex flex-col w-full h-full">
       <div className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
-      {chatOptions.messages.map((m, index) => (
-        <ChatMessage key={index} message={m} />
-      ))}
+        <div className='px-3 py-1 font-bold text-teal-800'>{t('ai')}<span className='text-teal-800'>{getAILabel(modelValue, character, locale)}</span></div>
+        {chatOptions.messages.map((m, index) => (
+          <ChatMessage key={index} message={m} />
+        ))}
       </div>
  
       <form ref={formRef} onSubmit={handleChatSubmit} className='transition-opacity duration-50 bottom-0 bg-slate-50 px-2 pt-1 rounded-sm'>
-        <div className='flex flex-row mb-1 w-full'>
-          <div className="flex-1 whitespace-nowrap overflow-hidden">
-            <strong>{getAILabel(modelValue, character, locale)}</strong>
+        <div className='flex flex-row mb-1 w-full align-text-top'>
+          <div className="flex-1">
+            <ModelSelector selectedValue={modelValue} onChange={handleChangeModel} /> 
+            <CharacterSelector selectedValue={character.value} characters={characters} onChange={handleChangeCharacter} />
           </div>
           {/* <button className="mt-1 ml-1 disabled:text-gray-300 enabled:text-slate-700 enabled:hover:text-teal-700 enabled:active:text-teal-600" onClick={handleMinimizePaneSize}>
             <Minimize2Icon className="h-3 w-3" />
@@ -346,13 +348,13 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
             <Maximize2Icon className="h-3 w-3" />
             <span className="sr-only">Maximize</span>
           </button> */}
-          <button className='ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
+          <button className='h-4 ml-1 disabled:text-gray-300 enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
             disabled={!hasClosePaneButton} 
             onClick={handleClosePane}>
             <XIcon className="h-3 w-3" />
             <span className='sr-only'>Close</span>
           </button>  
-          <button className='ml-1 disabled:hidden enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
+          <button className='h-4 ml-1 disabled:hidden enabled:text-slate-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'
             disabled={!hasAddPaneButton} 
             onClick={addPane}>
             <PlusIcon className="h-3 w-3" />

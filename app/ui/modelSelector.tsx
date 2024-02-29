@@ -14,7 +14,7 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
     const locale = useContext(LocaleContext)
     const {t} = getTranslations(locale)
 
-    return (<div className="whitespace-nowrap overflow-hidden">
+    return (<span className="whitespace-nowrap overflow-hidden mr-1">
         {t('model')} <select value={selectedValue} onChange={handleChange} className="font-bold">
             {(!isModelSelectable && modelData) &&
                 (<option key={modelData?.label} value={modelData?.modelValue}>
@@ -30,5 +30,5 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
                 </option>
             ))}
         </select>
-    </div>)
+    </span>)
 }
