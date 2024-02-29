@@ -2,7 +2,7 @@
  
 import { ChatRequestOptions, Message } from 'ai';
 import { ChatOptions } from './chatOptions'
-import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon } from 'lucide-react';
+import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon, ClipboardCopyIcon } from 'lucide-react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
 import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
@@ -10,7 +10,10 @@ import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
 import { LocaleContext, getTranslations } from '../lib/LocaleContext';
-const Markdown = require('react-markdown-it')
+import ReactMarkdown from 'react-markdown';
+import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-highlight'
+import { a11yDark  } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import remarkGfm from 'remark-gfm';
 
 const defaultAssistantPromptContent = 'Understood.'
 const defaultAssistantPromptContent_ja = 'かしこまりました。'
@@ -122,6 +125,68 @@ function getLocalizedPromptMessages(locale:string, character: Character) {
   ]
 }
 
+function CodeCopyBtn({children}:{children:React.Component<any, any>}) {
+  const handleClick = () => {
+    navigator.clipboard.writeText(children?.props?.children);
+  }
+  return (
+    <button onClick={handleClick} className="text-teal-600 enabled:hover:text-teal-500 enabled:active:text-teal-100">
+      <ClipboardCopyIcon className="h-5 w-5" />
+    </button>
+  )
+}
+
+function ChatMessage({message}:{message:Message}) {
+	const locale = useContext(LocaleContext)
+  const {t} = getTranslations(locale)
+
+  return (
+  <div className={
+    /* #2b2b2b=a11yDark */
+    "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:mt-1 prose-pre:mb-3 prose-pre:bg-[#2b2b2b] " + 
+    (message.role === "user"
+      ? " bg-slate-100"
+      : message.role === "assistant"
+      ? " "
+      : process.env.NODE_ENV !== 'development'
+      ? " hidden" // system
+      : " bg-gray-100 text-gray-400"
+  )}>
+    <div className='font-bold text-xs'>
+      {message.role === 'user' ? t('user')
+      : message.role === 'assistant' ? t('ai')
+      : t('system')}
+    </div>
+    {message.role === "user" 
+      ? <div className='whitespace-pre-wrap'>{message.content}</div>
+      : <ReactMarkdown
+          remarkPlugins={[remarkGfm]}
+          components={{
+            pre({children}) {
+              return (
+                <div className='relative'>
+                  {children}
+                  <div className='absolute top-1 right-1'>
+                    <CodeCopyBtn>{children as any}</CodeCopyBtn>
+                  </div>
+                </div>
+              )
+            },
+            code({className, children}) {
+              const language = (/language-(\w+)/.exec(className || '') || ['',''])[1]
+              return (
+                <SyntaxHighlighter language={language} style={a11yDark}>
+                  {children as any}
+                </SyntaxHighlighter>
+              )
+            },
+        }}>
+        {message.content}
+      </ReactMarkdown>
+    }
+  </div>
+  )
+}
 
 export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
   index:number, 
@@ -175,6 +240,8 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
         for (const entry of entries) {
           // console.log('resize top=', entry.target.scrollTop, ', height=', entry.target.scrollHeight);
           const historyElement = historyElementRef.current as unknown as Element
+          // When you save source during develpment, historyElement could be null
+          if (!historyElement) continue;
           historyElement.scrollTop = historyElement.scrollHeight
         }
       });
@@ -262,24 +329,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
       </div>
       <div className='flex-1 overflow-y-auto w-full' ref={historyElementRef}>
       {chatOptions.messages.map((m, index) => (
-        <div key={index} className={
-          "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal overflow-x-auto prose prose-sm prose-p:mt-1 prose-p:mb-3 prose-pre:my-0 prose-pre:mt-1 prose-pre:mb-3 " + 
-          (m.role === "user"
-            ? "bg-slate-100"
-            : m.role === "assistant"
-            ? ""
-            : process.env.NODE_ENV !== 'development'
-            ? "hidden" // system
-            : "bg-gray-100 text-gray-400"
-        )}>
-          <div className='font-bold text-xs'>{m.role === 'user' ? t('user')
-          : m.role === 'assistant' ? t('ai')
-          : t('system')}</div>
-          {m.role === "user" 
-            ? <div className='whitespace-pre-wrap'>{m.content}</div>
-            : <Markdown source={m.content} />
-            }
-        </div>
+        <ChatMessage key={index} message={m} />
       ))}
       </div>
  
