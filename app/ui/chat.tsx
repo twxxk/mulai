@@ -178,11 +178,16 @@ function ChatMessage({message}:{message:Message}) {
             },
             code({className, children}) {
               const language = (/language-(\w+)/.exec(className || '') || ['',''])[1]
-              return (
-                <SyntaxHighlighter language={language} style={a11yDark}>
-                  {children as any}
-                </SyntaxHighlighter>
-              )
+              if (language) {
+                return (
+                  <SyntaxHighlighter language={language} style={a11yDark} wrapLongLines={true}>
+                    {children as any}
+                  </SyntaxHighlighter>
+                )
+              } else {
+                // inline
+                return <code>{children}</code>
+              }
             },
         }}>
         {message.content}
