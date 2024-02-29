@@ -178,7 +178,7 @@ function ChatMessage({message}:{message:Message}) {
             },
             code({className, children}) {
               const language = (/language-(\w+)/.exec(className || '') || ['',''])[1]
-              if (language) {
+              if (language || String(children).length >= 50) {
                 return (
                   <SyntaxHighlighter language={language} style={a11yDark} wrapLongLines={true}>
                     {children as any}
