@@ -6,11 +6,11 @@ import OpenAI from 'openai';
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { HfInference } from '@huggingface/inference';
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
-import { DEFAULT_MODEL, ModelVendor, getModelByValue, ModelValue } from '@/app/lib/common';
+import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModelData } from '@/app/lib/common';
 // Note: There are no types for the Mistral API client yet.
 // @ts-ignore
 import MistralClient from '@mistralai/mistralai';
-import { ChatCompletionChunk } from 'openai/resources/index.mjs';
+import { ChatCompletionChunk, ImageGenerateParams } from 'openai/resources/index.mjs';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
@@ -38,7 +38,7 @@ export const runtime = 'edge';
 
 
 interface ChatStreamFunction {
-    ({model, messages}: {model: string, messages: any}): Promise<ReadableStream>;
+    ({model, messages}: {model: ChatModelData, messages: Message[]}): Promise<ReadableStream>;
 }
 
 function stringToReadableStream(str:string):ReadableStream {
@@ -54,24 +54,48 @@ function stringToReadableStream(str:string):ReadableStream {
 // https://sdk.vercel.ai/docs/guides/providers/openai
 const openaiChatStream:ChatStreamFunction = async({model, messages}) => {
     // Ask OpenAI for a streaming chat completion given the prompt
-    const response = await openai.chat.completions.create({
-        model,
+    const defaultParams = {
+        model: model.sdkModelValue,
         stream: true,
-        max_tokens: 4096, // GPT-4 Vision responds tens of chars only if no max_tokens is given.
         messages,
-    })
+    }
+    const params = model.maxTokens ? {...defaultParams, max_tokens: model.maxTokens} : defaultParams
+    const response = await openai.chat.completions.create(params as any)
 
     // Convert the response into a friendly text-stream
-    const stream = OpenAIStream(response)
+    const stream = OpenAIStream(response as any)
     return stream
+}
+
+const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
+    const prompt = messages[messages.length - 1].content
+
+    const params:ImageGenerateParams = {
+        prompt,
+        model: model.sdkModelValue,
+        n: 1, // 5/min for free tier
+        response_format: 'url',
+        size: '256x256', // for dall-e-2
+        // size: '1024x1024' // for dall-e-3
+    }
+    const response = await openai.images.generate(params)
+    // console.log(response.data) // [{url:string}, ...]
+
+    const responseMarkdown = response.data.map((datum) => 
+        `![${prompt}](${datum.url} "${prompt}")`
+    ).join('\n')
+
+    const stream = stringToReadableStream(responseMarkdown)
+    return stream    
 }
 
 // Google Gemini
 // https://sdk.vercel.ai/docs/guides/providers/google
 const googleChatStream:ChatStreamFunction = async({model, messages}) => {
+    const prompts = buildGoogleGenAIPrompt(messages)
     const geminiStream = await google
-        .getGenerativeModel({ model })
-        .generateContentStream(buildGoogleGenAIPrompt(messages))
+        .getGenerativeModel({ model: model.sdkModelValue })
+        .generateContentStream(prompts)
 
     // Convert the response into a friendly text-stream
     const stream = GoogleGenerativeAIStream(geminiStream)
@@ -96,7 +120,7 @@ const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
     // Ask Fireworks for a streaming chat completion using Llama 2 70b model
     // @see https://app.fireworks.ai/models/fireworks/llama-v2-70b-chat
     const response = await fireworks.chat.completions.create({
-        model,
+        model: model.sdkModelValue,
         stream: true,
         max_tokens: 4096,
         messages,
@@ -111,7 +135,7 @@ const awsAnthropicChatStream:ChatStreamFunction = async ({model, messages})=>{
     // Ask Claude for a streaming chat completion given the prompt
     const bedrockResponse = await bedrockClient.send(
         new InvokeModelWithResponseStreamCommand({
-            modelId: model,
+            modelId: model.sdkModelValue,
             contentType: 'application/json',
             accept: 'application/json',
             body: JSON.stringify({
@@ -128,7 +152,7 @@ const awsAnthropicChatStream:ChatStreamFunction = async ({model, messages})=>{
 const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
     // @see https://docs.api.groq.com/md/openai.oas.html
     const response = await groq.chat.completions.create({
-        model,
+        model: model.sdkModelValue,
         stream: true,
         messages,
     });
@@ -140,7 +164,7 @@ const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
 const mistralChatStream:ChatStreamFunction = async ({model, messages}) => {
     // @see https://sdk.vercel.ai/docs/guides/providers/mistral
     const chatStream = await mistral.chatStream({
-      model: model,
+      model: model.sdkModelValue,
       messages,
     });
     const asyncIterable = chatStream as AsyncIterable<ChatCompletionChunk>;
@@ -151,7 +175,7 @@ const mistralChatStream:ChatStreamFunction = async ({model, messages}) => {
 
 const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
     const response = Hf.textGenerationStream({
-        model: model,
+        model: model.sdkModelValue,
         inputs: experimental_buildOpenAssistantPrompt(messages),
         parameters: {
           // @ts-ignore (this is a valid parameter specifically in OpenAssistant models)
@@ -159,8 +183,8 @@ const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
           repetition_penalty: 1,
           return_full_text: false,
         },
-      });
-     
+    });
+
     // Convert the response into a friendly text-stream
     const stream = HuggingFaceStream(response);
     return stream
@@ -192,7 +216,7 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
       'Cohere-Version': '2022-12-06',
     },
     body: JSON.stringify({
-      model: model,
+      model: model.sdkModelValue,
       prompt: buildCohereGenAIPrompt(messages),
       return_likelihoods: "NONE",
     //   max_tokens: 200,
@@ -212,7 +236,7 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
 
 // factory method
 // might be returned undefined
-function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
+function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
     // key is actually ModelVendor
     const vendorMap:{[key:string]:ChatStreamFunction} = {
         'openai': openaiChatStream,
@@ -224,7 +248,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
         'aws': awsAnthropicChatStream,
         'mistral': mistralChatStream,
     }
-    return vendorMap[vendor as string]
+    return vendorMap[model.vendor as string]
 }
 
 export async function POST(req: Request) {
@@ -261,8 +285,8 @@ export async function POST(req: Request) {
         }
         // console.log(m)
 
-        const responseStreamGenerator = chatStreamFactory(modelData.vendor)
-        const stream = await responseStreamGenerator({model:modelData.sdkModelValue, messages: m})
+        const responseStreamGenerator = chatStreamFactory(modelData)
+        const stream = await responseStreamGenerator({model:modelData, messages: m})
 
         return new StreamingTextResponse(stream)
     } catch (e:any) {

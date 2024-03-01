@@ -12,7 +12,7 @@ const en:{[key:string]: any} = {
 	defaultModelsLabel: 'Default',
 	magiModelsLabel: 'MAGI',
 	optpessModelsLabel: 'Optim/Pessi',
-	imageModelsLabel: 'Image',
+	describeImageModelsLabel: 'Describe Image',
 	randomModelsLabel: 'Random',
 } as const
 
@@ -30,7 +30,7 @@ const ja:{[key:string]: any} = {
 	defaultModelsLabel: 'おすすめ',
 	magiModelsLabel: 'MAGI',
 	optpessModelsLabel: '楽観悲観',
-	imageModelsLabel: '画像',
+	describeImageModelsLabel: '画像説明',
 	randomModelsLabel: 'ランダム',
 } as const
 

@@ -14,6 +14,7 @@ import ReactMarkdown from 'react-markdown';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-highlight'
 import { a11yDark  } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import remarkGfm from 'remark-gfm';
+import rehypeExternalLinks from 'rehype-external-links'
 
 const defaultAssistantPromptContent = 'Understood.'
 const defaultAssistantPromptContent_ja = 'かしこまりました。'
@@ -144,7 +145,7 @@ function ChatMessage({message}:{message:Message}) {
   return (
   <div className={
     /* #2b2b2b=a11yDark */
-    "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal prose prose-sm prose-p:mt-0 prose-pre:mt-1 prose-pre:mb-1 prose-pre:bg-[#2b2b2b] " + 
+    "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal prose prose-sm prose-p:mt-0 prose-pre:mt-1 prose-pre:mb-1 prose-pre:bg-[#2b2b2b] prose-img:my-1 " + 
     (message.role === "user"
       ? " bg-slate-100"
       : message.role === "assistant"
@@ -164,6 +165,7 @@ function ChatMessage({message}:{message:Message}) {
     {message.role === "user" 
       ? <div className='whitespace-pre-wrap overflow-auto'>{message.content}</div>
       : <ReactMarkdown
+          rehypePlugins={[[rehypeExternalLinks, {target: '_blank'}]]}
           remarkPlugins={[remarkGfm]}
           components={{
             pre({children}) {
@@ -236,7 +238,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
         childValue = inputValue
       chatOptions.setInput(childValue)
     }
-  }, [chatOptions, acceptsBroadcast, inputValue, modelValue, imageUrl])
+  }, [acceptsBroadcast, inputValue, modelValue, imageUrl])
 
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);

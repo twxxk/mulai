@@ -46,7 +46,7 @@ export default function ModelLinks({locale, className}:{locale:string, className
                 <a className="size-full" href="/?models=optpess">{t('optpessModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
-                <a className="size-full" href="/?models=decodeimage">{t('imageModelsLabel')}</a>
+                <a className="size-full" href="/?models=describeimage">{t('describeImageModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
                 <a className="size-full" href={randomUrl} suppressHydrationWarning={true}>

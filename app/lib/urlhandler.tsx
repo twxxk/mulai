@@ -61,7 +61,7 @@ const freeValues:ModelCharacterPair[] = [
       {modelValue: 'gpt-4', characterValue: ''},
       {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
     ],
-    decodeimage: [
+    describeimage: [
         {modelValue: 'firellava-13b', characterValue: ''},
         {modelValue: 'gpt-4-vision-preview', characterValue: ''},
     ],
@@ -85,8 +85,8 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
     if (modelsParam === 'optpess') {
         return specialPairs.optpess
     }
-    if (modelsParam === 'decodeimage') {
-        return specialPairs.decodeimage
+    if (modelsParam === 'describeimage') {
+        return specialPairs.describeimage
     }
     if (modelsParam === 'gemini') {
         return specialPairs.gemini
