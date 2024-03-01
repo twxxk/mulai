@@ -259,7 +259,7 @@ export async function POST(req: Request) {
         } else {
             m = messages
         }
-        console.log(m)
+        // console.log(m)
 
         const responseStreamGenerator = chatStreamFactory(modelData.vendor)
         const stream = await responseStreamGenerator({model:modelData.sdkModelValue, messages: m})
