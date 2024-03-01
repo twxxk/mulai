@@ -123,7 +123,7 @@ const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
         model: model.sdkModelValue,
         stream: true,
         max_tokens: 4096,
-        messages,
+        messages: messages as any,
     });
 
     const stream = OpenAIStream(response);
@@ -154,7 +154,7 @@ const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
     const response = await groq.chat.completions.create({
         model: model.sdkModelValue,
         stream: true,
-        messages,
+        messages: messages as any,
     });
 
     const stream = OpenAIStream(response);
@@ -217,7 +217,7 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
     },
     body: JSON.stringify({
       model: model.sdkModelValue,
-      prompt: buildCohereGenAIPrompt(messages),
+      prompt: buildCohereGenAIPrompt(messages as any),
       return_likelihoods: "NONE",
     //   max_tokens: 200,
       temperature: 0.9,
