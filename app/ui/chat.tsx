@@ -5,7 +5,7 @@ import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon, ClipboardCopyIcon } from 'lucide-react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
-import { Character, CharacterValue, ModelValue, getModelByValue } from '../lib/common';
+import { Character, CharacterValue, ModelValue, doesModelAcceptImageUrl, getModelByValue } from '../lib/common';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
@@ -162,7 +162,7 @@ function ChatMessage({message}:{message:Message}) {
       : t('system')}
     </div>
     {message.role === "user" 
-      ? <div className='whitespace-pre-wrap'>{message.content}</div>
+      ? <div className='whitespace-pre-wrap overflow-auto'>{message.content}</div>
       : <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           components={{
@@ -197,7 +197,7 @@ function ChatMessage({message}:{message:Message}) {
   )
 }
 
-export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange}:{
+export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange, inputValue, imageUrl}:{
   index:number, 
   modelValue:ModelValue,
   character:Character,
@@ -210,6 +210,8 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   addPane:()=>void,
   removePane:(index:number)=>void,
   onCompositeChange?:(newValue:boolean)=>void,
+  inputValue:string,
+  imageUrl:string,
 }) 
 {
 	const locale = useContext(LocaleContext)
@@ -224,6 +226,17 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
     chatOptions.setMessages(initialMessages)
   }, [locale, character])
   const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast, setAcceptsBroadcast, resetMessages}
+
+  useEffect(() => {
+    if (acceptsBroadcast) {
+      let childValue
+      if (imageUrl && !doesModelAcceptImageUrl(modelValue)) {
+        childValue = imageUrl + "\n" + inputValue
+      } else
+        childValue = inputValue
+      chatOptions.setInput(childValue)
+    }
+  }, [chatOptions, acceptsBroadcast, inputValue, modelValue, imageUrl])
 
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);

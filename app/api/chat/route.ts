@@ -57,6 +57,7 @@ const openaiChatStream:ChatStreamFunction = async({model, messages}) => {
     const response = await openai.chat.completions.create({
         model,
         stream: true,
+        max_tokens: 4096, // GPT-4 Vision responds tens of chars only if no max_tokens is given.
         messages,
     })
 
@@ -97,6 +98,7 @@ const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
     const response = await fireworks.chat.completions.create({
         model,
         stream: true,
+        max_tokens: 4096,
         messages,
     });
 
@@ -227,7 +229,7 @@ function chatStreamFactory(vendor: ModelVendor):ChatStreamFunction {
 
 export async function POST(req: Request) {
     try {
-        const { messages } = await req.json();
+        const { messages, data } = await req.json();
         let modelValue = req.headers.get('Model') ?? ''
 
         // get vendor from model (verifying model)       
@@ -237,9 +239,31 @@ export async function POST(req: Request) {
             modelData = DEFAULT_MODEL
         }
         console.log('model:', modelValue, ', vendor:', modelData.vendor, ', sdkModel:', modelData.sdkModelValue)
-    
+
+        let m:any
+        if (data?.imageUrl) {
+            // https://sdk.vercel.ai/docs/guides/providers/openai#guide-using-images-with-gpt-4-vision-and-usechat
+            // https://readme.fireworks.ai/docs/querying-vision-language-models
+            const initialMessages = messages.slice(0, -1);
+            const currentMessage = messages[messages.length - 1];        
+            m = [
+                ...initialMessages,
+                {
+                    ...currentMessage,
+                    content: [
+                        { type: 'text', text: currentMessage.content },
+                        { type: 'image_url', image_url: { url: data?.imageUrl } },
+                    ]
+                }
+            ]
+        } else {
+            m = messages
+        }
+        console.log(m)
+
         const responseStreamGenerator = chatStreamFactory(modelData.vendor)
-        const stream = await responseStreamGenerator({model:modelData.sdkModelValue, messages})
+        const stream = await responseStreamGenerator({model:modelData.sdkModelValue, messages: m})
+
         return new StreamingTextResponse(stream)
     } catch (e:any) {
         // any network error etc

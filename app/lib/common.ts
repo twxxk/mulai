@@ -6,6 +6,7 @@
 // # openai 
 //   https://openai.com/pricing#language-models
 //   https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
+//   https://platform.openai.com/docs/guides/vision/calculating-costs
 // # google
 //   https://ai.google.dev/pricing
 //   https://ai.google.dev/models/gemini
@@ -13,7 +14,7 @@
 //   https://readme.fireworks.ai/page/pricing
 //   https://fireworks.ai/models
 // # AWS Bedrock Anthropic Claude
-//   https://ap-northeast-1.console.aws.amazon.com/bedrock/home?region=ap-northeast-1#/providers?model=anthropic.claude-v2:1
+//   https://ap-northeast-1.console.aws.amazon.com/bedrock/home?region=ap-northeast-1#/providers?model=anthropic.claude-v2
 // # Mistral
 //   https://docs.mistral.ai/platform/endpoints/
 // # Groq
@@ -22,6 +23,7 @@ export type ModelLabel
     = 'GPT-3.5' // in $0.0005/1K tokens, out $0.0015/1K tokens
     | 'GPT-4' // in $0.03/1K tokens, out $0.06/1K tokens
     | 'GPT-4 Turbo' // in $0.01/1K tokens, out $0.03/1K tokens 
+    | 'GPT-4 Vision' // 1024x1024 in high costs 765 tokens
     | 'Google Gemini Pro' // free (up to 60queries/min) 
     | 'Google Gemini Pro Latest' // free (up to 60queries/min) 
     // fireworks.ai is free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
@@ -67,6 +69,7 @@ export const allModelValues = [
     'gpt-3.5-turbo', 
     'gpt-4', 
     'gpt-4-turbo-preview', 
+    'gpt-4-vision-preview',
     'gemini-pro', 
     'gemini-1.0-pro-latest',
     'japanese-stablelm-instruct-beta-70b',
@@ -90,7 +93,7 @@ export const allModelValues = [
     'mistral-7b-instruct-4k',
     'llama-v2-70b-code-instruct',
     'stablelm-zephyr-3b',
-    'anthropic.claude-v2:1',
+    'anthropic.claude-v2',
     'anthropic.claude-instant-v1',
     'mistral-medium',
     'mistral-small',
@@ -103,8 +106,14 @@ export type ModelValue = typeof allModelValues[number];
 
 export type ModelCharacterPair = {modelValue:ModelValue, characterValue:CharacterValue}
 
+export function doesModelAcceptImageUrl(modelValue:ModelValue) {
+    return modelValue === 'gpt-4-vision-preview' || modelValue === 'firellava-13b'
+    // return true
+}
+
 // model to call AI sdk
 export type SdkModelValue = 'gpt-3.5-turbo' | 'gpt-4' | 'gpt-4-turbo-preview'
+    | 'gpt-4-vision-preview'
     | 'gemini-pro' | 'gemini-1.0-pro-latest'
     | 'accounts/stability/models/japanese-stablelm-instruct-beta-70b'
     | 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b'
@@ -153,12 +162,13 @@ export const allModels:ChatModelData[] = [
     {label: 'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67}, // fast
     {label: 'GPT-4', vendor: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 254/256*100, japaneseScore: 76},
     {label: 'GPT-4 Turbo', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77},
+    {label: 'GPT-4 Vision', vendor: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67},
     
     {label: 'Google Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Latest', vendor: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
 
     {label: 'Anthropic Claude Instant', vendor: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
-    {label: 'Anthropic Claude', vendor: 'aws', modelValue: 'anthropic.claude-v2:1', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
+    {label: 'Anthropic Claude', vendor: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
 
     {label: 'Mistral Medium', vendor: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
 

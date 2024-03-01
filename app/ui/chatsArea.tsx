@@ -6,7 +6,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
-import { DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, Character } from '@/app/lib/common';
+import { DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, Character, doesModelAcceptImageUrl } from '@/app/lib/common';
 import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
@@ -26,6 +26,9 @@ export default function ChatsArea({locale}:{locale:string}) {
 
   const [parentInput, setParentInput] = useState('')
   let splitSizes = splitToArray(modelCharacterValues.length)
+  const [imageUrl, setImageUrl] = useState('')
+
+  const hasVisionModel = modelCharacterValues.findIndex(mc => doesModelAcceptImageUrl(mc.modelValue)) >= 0
 
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
@@ -191,19 +194,6 @@ export default function ChatsArea({locale}:{locale:string}) {
     // }
   }
 
-  const parentHandleInputChange = (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = e.currentTarget.value
-    setParentInput(newValue)
-
-    // copy parent input value to children inputs
-    chats.map((chat:ChatOptions, index:number) => {
-      if (!chat.acceptsBroadcast)
-        return;
-
-      chat.setInput(newValue)
-    })
-  }
-
   // form submit handler
   // submit all children chats
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -214,13 +204,22 @@ export default function ChatsArea({locale}:{locale:string}) {
 
       console.log('requesting model=' + modelCharacterValues[index].modelValue)
       const modelValue = modelCharacterValues[index].modelValue
-      const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
-  
+
+      const defaultOptions:ChatRequestOptions = {
+        options:{headers:{model: modelValue}},
+      }
+      const options:ChatRequestOptions = doesModelAcceptImageUrl(modelValue) && imageUrl 
+      ? {
+        ...defaultOptions,
+        data: imageUrl ? {imageUrl: imageUrl} : {},
+      }
+      : defaultOptions
+    
       chat.handleSubmit(e, options)
     })
 
     // make sure map is called with the old value
-    setTimeout(()=>setParentInput(''), 100)
+    setTimeout(()=>{setParentInput(''); setImageUrl('')}, 100)
   }
 
   // stop chat
@@ -272,22 +271,31 @@ export default function ChatsArea({locale}:{locale:string}) {
             changeChatLoading={changeChatLoading}
             addPane={addModel} removePane={removeModel} 
             onCompositeChange={(value)=>isUsingIME.current = value}
+            inputValue={parentInput} imageUrl={imageUrl}
             />
       )})}
     </Splitter>
-    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen bottom-0 flex text-xs'>
-      <EnterableTextarea 
-        autoFocus={true}
-        className="p-2 border border-gray-300 rounded flex-1 text-sm m-1 resize-none overflow-hidden"
-        value={parentInput}
-        onChange={parentHandleInputChange}
-        onEnter={()=>{
-          if (formRef.current)
-            formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
-        }}
-        onCompositeChange={(value)=>isUsingIME.current = value}
-        placeholder={t('parentInputPlaceholder')}
-      />
+    <form ref={formRef} onSubmit={handleChatSubmit} className='w-screen bottom-0 flex flex-row text-xs'>
+      <div className='flex-1 flex flex-col'>
+        <EnterableTextarea 
+          autoFocus={true}
+          className="m-1 p-1 border flex-1 border-gray-300 rounded text-sm resize-none overflow-hidden"
+          value={parentInput}
+          onChange={(e)=>{setParentInput(e.currentTarget.value)}}
+          onEnter={()=>{
+            if (formRef.current)
+              formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+          }}
+          onCompositeChange={(value)=>isUsingIME.current = value}
+          placeholder={t('parentInputPlaceholder')}
+        />
+        <input type="text" className={'mx-1 mb-1 p-1 border border-gray-300rounded ' +
+          (hasVisionModel ? '' : ' hidden')} 
+          placeholder={t('imageUrlPlaceholder')} 
+          value={imageUrl}
+          onChange={(e)=>{setImageUrl(e.currentTarget.value)}}/>
+      </div>
+
       {/* disabled is useful to stop submitting with enter */}
       <button type="submit" 
         className={(isLoadingAnyChat ? 'disabled:hidden' : '') 
@@ -304,7 +312,7 @@ export default function ChatsArea({locale}:{locale:string}) {
       </button>
       <button onClick={handleTrash} 
         className='p-1 disabled:text-gray-300 enabled:text-teal-900 enabled:hover:text-teal-700 enabled:active:text-teal-600'>
-        <Trash2Icon className="h-5 w-5" />
+        <Trash2Icon className="size-5" />
         <span className="sr-only">Trash</span>
       </button>
     </form>

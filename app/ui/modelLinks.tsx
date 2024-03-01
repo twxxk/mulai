@@ -40,14 +40,17 @@ export default function ModelLinks({locale, className}:{locale:string, className
                 <a className="size-full" href="/">{t('defaultModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
-                <a className="size-full" href="/?models=magi">{t('magi')}</a>
+                <a className="size-full" href="/?models=magi">{t('magiModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
-                <a className="size-full" href="/?models=optpess">{t('optpess')}</a>
+                <a className="size-full" href="/?models=optpess">{t('optpessModelsLabel')}</a>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+                <a className="size-full" href="/?models=decodeimage">{t('imageModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
                 <a className="size-full" href={randomUrl} suppressHydrationWarning={true}>
-                {t('random')}</a>
+                {t('randomModelsLabel')}</a>
             </DropdownMenuItem>
           </DropdownMenuGroup>
         </DropdownMenuContent>

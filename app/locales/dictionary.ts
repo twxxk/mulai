@@ -7,11 +7,13 @@ const en:{[key:string]: any} = {
 	acceptsBroadCast: 'Accepts Broadcast',
 	childInputPlaceholder: 'Say something to this model...',
 	parentInputPlaceholder: "Say something to all models...",
+	imageUrlPlaceholder: 'Image URL (PNG, JPEG, WEBP, and non-animated GIF). Only works for a few models.',
 
 	defaultModelsLabel: 'Default',
-	magi: 'MAGI',
-	optpess: 'Optim/Pessi',
-	random: 'Random',
+	magiModelsLabel: 'MAGI',
+	optpessModelsLabel: 'Optim/Pessi',
+	imageModelsLabel: 'Image',
+	randomModelsLabel: 'Random',
 } as const
 
 const ja:{[key:string]: any} = {
@@ -23,11 +25,13 @@ const ja:{[key:string]: any} = {
 	acceptsBroadCast: '全体送信を利用する',
 	childInputPlaceholder: 'このモデルに送信...',
 	parentInputPlaceholder: "全体に送信...",
+	imageUrlPlaceholder: '画像URL（PNG、JPEG、WEBP、非アニメーションGIF)。一部モデルでのみ動作します。',
 
 	defaultModelsLabel: 'おすすめ',
-	magi: 'MAGI',
-	optpess: '楽観悲観',
-	random: 'ランダム',
+	magiModelsLabel: 'MAGI',
+	optpessModelsLabel: '楽観悲観',
+	imageModelsLabel: '画像',
+	randomModelsLabel: 'ランダム',
 } as const
 
 export const dictionary:{[lang:string]:{[key:string]:any}} = {en, ja}
