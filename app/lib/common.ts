@@ -21,8 +21,7 @@
 export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral' | 'groq'
     | 'openai-image' | 'HuggingFace-image' | 'fireworks.ai-image'
 
-// models will be displayed in this order
-const allModels0:{
+type ModelData0 = {
     label: string,
     vendor: ModelVendor,
     modelValue: string,
@@ -30,7 +29,16 @@ const allModels0:{
     qualityScore: number,
     japaneseScore: number,
     maxTokens?: number,
-}[] = [
+}
+// models will be displayed in this order
+const allModels0:ModelData0[] = [
+    // Works fine, but UI should be updated
+    ...(process.env.NODE_ENV === 'development' ? [
+    {label: 'DALL·E 2', vendor: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
+    {label: 'DALL·E 3', vendor: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:10},
+    {label: 'Stable Diffusion 2', vendor: 'HuggingFace-image', modelValue: 'stable-diffusion-2', sdkModelValue: 'stabilityai/stable-diffusion-2', qualityScore: 40, japaneseScore:10},
+    ] as ModelData0[] : []),
+
     // fast. in $0.0005/1K tokens, out $0.0015/1K tokens
     {label: 'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67},
     // in $0.03/1K tokens, out $0.06/1K tokens

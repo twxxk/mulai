@@ -10,7 +10,7 @@ import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
 import { LocaleContext, getTranslations } from '../lib/LocaleContext';
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-highlight'
 import { a11yDark  } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import remarkGfm from 'remark-gfm';
@@ -165,9 +165,19 @@ function ChatMessage({message}:{message:Message}) {
     {message.role === "user" 
       ? <div className='whitespace-pre-wrap overflow-auto'>{message.content}</div>
       : <ReactMarkdown
+          urlTransform={(url: string) => {
+            // image data https://github.com/remarkjs/react-markdown/issues/774
+            // console.log(url)
+            if (url.startsWith('data:image/'))
+              return url
+            return defaultUrlTransform(url)
+          }}
           rehypePlugins={[[rehypeExternalLinks, {target: '_blank'}]]}
           remarkPlugins={[remarkGfm]}
           components={{
+            img({...props}) {
+              return (<img className="max-w-64 max-h-64" {...props} />)
+            },
             pre({children}) {
               return (
                 <div className='relative'>

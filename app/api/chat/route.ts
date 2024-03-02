@@ -1,6 +1,6 @@
 import { StreamingTextResponse, Message } from 'ai';
 import { OpenAIStream, GoogleGenerativeAIStream, CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
-import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt } from 'ai/prompts';
+import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt, ChatCompletionMessageParam } from 'ai/prompts';
 import OpenAI from 'openai';
 // import does not work with google https://ai.google.dev/tutorials/node_quickstart
 const { GoogleGenerativeAI } = require("@google/generative-ai");
@@ -75,7 +75,7 @@ const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
         model: model.sdkModelValue,
         n: 1, // 5/min for free tier
         response_format: 'url',
-        size: '256x256', // for dall-e-2
+        // size: '256x256', // for dall-e-2
         // size: '1024x1024' // for dall-e-3
     }
     const response = await openai.images.generate(params)
@@ -190,6 +190,36 @@ const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
     return stream
 }
 
+const huggingFaceImageStream:ChatStreamFunction = async ({model, messages}) => {
+    const prompt = messages[messages.length - 1].content
+
+    const blob:Blob = await Hf.textToImage({
+        inputs: prompt
+    })
+    // console.log(blob.type, blob.size, 'bytes')
+
+    let base64 = await blobToBase64(blob)
+
+    // <img /> is not supported (raw text is shown)
+    const url = `data:${blob.type};base64,` + base64
+    const escapedPrompt = prompt.replaceAll(/\[/g, "(").replaceAll(/\]/g, ")").replaceAll(/"/g, "'")
+    const responseMarkdown = `![${escapedPrompt}](${url} "${escapedPrompt}")`
+    console.log(responseMarkdown.substring(0, 100))
+
+    return stringToReadableStream(responseMarkdown)
+}
+
+async function blobToBase64(blob:Blob) {
+    const arrayBuffer = await blob.arrayBuffer();
+    const bytes = new Uint8Array(arrayBuffer);
+    let chars = new Array(bytes.length);
+    for (let i = 0; i < bytes.length; i++) {
+        chars[i] = String.fromCharCode(bytes[i]);
+    }
+    const base64String = btoa(chars.join(''));
+    return base64String;
+}
+
 // Build a prompt from the messages
 function buildCohereGenAIPrompt(messages: { content: string; role: 'system' | 'user' | 'assistant' }[]) {
   return (
@@ -240,9 +270,11 @@ function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
     // key is actually ModelVendor
     const vendorMap:{[key:string]:ChatStreamFunction} = {
         'openai': openaiChatStream,
+        'openai-image': openaiImageStream,
         'google': googleChatStream,
         'fireworks.ai': fireworksChatStream,
         'HuggingFace': huggingFaceStream,
+        'HuggingFace-image': huggingFaceImageStream,
         'groq': groqChatStream,
         'cohere': cohereChatStream,
         'aws': awsAnthropicChatStream,
