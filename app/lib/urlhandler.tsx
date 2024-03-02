@@ -65,6 +65,11 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'firellava-13b', characterValue: ''},
         {modelValue: 'gpt-4-vision-preview', characterValue: ''},
     ],
+    generateimage: [
+        {modelValue: 'stable-diffusion-2', characterValue: ''},
+        {modelValue: 'dall-e-2', characterValue: ''},
+        {modelValue: 'dall-e-3', characterValue: ''},
+    ]
   }
   
 export function getModelCharacterValues(modelsParam: string): ModelCharacterPair[] {
@@ -87,6 +92,9 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
     }
     if (modelsParam === 'describeimage') {
         return specialPairs.describeimage
+    }
+    if (modelsParam === 'generateimage') {
+        return specialPairs.generateimage
     }
     if (modelsParam === 'gemini') {
         return specialPairs.gemini

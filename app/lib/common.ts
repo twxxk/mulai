@@ -32,13 +32,6 @@ type ModelData0 = {
 }
 // models will be displayed in this order
 const allModels0:ModelData0[] = [
-    // Works fine, but UI should be updated
-    ...(process.env.NODE_ENV === 'development' ? [
-    {label: 'DALL·E 2', vendor: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
-    {label: 'DALL·E 3', vendor: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:10},
-    {label: 'Stable Diffusion 2', vendor: 'HuggingFace-image', modelValue: 'stable-diffusion-2', sdkModelValue: 'stabilityai/stable-diffusion-2', qualityScore: 40, japaneseScore:10},
-    ] as ModelData0[] : []),
-
     // fast. in $0.0005/1K tokens, out $0.0015/1K tokens
     {label: 'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67},
     // in $0.03/1K tokens, out $0.06/1K tokens
@@ -103,6 +96,11 @@ const allModels0:ModelData0[] = [
 
     // Vercel AI SDK for AWS supports Claude body format (prompt) but not titan (inputText)
     // {label: 'Titan Text G1 - Express', vendor: 'aws', modelValue: 'amazon.titan-text-express-v1', sdkModelValue: 'amazon.titan-text-express-v1', recommendScore:20},  
+
+    // Image generation - Works fine, but UI should be updated
+    {label: 'DALL·E 2', vendor: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
+    {label: 'DALL·E 3', vendor: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:10},
+    {label: 'Stable Diffusion 2', vendor: 'HuggingFace-image', modelValue: 'stable-diffusion-2', sdkModelValue: 'stabilityai/stable-diffusion-2', qualityScore: 40, japaneseScore:10},
 ] as const
 
 export type ModelLabel = typeof allModels0[number]['label'];

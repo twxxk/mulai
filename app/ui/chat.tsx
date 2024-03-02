@@ -175,8 +175,10 @@ function ChatMessage({message}:{message:Message}) {
           rehypePlugins={[[rehypeExternalLinks, {target: '_blank'}]]}
           remarkPlugins={[remarkGfm]}
           components={{
-            img({...props}) {
-              return (<img className="max-w-64 max-h-64" {...props} />)
+            img({alt, ...props}) {
+              // dynamic image, width/height are not clear
+              /* eslint-disable @next/next/no-img-element */
+              return (<img className="max-w-64 max-h-64" alt={alt ?? ''} {...props} />)
             },
             pre({children}) {
               return (

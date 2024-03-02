@@ -48,6 +48,11 @@ export default function ModelLinks({locale, className}:{locale:string, className
             <DropdownMenuItem>
                 <a className="size-full" href="/?models=describeimage">{t('describeImageModelsLabel')}</a>
             </DropdownMenuItem>
+            {process.env.NODE_ENV === 'development' ? (
+              <DropdownMenuItem>
+                <a className="size-full" href="/?models=generateimage">{t('generateImageModelsLabel')}</a>
+              </DropdownMenuItem>
+            ) : ''}
             <DropdownMenuItem>
                 <a className="size-full" href={randomUrl} suppressHydrationWarning={true}>
                 {t('randomModelsLabel')}</a>
