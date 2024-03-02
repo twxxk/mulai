@@ -99,8 +99,20 @@ const allModels0:ModelData0[] = [
 
     // Image generation - Works fine, but UI should be updated
     {label: 'DALL·E 2', vendor: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
-    {label: 'DALL·E 3', vendor: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:10},
+    {label: 'DALL·E 3', vendor: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:40},
     {label: 'Stable Diffusion 2', vendor: 'HuggingFace-image', modelValue: 'stable-diffusion-2', sdkModelValue: 'stabilityai/stable-diffusion-2', qualityScore: 40, japaneseScore:10},
+    ...(process.env.NODE_ENV === 'development' ? [
+    // The following Models are not found...
+    // https://readme.fireworks.ai/docs/querying-vision-language-models#can-firellava-generate-images
+    // $0.0002/step
+    // {label: 'Stable Diffusion XL', vendor: 'fireworks.ai-image', modelValue: 'stable-diffusion-xl-1024-v1-0', sdkModelValue: 'accounts/fireworks/models/stable-diffusion-xl-1024-v1-0', qualityScore: 118/256*100, japaneseScore: 67},
+    // // $0.0002/step
+    // {label: 'Segmind Stable Diffusion 1B (SSD-1B)', vendor: 'fireworks.ai-image', modelValue: 'SSD-1B', sdkModelValue: 'accounts/fireworks/models/SSD-1B', qualityScore: 118/256*100, japaneseScore: 67},
+    // // $0.0002/step
+    // {label: 'Japanese Stable Diffusion XL', vendor: 'fireworks.ai-image', modelValue: 'japanese-stable-diffusion-xl', sdkModelValue: 'accounts/fireworks/models/japanese-stable-diffusion-xl', qualityScore: 118/256*100, japaneseScore: 67},
+    // // $0.0002/step
+    // {label: 'Playground v2 1024', vendor: 'fireworks.ai-image', modelValue: 'playground-v2-1024px-aesthetic', sdkModelValue: 'accounts/fireworks/models/playground-v2-1024px-aesthetic', qualityScore: 118/256*100, japaneseScore: 67},
+    ] as ModelData0[] : []),
 ] as const
 
 export type ModelLabel = typeof allModels0[number]['label'];

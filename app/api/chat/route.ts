@@ -82,7 +82,7 @@ const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
     // console.log(response.data) // [{url:string}, ...]
 
     const responseMarkdown = response.data.map((datum) => 
-        `![${prompt}](${datum.url} "${prompt}")`
+        datum.url ? imageMarkdown(datum.url as string, prompt) : ''
     ).join('\n')
 
     const stream = stringToReadableStream(responseMarkdown)
@@ -127,6 +127,28 @@ const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
     });
 
     const stream = OpenAIStream(response);
+    return stream    
+}
+
+// FIXME Got 404 Model not found 
+// Fireworks.ai image generation might not be compatible with OpenAI
+// https://readme.fireworks.ai/docs/querying-vision-language-models#can-firellava-generate-images
+const fireworksImageStream:ChatStreamFunction = async ({model, messages}) => {
+    const prompt = messages[messages.length - 1].content
+
+    let params:ImageGenerateParams = {
+        prompt,
+        model: model.sdkModelValue,
+        response_format: 'url',
+    }
+    // console.log('params', params)
+    const response = await fireworks.images.generate(params)
+
+    const responseMarkdown = response.data.map((datum) => 
+        datum.url ? imageMarkdown(datum.url as string, prompt) : ''
+    ).join('\n')
+
+    const stream = stringToReadableStream(responseMarkdown)
     return stream    
 }
 
@@ -198,15 +220,21 @@ const huggingFaceImageStream:ChatStreamFunction = async ({model, messages}) => {
     })
     // console.log(blob.type, blob.size, 'bytes')
 
-    let base64 = await blobToBase64(blob)
-
-    // <img /> is not supported (raw text is shown)
+    const base64 = await blobToBase64(blob)
     const url = `data:${blob.type};base64,` + base64
-    const escapedPrompt = prompt.replaceAll(/\[/g, "(").replaceAll(/\]/g, ")").replaceAll(/"/g, "'")
-    const responseMarkdown = `![${escapedPrompt}](${url} "${escapedPrompt}")`
-    console.log(responseMarkdown.substring(0, 100))
+
+    const responseMarkdown = imageMarkdown(url, prompt)
+    console.log(model.modelValue, ':', responseMarkdown.substring(0, 100), '...')
 
     return stringToReadableStream(responseMarkdown)
+}
+
+// <img /> is not supported (raw text is shown)
+function imageMarkdown(url:string, prompt:string = 'Image') {
+    // [] => (), " => '
+    const escapedPrompt = prompt.replaceAll(/\[/g, "(").replaceAll(/\]/g, ")").replaceAll(/"/g, "'")
+    const responseMarkdown = `![${escapedPrompt}](${url} "${escapedPrompt}")`
+    return responseMarkdown
 }
 
 async function blobToBase64(blob:Blob) {
@@ -273,6 +301,7 @@ function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
         'openai-image': openaiImageStream,
         'google': googleChatStream,
         'fireworks.ai': fireworksChatStream,
+        'fireworks.ai-image': fireworksImageStream,
         'HuggingFace': huggingFaceStream,
         'HuggingFace-image': huggingFaceImageStream,
         'groq': groqChatStream,
