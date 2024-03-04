@@ -17,8 +17,10 @@
 //   https://docs.mistral.ai/platform/endpoints/
 // # Groq
 //   https://console.groq.com/docs/models
+// # Perplexity
+//   https://docs.perplexity.ai/docs/model-cards
 
-export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral' | 'groq'
+export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral' | 'groq' | 'perplexity'
     | 'openai-image' | 'HuggingFace-image' | 'fireworks.ai-image'
 
 type ModelData0 = {
@@ -62,6 +64,11 @@ const allModels0:ModelData0[] = [
 
     // free. OSS based
     {label: 'FireLLaVA 13B', vendor: 'fireworks.ai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15},
+
+    {label: 'Perplexity Sonar Small', vendor: 'perplexity', modelValue: 'sonar-small-chat', sdkModelValue: 'sonar-small-chat', qualityScore: 59, japaneseScore:12},
+    // {label: 'Perplexity Sonar Small Online', vendor: 'perplexity', modelValue: 'sonar-small-online', sdkModelValue: 'sonar-small-chat', qualityScore: 58, japaneseScore:11},
+    {label: 'Perplexity Sonar Medium', vendor: 'perplexity', modelValue: 'sonar-medium-chat', sdkModelValue: 'sonar-medium-chat', qualityScore: 61, japaneseScore:14},
+    // {label: 'Perplexity Sonar Medium Online', vendor: 'perplexity', modelValue: 'sonar-medium-online', sdkModelValue: 'sonar-medium-chat', qualityScore: 60, japaneseScore:13},
 
     {label: 'Gemma 7B Instruct', vendor: 'HuggingFace', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', qualityScore: 40, japaneseScore:10},
     {label: 'Gemma 7B', vendor: 'HuggingFace', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 40-1, japaneseScore:10},

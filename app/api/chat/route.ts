@@ -32,6 +32,10 @@ const groq = new OpenAI({
     baseURL: 'https://api.groq.com/openai/v1',
 })
 const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
+const perplexity  = new OpenAI({
+    apiKey: process.env.PERPLEXITY_API_KEY || '',
+    baseURL: 'https://api.perplexity.ai/',
+})
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -183,6 +187,18 @@ const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
     return stream    
 }
 
+const perplexityChatStream:ChatStreamFunction = async ({model, messages}) => {
+    // @see https://sdk.vercel.ai/docs/guides/providers/perplexity
+    const response = await perplexity.chat.completions.create({
+        model: model.sdkModelValue,
+        stream: true,
+        messages: messages as any,
+    });
+
+    const stream = OpenAIStream(response);
+    return stream    
+}
+
 const mistralChatStream:ChatStreamFunction = async ({model, messages}) => {
     // @see https://sdk.vercel.ai/docs/guides/providers/mistral
     const chatStream = await mistral.chatStream({
@@ -240,6 +256,7 @@ function imageMarkdown(url:string, prompt:string = 'Image') {
 async function blobToBase64(blob:Blob) {
     const arrayBuffer = await blob.arrayBuffer();
     const bytes = new Uint8Array(arrayBuffer);
+    // TextDecoder does not work for binary
     let chars = new Array(bytes.length);
     for (let i = 0; i < bytes.length; i++) {
         chars[i] = String.fromCharCode(bytes[i]);
@@ -308,6 +325,7 @@ function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
         'cohere': cohereChatStream,
         'aws': awsAnthropicChatStream,
         'mistral': mistralChatStream,
+        'perplexity': perplexityChatStream,
     }
     return vendorMap[model.vendor as string]
 }
