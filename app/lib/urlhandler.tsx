@@ -7,15 +7,14 @@ const freeValues:ModelCharacterPair[] = [
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-    {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
   ]
   // for production
   const bestQualityValues:ModelCharacterPair[] = [
-    {modelValue: 'anthropic.claude-instant-v1', characterValue: ''},
     {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+    {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
-    {modelValue: 'gpt-4', characterValue: ''},
+    {modelValue: 'claude-3-opus-20240229', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [
@@ -36,30 +35,33 @@ const freeValues:ModelCharacterPair[] = [
   // ]
   
   const specialPairs:{[key:string]:ModelCharacterPair[]} = {
-    default: (process.env.NODE_ENV === 'development' ? freeValues : bestQualityValues).slice(0, 4),
+    default: (
+        process.env.NODE_ENV === 'development' ? freeValues : 
+        bestQualityValues),
     magi: [
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
+        {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
+        {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
+        {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
     ],
     optpess: [
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'optimist'},
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
-    ],
-    gemini: [
-      {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-      {modelValue: 'gemini-pro', characterValue: ''},
-    ],
-    gemma: [
-        {modelValue: 'gemma-2b', characterValue: ''},
-        {modelValue: 'gemma-2b-it', characterValue: ''},
-        {modelValue: 'gemma-7b', characterValue: ''},
-        {modelValue: 'gemma-7b-it', characterValue: ''},
+        {modelValue: 'gemini-1.0-pro-latest', characterValue: 'optimist'},
+        {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
     ],
     gpt: [
-      {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-      {modelValue: 'gpt-4', characterValue: ''},
-      {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+        {modelValue: 'gpt-3.5-turbo', characterValue: ''},
+        {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+        {modelValue: 'gpt-4', characterValue: ''},
+    ],
+    google: [
+        {modelValue: 'gemma-2b-it', characterValue: ''},
+        {modelValue: 'gemma-7b-it', characterValue: ''},
+        {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+    ],
+    anthropic: [
+        {modelValue: 'anthropic.claude-instant-v1', characterValue: ''},
+        {modelValue: 'anthropic.claude-v2', characterValue: ''},
+        {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
+        {modelValue: 'claude-3-opus-20240229', characterValue: ''},
     ],
     describeimage: [
         {modelValue: 'firellava-13b', characterValue: ''},
@@ -69,7 +71,7 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'stable-diffusion-2', characterValue: ''},
         {modelValue: 'dall-e-2', characterValue: ''},
         {modelValue: 'dall-e-3', characterValue: ''},
-    ]
+    ],
   }
   
 export function getModelCharacterValues(modelsParam: string): ModelCharacterPair[] {
@@ -96,14 +98,14 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
     if (modelsParam === 'generateimage') {
         return specialPairs.generateimage
     }
-    if (modelsParam === 'gemini') {
-        return specialPairs.gemini
+    if (modelsParam === 'google') {
+        return specialPairs.google
     }
     if (modelsParam === 'gpt') {
         return specialPairs.gpt
     }
-    if (modelsParam == 'gemma') {
-        return specialPairs.gemma
+    if (modelsParam === 'anthropic') {
+        return specialPairs.anthropic
     }
 
     // 1..5. Only shorthand to longhand. No generate this url.

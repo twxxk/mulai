@@ -12,15 +12,17 @@
 //   https://fireworks.ai/models
 //   fireworks.ai is free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
 // # AWS Bedrock Anthropic Claude
-//   https://ap-northeast-1.console.aws.amazon.com/bedrock/home?region=ap-northeast-1#/providers?model=anthropic.claude-v2
+//   https://aws.amazon.com/jp/bedrock/pricing/
 // # Mistral
 //   https://docs.mistral.ai/platform/endpoints/
 // # Groq
 //   https://console.groq.com/docs/models
 // # Perplexity
 //   https://docs.perplexity.ai/docs/model-cards
+// # Anthropic
+//   https://docs.anthropic.com/claude/docs/models-overview
 
-export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral' | 'groq' | 'perplexity'
+export type ModelVendor = 'openai' | 'google' | 'fireworks.ai' | 'HuggingFace' | 'cohere' | 'aws' | 'mistral' | 'groq' | 'perplexity' | 'langchain' | 'anthropic'
     | 'openai-image' | 'HuggingFace-image' | 'fireworks.ai-image'
 
 type ModelData0 = {
@@ -44,14 +46,22 @@ const allModels0:ModelData0[] = [
     // GPT-4 Vision responds only tens of chars if no max_tokens is given.
     {label: 'GPT-4 Vision', vendor: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096 }, 
 
+    // in $15.00 / out $75.00 /1M tokens
+    {label: 'Anthropic Claude 3 Sonnet', vendor: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096},
+    // in $3.00 / out $15.00 /1M tokens
+    {label: 'Anthropic Claude 3 Opus', vendor: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096},
+
     // free (up to 60queries/min) 
     {label: 'Google Gemini Pro', vendor: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     // free (up to 60queries/min) 
     {label: 'Google Gemini Pro Latest', vendor: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Vision', vendor: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64},
 
+    // no longer necessary. Claude 3 is cheeper and better
+    // in $0.0008/1k tokens, out $0.0024/1k tokens
     {label: 'Anthropic Claude Instant', vendor: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
-    {label: 'Anthropic Claude', vendor: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
+    // in $0.008/1k tokens, out $0.024/1k tokens
+    {label: 'Anthropic Claude 2.1', vendor: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
 
     // in 2.5€/M, out 7.5€/M
     {label: 'Mistral Medium', vendor: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},

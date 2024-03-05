@@ -11,6 +11,9 @@ import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModelData } from '@/app
 // @ts-ignore
 import MistralClient from '@mistralai/mistralai';
 import { ChatCompletionChunk, ImageGenerateParams } from 'openai/resources/index.mjs';
+import Anthropic from '@anthropic-ai/sdk';
+import { AnthropicStream } from 'ai';
+import { MessageParam } from '@anthropic-ai/sdk/resources/messages.mjs';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
@@ -36,6 +39,9 @@ const perplexity  = new OpenAI({
     apiKey: process.env.PERPLEXITY_API_KEY || '',
     baseURL: 'https://api.perplexity.ai/',
 })
+const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
+});
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -308,6 +314,19 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
     return stream
 }
 
+const anthropicChatStream:ChatStreamFunction = async ({model, messages}) => {
+  // Ask Claude for a streaming chat completion given the prompt
+  const response = await anthropic.messages.create({
+    messages: messages as MessageParam[],
+    model: model.sdkModelValue,
+    stream: true,
+    max_tokens: model.maxTokens ?? 4096,
+  });
+ 
+  // Convert the response into a friendly text-stream
+  const stream = AnthropicStream(response);
+  return stream    
+}
 
 // factory method
 // might be returned undefined
@@ -326,8 +345,15 @@ function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
         'aws': awsAnthropicChatStream,
         'mistral': mistralChatStream,
         'perplexity': perplexityChatStream,
+        // 'langchain': langchainChatStream,
+        'anthropic': anthropicChatStream,
     }
-    return vendorMap[model.vendor as string]
+    const stream = vendorMap[model.vendor as string]
+    if (!stream) {
+        console.error('unexpected model', model)
+        throw new Error('unexpected request')
+    }
+    return stream
 }
 
 export async function POST(req: Request) {
