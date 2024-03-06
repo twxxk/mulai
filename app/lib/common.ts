@@ -39,7 +39,7 @@ const allModels0:ModelData0[] = [
     // fast. in $0.0005/1K tokens, out $0.0015/1K tokens
     {label: 'GPT-3.5', vendor: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67},
     // in $0.03/1K tokens, out $0.06/1K tokens
-    {label: 'GPT-4', vendor: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 254/256*100, japaneseScore: 76},
+    {label: 'GPT-4', vendor: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76},
     // in $0.01/1K tokens, out $0.03/1K tokens 
     {label: 'GPT-4 Turbo', vendor: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77},
     // 1024x1024 in high costs 765 tokens
