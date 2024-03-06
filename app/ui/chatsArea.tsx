@@ -6,12 +6,13 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { ChatOptions } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
-import { DEFAULT_MODEL, DEFAULT_CHARACTER_VALUE, ModelCharacterPair, ModelValue, Character, doesModelAcceptImageUrl } from '@/app/lib/common';
+import { DEFAULT_MODEL, ModelValue, doesModelAcceptImageUrl } from '@/app/lib/ai-model';
 import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
 import Splitter, { SplitDirection } from '@devbookhq/splitter'
 import { LocaleContext, getTranslations } from '../lib/LocaleContext';
+import { Character, DEFAULT_CHARACTER_VALUE, ModelCharacterPair } from '../lib/model-character';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {

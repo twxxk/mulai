@@ -1,6 +1,6 @@
 import { ChangeEventHandler, useContext } from "react"
-import { Character } from "../lib/common"
 import { LocaleContext, getTranslations } from "../lib/LocaleContext"
+import { Character } from "../lib/model-character"
 
 export default function CharacterSelector({selectedValue, characters, onChange: handleChange}:{selectedValue:string, characters:any[], onChange:ChangeEventHandler<HTMLSelectElement>}) {
 	const locale = useContext(LocaleContext)

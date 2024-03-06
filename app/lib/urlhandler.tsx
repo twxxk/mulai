@@ -1,5 +1,5 @@
 import { ReadonlyURLSearchParams } from "next/navigation"
-import { ModelCharacterPair, validateModelCharacter } from "./common"
+import { ModelCharacterPair, validateModelCharacter } from "./model-character"
 
 // for debug
 const freeValues:ModelCharacterPair[] = [

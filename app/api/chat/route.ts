@@ -6,7 +6,7 @@ import OpenAI from 'openai';
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { HfInference } from '@huggingface/inference';
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
-import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModelData } from '@/app/lib/common';
+import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModel } from '@/app/lib/ai-model';
 // Note: There are no types for the Mistral API client yet.
 // @ts-ignore
 import MistralClient from '@mistralai/mistralai';
@@ -48,7 +48,7 @@ export const runtime = 'edge';
 
 
 interface ChatStreamFunction {
-    ({model, messages}: {model: ChatModelData, messages: Message[]}): Promise<ReadableStream>;
+    ({model, messages}: {model: ChatModel, messages: Message[]}): Promise<ReadableStream>;
 }
 
 function stringToReadableStream(str:string):ReadableStream {
@@ -330,16 +330,16 @@ const anthropicChatStream:ChatStreamFunction = async ({model, messages}) => {
 
 // factory method
 // might be returned undefined
-function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
-    // key is actually ModelVendor
-    const vendorMap:{[key:string]:ChatStreamFunction} = {
+function chatStreamFactory(model: ChatModel):ChatStreamFunction {
+    // key is actually ModelProvider
+    const providerMap:{[key:string]:ChatStreamFunction} = {
         'openai': openaiChatStream,
         'openai-image': openaiImageStream,
         'google': googleChatStream,
-        'fireworks.ai': fireworksChatStream,
-        'fireworks.ai-image': fireworksImageStream,
-        'HuggingFace': huggingFaceStream,
-        'HuggingFace-image': huggingFaceImageStream,
+        'fireworksai': fireworksChatStream,
+        'fireworksai-image': fireworksImageStream,
+        'huggingface': huggingFaceStream,
+        'huggingface-image': huggingFaceImageStream,
         'groq': groqChatStream,
         'cohere': cohereChatStream,
         'aws': awsAnthropicChatStream,
@@ -348,7 +348,7 @@ function chatStreamFactory(model: ChatModelData):ChatStreamFunction {
         // 'langchain': langchainChatStream,
         'anthropic': anthropicChatStream,
     }
-    const stream = vendorMap[model.vendor as string]
+    const stream = providerMap[model.provider as string]
     if (!stream) {
         console.error('unexpected model', model)
         throw new Error('unexpected request')
@@ -361,13 +361,12 @@ export async function POST(req: Request) {
         const { messages, data } = await req.json();
         let modelValue = req.headers.get('Model') ?? ''
 
-        // get vendor from model (verifying model)       
         let modelData = getModelByValue(modelValue as ModelValue)
         if (!modelData) {
             console.error('model not found=' + modelValue);
             modelData = DEFAULT_MODEL
         }
-        console.log('model:', modelValue, ', vendor:', modelData.vendor, ', sdkModel:', modelData.sdkModelValue)
+        console.log('model:', modelValue, ', provider:', modelData.provider, ', sdkModel:', modelData.sdkModelValue)
 
         let m:any
         if (data?.imageUrl) {

@@ -5,7 +5,7 @@ import { ChatOptions } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon, ClipboardCopyIcon } from 'lucide-react';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
-import { Character, CharacterValue, ModelValue, doesModelAcceptImageUrl, getModelByValue } from '../lib/common';
+import { ModelValue, doesModelAcceptImageUrl, getModelByValue } from '../lib/ai-model';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
@@ -15,6 +15,7 @@ import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-highlig
 import { a11yDark  } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import remarkGfm from 'remark-gfm';
 import rehypeExternalLinks from 'rehype-external-links'
+import { Character, CharacterValue } from '../lib/model-character';
 
 const defaultAssistantPromptContent = 'Understood.'
 const defaultAssistantPromptContent_ja = 'かしこまりました。'

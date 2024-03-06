@@ -1,5 +1,5 @@
 import { ChangeEventHandler, useContext } from "react"
-import { selectableModels, allModels } from "../lib/common"
+import { selectableModels, allModels } from "../lib/ai-model"
 import { LocaleContext, getTranslations } from "../lib/LocaleContext"
 
 export default function ModelSelector({selectedValue, onChange: handleChange}:{selectedValue:string,  onChange:ChangeEventHandler<HTMLSelectElement>}) {

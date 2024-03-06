@@ -2,14 +2,14 @@
 
 import { BookMarkedIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { allModelValues, characterValues } from "../lib/common";
+import { allModelValues } from "../lib/ai-model";
 import { DropdownMenuTrigger, DropdownMenuItem, DropdownMenuGroup, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
 import { LocaleContext, getTranslations } from "../lib/LocaleContext";
 import { useContext } from "react";
+import { characterValues } from "../lib/model-character";
 
 // true random - from all models including non-selectable models
-function generateRandomUrl(modelsParam:string) {
-    const pane = 3
+function generateRandomUrl(pane:number) {
     const a = Array(pane).fill('').map(() => {
         const model = allModelValues[Math.floor(Math.random() * allModelValues.length)]
         const character = characterValues[Math.floor(Math.random() * characterValues.length)]
@@ -21,9 +21,7 @@ function generateRandomUrl(modelsParam:string) {
 }
 
 export default function ModelLinks({className}:{className:string}) {
-    const searchParams = useSearchParams()
-    const modelsParam = searchParams.get('models')
-    const randomUrl = generateRandomUrl(modelsParam ?? '')
+    const randomUrl = generateRandomUrl(3)
 
     const locale = useContext(LocaleContext)
     const {t} = getTranslations(locale)
