@@ -4,7 +4,8 @@ import { BookMarkedIcon } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { allModelValues, characterValues } from "../lib/common";
 import { DropdownMenuTrigger, DropdownMenuItem, DropdownMenuGroup, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
-import { getTranslations } from "../lib/LocaleContext";
+import { LocaleContext, getTranslations } from "../lib/LocaleContext";
+import { useContext } from "react";
 
 // true random - from all models including non-selectable models
 function generateRandomUrl(modelsParam:string) {
@@ -19,13 +20,14 @@ function generateRandomUrl(modelsParam:string) {
     return '/?models=' + a.join(',')
 }
 
-export default function ModelLinks({locale, className}:{locale:string, className:string}) {
+export default function ModelLinks({className}:{className:string}) {
     const searchParams = useSearchParams()
     const modelsParam = searchParams.get('models')
     const randomUrl = generateRandomUrl(modelsParam ?? '')
 
-    const {t} = getTranslations(locale)    
-
+    const locale = useContext(LocaleContext)
+    const {t} = getTranslations(locale)
+    
     return (
         <DropdownMenu>
         <DropdownMenuTrigger asChild>

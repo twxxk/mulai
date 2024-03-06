@@ -7,7 +7,8 @@
 import { DropdownMenuTrigger, DropdownMenuItem, DropdownMenuGroup, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
 import { GlobeIcon } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useContext } from "react";
+import { LocaleContext, getTranslations } from "@/app/lib/LocaleContext";
 
 type LocaleInfo = { value: string, label: string }
 
@@ -16,9 +17,12 @@ const locales:LocaleInfo[] = [
   {value: 'ja', label: '日本語'},
 ]
 
-export function LanguageSelector({locale, className}:{locale:string, className:string}) {
+export function LanguageSelector({className}:{className:string}) {
   const pathname = usePathname();
   const searchParams = useSearchParams()
+
+  const locale = useContext(LocaleContext)
+  const {t} = getTranslations(locale)
 
   // https://nextjs.org/docs/app/api-reference/functions/use-search-params#updating-searchparams
   const createQueryString = useCallback(

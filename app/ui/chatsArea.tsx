@@ -18,7 +18,7 @@ function splitToArray(num:number) {
   return Array(num).fill(100/num)
 }
 
-export default function ChatsArea({locale}:{locale:string}) {
+export default function ChatsArea() {
   const searchParams = useSearchParams()
   const modelsParam = searchParams.get('models')
   const [modelCharacterValues, setModelCharacterValues] = useState(getModelCharacterValues(modelsParam ?? ''))
@@ -42,6 +42,7 @@ export default function ChatsArea({locale}:{locale:string}) {
   const [verticalSizes, setVerticalSizes] = useState([95, 5]);
   const [horizontalSizes, setHorizontalSizes] = useState([] as number[]);
 
+	const locale = useContext(LocaleContext)
   const {t} = getTranslations(locale)
 
   // useEffect(() => {
@@ -254,7 +255,6 @@ export default function ChatsArea({locale}:{locale:string}) {
   }
     
   return (
-  <LocaleContext.Provider value={locale}>
   <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex flex-row text-xs overflow-auto flex-1 min-h-0', 'w-screen h-12 bottom-0 flex min-h-16']} onResizeFinished={handleVerticalResize}
   >
     {/* 275 is the longest model label in Japanese */}
@@ -317,6 +317,5 @@ export default function ChatsArea({locale}:{locale:string}) {
       </button>
     </form>
   </Splitter>
-  </LocaleContext.Provider>
   );
 }
