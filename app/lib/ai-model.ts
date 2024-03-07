@@ -36,18 +36,19 @@ type ChatModel0 = {
     qualityScore: number,
     japaneseScore: number,
     maxTokens?: number,
+    doesToolSupport?: boolean,
 }
 // models will be displayed in this order
 const allModels0:ChatModel0[] = [
     // fast. in $0.0005/1K tokens, out $0.0015/1K tokens
-    {label: 'GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67},
+    {label: 'GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesToolSupport: true,},
     // in $0.03/1K tokens, out $0.06/1K tokens
-    {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76},
+    {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesToolSupport: true,},
     // in $0.01/1K tokens, out $0.03/1K tokens 
-    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77},
+    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77, doesToolSupport: true,},
     // 1024x1024 in high costs 765 tokens
     // GPT-4 Vision responds only tens of chars if no max_tokens is given.
-    {label: 'GPT-4 Vision', provider: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096 }, 
+    {label: 'GPT-4 Vision', provider: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096, doesToolSupport: true, }, 
 
     // in $15.00 / out $75.00 /1M tokens
     {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096},
@@ -148,6 +149,7 @@ export type ChatModel = {
     qualityScore: number, // 0..100 (1000..1256) https://chat.lmsys.org/?arena as of 2024-02-23
     japaneseScore: number, // 0..100 https://wandb.ai/wandb-japan/llm-leaderboard/reports/Nejumi-LLM-Neo--Vmlldzo2MTkyMTU0 as of 2024-02-23
     maxTokens?: number, // Only if it should be passed as a parameter
+    doesToolSupport?: boolean, // If the model supports tools and function calls
 }
 
 

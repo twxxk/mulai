@@ -4,7 +4,7 @@ import { ChatRequestOptions } from 'ai';
 import Chat, { getCharacter } from './chat'
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
-import { ChatOptions } from './chatOptions'
+import { UseChatHelpers } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
 import { DEFAULT_MODEL, ModelValue, doesModelAcceptImageUrl } from '@/app/lib/ai-model';
 import { useRouter } from 'next/navigation';
@@ -13,6 +13,7 @@ import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler
 import Splitter, { SplitDirection } from '@devbookhq/splitter'
 import { LocaleContext, getTranslations } from '../lib/LocaleContext';
 import { Character, DEFAULT_CHARACTER_VALUE, ModelCharacterPair } from '../lib/model-character';
+import { EventName, eventBus } from '../lib/event-emitter';
 
 // 2 => [50, 50], 4 => [25, 25, 25, 25]
 function splitToArray(num:number) {
@@ -35,7 +36,7 @@ export default function ChatsArea() {
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
   const isUsingIME = useRef(false)
 
-  const chats:ChatOptions[] = []
+  const chats:UseChatHelpers[] = []
 
   const router = useRouter()
   const urlToReplace = generateUrlToReplace(searchParams, modelCharacterValues)
@@ -80,10 +81,10 @@ export default function ChatsArea() {
   }, []);
 
   const changeChatLoading = (index:number, value:boolean) => {
-    setIsLoadingAnyChat(chats.some((chat:ChatOptions) => chat.isLoading))
+    setIsLoadingAnyChat(chats.some((chat:UseChatHelpers) => chat.isLoading))
   }
 
-  const setChatOptions = (index:number, chat:ChatOptions) => {
+  const setChatOptions = (index:number, chat:UseChatHelpers) => {
     chats[index] = chat
   }
 
@@ -200,47 +201,21 @@ export default function ChatsArea() {
   // submit all children chats
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    chats.map((chat:ChatOptions, index:number) => {
-      if (!chat.acceptsBroadcast)
-        return;
-
-      console.log('requesting model=' + modelCharacterValues[index].modelValue)
-      const modelValue = modelCharacterValues[index].modelValue
-
-      const defaultOptions:ChatRequestOptions = {
-        options:{headers:{model: modelValue}},
-      }
-      const options:ChatRequestOptions = doesModelAcceptImageUrl(modelValue) && imageUrl 
-      ? {
-        ...defaultOptions,
-        data: imageUrl ? {imageUrl: imageUrl} : {},
-      }
-      : defaultOptions
-    
-      chat.handleSubmit(e, options)
-    })
-
-    // make sure map is called with the old value
-    setTimeout(()=>{setParentInput(''); setImageUrl('')}, 100)
+    eventBus.emit(EventName.onSubmitBroadcastMessage);
+    setParentInput('')
+    setImageUrl('')
   }
 
   // stop chat
   const handleStop = () => {
-    chats.map((chat:ChatOptions, index) => {
-      // Sometimes fails to stop. Need more investigation
-      console.log('stopping:', index, ':', chat.isLoading)
-      chat.stop()
-    })
+    eventBus.emit(EventName.onStopAll);
   }
 
   const handleTrash = () => {
     // Stop to prevent getting responses after trash
     handleStop()
     console.log('trashing')
-    chats.map((chat:ChatOptions) => {
-      chat.setInput('')
-      chat.resetMessages()
-    })
+    eventBus.emit(EventName.onResetAll);
   }
 
   // Need to set the initialsizes to keep the resizes after updating the inputs
@@ -259,7 +234,7 @@ export default function ChatsArea() {
   <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex flex-row text-xs overflow-auto flex-1 min-h-0', 'w-screen h-12 bottom-0 flex min-h-16']} onResizeFinished={handleVerticalResize}
   >
     {/* 275 is the longest model label in Japanese */}
-    <Splitter initialSizes={horizontalSizes} direction={SplitDirection.Horizontal} minWidths={Array(modelCharacterValues.length).fill(275)}draggerClassName='dragger-horizontal' gutterClassName="gutter gutter-horizontal" onResizeFinished={handleHorizontalResize}>
+    <Splitter initialSizes={horizontalSizes} direction={SplitDirection.Horizontal} minWidths={Array(modelCharacterValues.length).fill(275)} draggerClassName='dragger-horizontal' gutterClassName="gutter gutter-horizontal" onResizeFinished={handleHorizontalResize}>
       {modelCharacterValues.map((value:ModelCharacterPair, index:number) => {
         const key = index + ':' + value.modelValue + ':' + value.characterValue
         const hasClosePaneButton = modelCharacterValues.length > 1
@@ -282,10 +257,12 @@ export default function ChatsArea() {
           autoFocus={true}
           className="m-1 p-1 border flex-1 border-gray-300 rounded text-sm resize-none overflow-hidden"
           value={parentInput}
-          onChange={(e)=>{setParentInput(e.currentTarget.value)}}
+          onChange={(e)=>{
+            const newValue = e.target.value
+            setParentInput(newValue); 
+          }}
           onEnter={()=>{
-            if (formRef.current)
-              formRef.current.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }))
+            formRef?.current?.requestSubmit()
           }}
           onCompositeChange={(value)=>isUsingIME.current = value}
           placeholder={t('parentInputPlaceholder')}

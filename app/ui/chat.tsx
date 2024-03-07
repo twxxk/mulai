@@ -1,9 +1,9 @@
 'use client';
  
 import { ChatRequestOptions, Message } from 'ai';
-import { ChatOptions } from './chatOptions'
+import { UseChatHelpers } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon, ClipboardCopyIcon } from 'lucide-react';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
 import { ModelValue, doesModelAcceptImageUrl, getModelByValue } from '../lib/ai-model';
 import ModelSelector from './modelSelector';
@@ -16,6 +16,8 @@ import { a11yDark  } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import remarkGfm from 'remark-gfm';
 import rehypeExternalLinks from 'rehype-external-links'
 import { Character, CharacterValue } from '../lib/model-character';
+import { EventName, eventBus } from '../lib/event-emitter';
+import { FormEvent } from "react";
 
 const defaultAssistantPromptContent = 'Understood.'
 const defaultAssistantPromptContent_ja = 'かしこまりました。'
@@ -218,7 +220,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   character:Character,
   hasClosePaneButton:boolean,
   hasAddPaneButton:boolean,
-  setChatOptions:(index:number, value:ChatOptions)=>void,
+  setChatOptions:(index:number, value:UseChatHelpers)=>void,
   onChangeModel:(index:number, newModelValue:ModelValue)=>void,
   onChangeCharacter:(index:number, newCharacter:Character)=>void,
   changeChatLoading:(index:number, newLoadingValue:boolean)=>void,
@@ -233,37 +235,42 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   const {t} = getTranslations(locale)
 
   const [acceptsBroadcast, setAcceptsBroadcast] = useState(true)
+  const chatOptions:UseChatHelpers = useChat()
 
   // reset chat messages
-  // XXX Warning: React Hook useCallback has a missing dependency: 'chatOptions'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
   const resetMessages = useCallback(() => {
+    // console.log('resetting msg')
     const initialMessages = getLocalizedPromptMessages(locale, character)    
     chatOptions.setMessages(initialMessages)
-  }, [locale, character])
-  const chatOptions:ChatOptions =  {...useChat(), acceptsBroadcast, setAcceptsBroadcast, resetMessages}
+  }, [locale, character, chatOptions])
 
   useEffect(() => {
     if (acceptsBroadcast) {
       let childValue
       if (imageUrl && !doesModelAcceptImageUrl(modelValue)) {
+        // if the model does not accept separate fields
         childValue = imageUrl + "\n" + inputValue
       } else
         childValue = inputValue
       chatOptions.setInput(childValue)
     }
-  }, [acceptsBroadcast, inputValue, modelValue, imageUrl])
+  }, [chatOptions, acceptsBroadcast, inputValue, modelValue, imageUrl])
 
   const historyElementRef = useRef(null);
   const formRef = useRef<HTMLFormElement>(null);
 
-  // console.log('chat is being initialized with=' + modelValue)
-  setChatOptions(index, chatOptions)
-
   let characters = getAvailableCharacters(modelValue)
 
+  useEffect(() => 
+    setChatOptions(index, chatOptions),
+    [index, chatOptions, setChatOptions]
+  )
+
   useEffect(() => {
+    console.log('call reset')
     resetMessages()
-  }, [resetMessages])
+    // if you add resetMessages/setChatOptions, the reset is called whenever input/ouput is updated
+  }, [])
 
   useEffect(() => {
     // console.log('change chat loading ', index)
@@ -323,11 +330,60 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
     console.log('requesting model:' + modelValue)
-    const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
-
     e.preventDefault()
+
+    const options:ChatRequestOptions = {
+      options:{headers:{model: modelValue}},
+      ...(doesModelAcceptImageUrl(modelValue) && imageUrl ? {
+        data: {imageUrl},
+      } : {}),
+    }
+
     chatOptions.handleSubmit(e, options)
   }
+
+  useEffect(() => {
+    const handleSubmitBroadcastMessage = () => {
+      // console.log('onsubmitbroadcast');
+      if (!acceptsBroadcast)
+        return;
+
+      if (formRef.current) {
+        // call handleChatSubmit
+        formRef.current.requestSubmit()
+      }      
+    };
+    eventBus.on(EventName.onSubmitBroadcastMessage, handleSubmitBroadcastMessage);
+      
+    return () => {
+      eventBus.removeListener(EventName.onSubmitBroadcastMessage, handleSubmitBroadcastMessage);
+    };
+  }, [formRef, acceptsBroadcast]);
+
+  useEffect(() => {
+    const handleStop = () => {
+      // Sometimes fails to stop. Need more investigation
+      // console.log('stopping:', index, ':', isLoading)
+      chatOptions.stop()
+    }
+    eventBus.on(EventName.onStopAll, handleStop);
+
+    return () => {
+      eventBus.removeListener(EventName.onStopAll, handleStop)
+    }
+  }, [chatOptions])
+
+  useEffect(() => {
+    const handleReset = () => {
+      chatOptions.setInput('')
+      resetMessages()
+    }
+    eventBus.on(EventName.onResetAll, handleReset);
+
+    return () => {
+      eventBus.removeListener(EventName.onResetAll, handleReset)
+    }
+  }, [chatOptions, resetMessages])
 
   const handleReload = () => {
     const options:ChatRequestOptions = {options:{headers:{model: modelValue}}}
@@ -394,7 +450,9 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
             <span className='sr-only'>Add</span>
           </button>  
         </div>
-        <div className={acceptsBroadcast ? 'hidden' : 'flex w-full'}>
+        <div className={
+          acceptsBroadcast ? 'hidden' : 
+          'flex w-full'}>
           <EnterableTextarea 
             className="flex-1 p-2 my-1 border border-gray-300 rounded h-8 resize-none overflow-hidden disabled:text-gray-300"
             value={chatOptions.input}

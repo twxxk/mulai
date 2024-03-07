@@ -1,8 +1,4 @@
-import { UseChatHelpers } from 'ai/react';
-import { Dispatch, SetStateAction } from 'react';
+import { UseChatHelpers as UseChatHelpersOriginal } from 'ai/react';
 
-export type ChatOptions = UseChatHelpers & { 
-    acceptsBroadcast: boolean, 
-    setAcceptsBroadcast: Dispatch<SetStateAction<boolean>>,
-    resetMessages: ()=>void,
+export type UseChatHelpers = UseChatHelpersOriginal & { 
 }
