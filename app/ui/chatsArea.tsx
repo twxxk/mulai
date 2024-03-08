@@ -231,7 +231,7 @@ export default function ChatsArea() {
   }
     
   return (
-  <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex flex-row text-xs overflow-auto flex-1 min-h-0', 'w-screen h-12 bottom-0 flex min-h-16']} onResizeFinished={handleVerticalResize}
+  <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex-1 flex flex-row text-xs overflow-auto min-h-0', 'w-screen h-16 bottom-0 flex min-h-12']} onResizeFinished={handleVerticalResize}
   >
     {/* 275 is the longest model label in Japanese */}
     <Splitter initialSizes={horizontalSizes} direction={SplitDirection.Horizontal} minWidths={Array(modelCharacterValues.length).fill(275)} draggerClassName='dragger-horizontal' gutterClassName="gutter gutter-horizontal" onResizeFinished={handleHorizontalResize}>

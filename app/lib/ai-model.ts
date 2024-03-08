@@ -56,9 +56,11 @@ const allModels0:ChatModel0[] = [
     {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096},
 
     // free (up to 60queries/min) 
-    {label: 'Google Gemini Pro', provider: 'google', modelValue: 'gemini-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
+    {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     // free (up to 60queries/min) 
-    {label: 'Google Gemini Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
+    {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
+    // cannot call from api. You can check available models from colab. https://ai.google.dev/tutorials/python_quickstart
+    // {label: 'Google Gemini 1.5 Pro', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'gemini-1.5-pro-latest', qualityScore: 219/256*100, japaneseScore: 65},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64},
 
     // no longer necessary. Claude 3 is cheeper and better
@@ -155,7 +157,7 @@ export type ChatModel = {
 
 export const allModels:ChatModel[] = allModels0 as any
 // fall back free model.
-export const DEFAULT_MODEL:ChatModel = allModels.find(model => model.modelValue === 'gemini-pro') as ChatModel
+export const DEFAULT_MODEL:ChatModel = allModels.find(model => model.modelValue === 'gemini-1.0-pro') as ChatModel
 
 export const allModelValues = allModels0.map(model => model.modelValue);
 

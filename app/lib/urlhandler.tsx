@@ -3,7 +3,7 @@ import { ModelCharacterPair, validateModelCharacter } from "./model-character"
 
 // for debug
 const freeValues:ModelCharacterPair[] = [
-    {modelValue: 'gemini-pro', characterValue: ''},
+    {modelValue: 'gemini-1.0-pro', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
@@ -22,7 +22,7 @@ const freeValues:ModelCharacterPair[] = [
   //   {modelValue: 'gpt-4', characterValue: ''},
   //   {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
   //   {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-  //   {modelValue: 'gemini-pro', characterValue: ''},
+  //   {modelValue: 'gemini-1.0-pro', characterValue: ''},
   //   {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
   //   {modelValue: 'japanese-stablelm-instruct-gamma-7b', characterValue: ''},
   //   {modelValue: 'firellava-13b', characterValue: ''},

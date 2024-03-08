@@ -380,7 +380,7 @@ export async function POST(req: Request) {
                     ...currentMessage,
                     content: [
                         { type: 'text', text: currentMessage.content },
-                        { type: 'image_url', image_url: { url: data?.imageUrl } },
+                        { type: 'image_url', image_url: { url: data!.imageUrl } },
                     ]
                 }
             ]

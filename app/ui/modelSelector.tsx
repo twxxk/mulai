@@ -17,8 +17,8 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
     return (<span className="whitespace-nowrap overflow-hidden mr-1">
         {t('model')} <select value={selectedValue} onChange={handleChange} className="font-bold">
             {(!isModelSelectable && modelData) &&
-                (<option key={modelData?.label} value={modelData?.modelValue}>
-                    {modelData?.label}
+                (<option key={modelData!.label} value={modelData!.modelValue}>
+                    {modelData!.label}
                 </option>)}
             {selectableModels.map((value) => (
                 // show non recommended model with weak colors

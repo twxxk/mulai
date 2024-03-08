@@ -105,7 +105,8 @@ export const getCharacter = (characterValue:CharacterValue) => {
 }
 
 const getAILabel = (modelValue:ModelValue, character:Character, locale:string) => {
-  const modelLabel = getModelByValue(modelValue)?.label
+  const modelLabel = getModelByValue(modelValue)!.label
+  // if (!modelLabel) console.log('model not found', modelValue)
   if (character.value !== '') {
     const characterLabel = locale == 'ja' ? character.label_ja : character.label
     return `${modelLabel} (${characterLabel})`  
@@ -116,10 +117,10 @@ const getAILabel = (modelValue:ModelValue, character:Character, locale:string) =
 
 function getLocalizedPromptMessages(locale:string, character: Character) { 
   // console.log('loc:', locale)
-  const localizedPromptContent = locale === 'ja' ? character?.promptContent_ja : character?.promptContent
+  const localizedPromptContent = locale === 'ja' ? character.promptContent_ja : character.promptContent
   const assistantPromptContent = locale === 'ja' 
-    ? (character?.assistantPromptContent_ja ?? defaultAssistantPromptContent_ja)
-    : (character?.assistantPromptContent ?? defaultAssistantPromptContent)
+    ? (character.assistantPromptContent_ja ?? defaultAssistantPromptContent_ja)
+    : (character.assistantPromptContent ?? defaultAssistantPromptContent)
   
   return [
     // GPT understands the system message but gemini prefers conversations
@@ -267,7 +268,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   )
 
   useEffect(() => {
-    console.log('call reset')
+    // console.log('call reset')
     resetMessages()
     // if you add resetMessages/setChatOptions, the reset is called whenever input/ouput is updated
   }, [])
