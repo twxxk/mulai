@@ -10,14 +10,10 @@ import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
 import { LocaleContext, getTranslations } from '../lib/LocaleContext';
-import ReactMarkdown, { defaultUrlTransform } from 'react-markdown';
-import SyntaxHighlighter from 'react-syntax-highlighter/dist/esm/default-highlight'
-import { a11yDark  } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import remarkGfm from 'remark-gfm';
-import rehypeExternalLinks from 'rehype-external-links'
 import { Character, CharacterValue } from '../lib/model-character';
 import { EventName, eventBus } from '../lib/event-emitter';
 import { FormEvent } from "react";
+import ChatMessage from './chat-message';
 
 const defaultAssistantPromptContent = 'Understood.'
 const defaultAssistantPromptContent_ja = 'かしこまりました。'
@@ -130,89 +126,56 @@ function getLocalizedPromptMessages(locale:string, character: Character) {
   ]
 }
 
-function CodeCopyBtn({children}:{children:React.Component<any, any>}) {
-  const handleClick = () => {
-    navigator.clipboard.writeText(children?.props?.children);
-  }
-  return (
-    <button onClick={handleClick} className="text-teal-600 enabled:hover:text-teal-500 enabled:active:text-teal-100">
-      <ClipboardCopyIcon className="h-5 w-5" />
-      <span className='sr-only'>Copy</span>
-    </button>
-  )
-}
+function configureHistoryAutoScroll(historyElementRef:any) {
+  return () => {
+    if (historyElementRef.current) {
+      // Scroll
+      const resizeObserver = new ResizeObserver(entries => {
+        for (const entry of entries) {
+          // console.log('resize top=', entry.target.scrollTop, ', height=', entry.target.scrollHeight);
+          const historyElement = historyElementRef.current as unknown as Element
+          // When you save source during develpment, historyElement could be null
+          if (!historyElement) continue;
+          historyElement.scrollTop = historyElement.scrollHeight
+        }
+      });
 
-function ChatMessage({message}:{message:Message}) {
-	const locale = useContext(LocaleContext)
-  const {t} = getTranslations(locale)
+      // Called when the new answer is added
+      let lastObservedNode:Element
+      const mutationObserver = new MutationObserver(entries => {
+        for (const mutation of entries) {
+          // only childList is being observed
+          // if (mutation.type !== 'childList')
+          //   continue;
 
-  return (
-  <div className={
-    /* #2b2b2b=a11yDark */
-    "rounded-sm px-2 py-1 m-1 max-w-full text-sm leading-normal prose prose-sm prose-p:mt-0 prose-pre:mt-1 prose-pre:mb-1 prose-pre:bg-[#2b2b2b] prose-img:my-1 " + 
-    (message.role === "user"
-      ? " bg-slate-100"
-      : message.role === "assistant"
-      ? " "
-      : process.env.NODE_ENV !== 'development'
-      ? " hidden" // system
-      : " bg-gray-100 text-gray-400"
-  )}>
-    <div className={'font-bold text-xs ' +
-      (message.role === 'user' ? ' text-slate-800'
-      : ' text-teal-800')
-    }>
-      {message.role === 'user' ? t('user')
-      : message.role === 'assistant' ? t('ai')
-      : t('system')}
-    </div>
-    {message.role === "user" 
-      ? <div className='whitespace-pre-wrap overflow-auto'>{message.content}</div>
-      : <ReactMarkdown
-          urlTransform={(url: string) => {
-            // image data https://github.com/remarkjs/react-markdown/issues/774
-            // console.log(url)
-            if (url.startsWith('data:image/'))
-              return url
-            return defaultUrlTransform(url)
-          }}
-          rehypePlugins={[[rehypeExternalLinks, {target: '_blank'}]]}
-          remarkPlugins={[remarkGfm]}
-          components={{
-            img({alt, ...props}) {
-              // dynamic image, width/height are not clear
-              /* eslint-disable @next/next/no-img-element */
-              return (<img className="max-w-64 max-h-64" alt={alt ?? ''} {...props} />)
-            },
-            pre({children}) {
-              return (
-                <div className='relative'>
-                  {children}
-                  <div className='absolute top-1 right-1'>
-                    <CodeCopyBtn>{children as any}</CodeCopyBtn>
-                  </div>
-                </div>
-              )
-            },
-            code({className, children}) {
-              const language = (/language-(\w+)/.exec(className || '') || ['',''])[1]
-              if (language || String(children).length >= 50) {
-                return (
-                  <SyntaxHighlighter language={language} style={a11yDark} wrapLongLines={true}>
-                    {children as any}
-                  </SyntaxHighlighter>
-                )
-              } else {
-                // inline
-                return <code>{children}</code>
-              }
-            },
-        }}>
-        {message.content}
-      </ReactMarkdown>
+          // Set the resize observer to the last node which should be the expanding
+          // console.log('added nodes=', mutation.addedNodes.length)
+          const addedNode = mutation.addedNodes.item(mutation.addedNodes.length - 1)
+
+          if (addedNode?.nodeType !== Node.ELEMENT_NODE) {
+            console.log('node type=', addedNode?.nodeType)
+            continue;
+          }
+
+          if (lastObservedNode)
+            resizeObserver.unobserve(lastObservedNode)
+          
+          const addedElement = addedNode as Element
+          resizeObserver.observe(addedElement)
+          lastObservedNode = addedElement
+        }
+      });
+
+      mutationObserver.observe(historyElementRef.current, { attributes: false, characterData: false, childList: true });
+
+      // cleanup
+      return () => {
+        // console.log('cleaning observers'); 
+        mutationObserver.disconnect()
+        resizeObserver.disconnect()
+      };
     }
-  </div>
-  )
+  }
 }
 
 export default function Chat({modelValue, character, index, hasClosePaneButton, hasAddPaneButton, setChatOptions, onChangeModel, onChangeCharacter, changeChatLoading, addPane, removePane, onCompositeChange, inputValue, imageUrl}:{
@@ -267,66 +230,22 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
     [index, chatOptions, setChatOptions]
   )
 
-  useEffect(() => {
+  // if you add resetMessages/setChatOptions, the reset is called whenever input/ouput is updated
+  // resetMessages can be called during the initialization only
+  useEffect(() => { 
     // console.log('call reset')
     resetMessages()
-    // if you add resetMessages/setChatOptions, the reset is called whenever input/ouput is updated
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     // console.log('change chat loading ', index)
     changeChatLoading(index, chatOptions.isLoading)
   }, [changeChatLoading, index, chatOptions.isLoading])
 
-  useEffect(() => {
-    if (historyElementRef.current) {
-      // Scroll
-      const resizeObserver = new ResizeObserver(entries => {
-        for (const entry of entries) {
-          // console.log('resize top=', entry.target.scrollTop, ', height=', entry.target.scrollHeight);
-          const historyElement = historyElementRef.current as unknown as Element
-          // When you save source during develpment, historyElement could be null
-          if (!historyElement) continue;
-          historyElement.scrollTop = historyElement.scrollHeight
-        }
-      });
-
-      // Called when the new answer is added
-      let lastObservedNode:Element
-      const mutationObserver = new MutationObserver(entries => {
-        for (const mutation of entries) {
-          // only childList is being observed
-          // if (mutation.type !== 'childList')
-          //   continue;
-
-          // Set the resize observer to the last node which should be the expanding
-          // console.log('added nodes=', mutation.addedNodes.length)
-          const addedNode = mutation.addedNodes.item(mutation.addedNodes.length - 1)
-
-          if (addedNode?.nodeType !== Node.ELEMENT_NODE) {
-            console.log('node type=', addedNode?.nodeType)
-            continue;
-          }
-
-          if (lastObservedNode)
-            resizeObserver.unobserve(lastObservedNode)
-          
-          const addedElement = addedNode as Element
-          resizeObserver.observe(addedElement)
-          lastObservedNode = addedElement
-        }
-      });
-
-      mutationObserver.observe(historyElementRef.current, { attributes: false, characterData: false, childList: true });
-
-      // cleanup
-      return () => {
-        // console.log('cleaning observers'); 
-        mutationObserver.disconnect()
-        resizeObserver.disconnect()
-      };
-    }
-  }, []);
+  // Can ignore a warning for the external pure function
+  useEffect( // eslint-disable-line react-hooks/exhaustive-deps
+    configureHistoryAutoScroll(historyElementRef),
+  [historyElementRef]);
 
   const handleChatSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     // overwrite model
