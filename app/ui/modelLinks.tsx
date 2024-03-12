@@ -1,10 +1,10 @@
 'use client'
 
 import { BookMarkedIcon } from "lucide-react";
-import { useSearchParams } from "next/navigation";
 import { allModelValues } from "../lib/ai-model";
 import { DropdownMenuTrigger, DropdownMenuItem, DropdownMenuGroup, DropdownMenuContent, DropdownMenu } from "@/components/ui/dropdown-menu"
-import { LocaleContext, getTranslations } from "../lib/LocaleContext";
+import { LocaleContext } from "@/lib/client/locale-context"
+import { getTranslations } from '@/lib/localizations';
 import { useContext } from "react";
 import { characterValues } from "../lib/model-character";
 

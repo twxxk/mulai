@@ -1,6 +1,5 @@
 'use client';
 
-import { ChatRequestOptions } from 'ai';
 import Chat, { getCharacter } from './chat'
 import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
@@ -11,7 +10,8 @@ import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
 import Splitter, { SplitDirection } from '@devbookhq/splitter'
-import { LocaleContext, getTranslations } from '../lib/LocaleContext';
+import { LocaleContext } from "@/lib/client/locale-context"
+import { getTranslations } from '@/lib/localizations';
 import { Character, DEFAULT_CHARACTER_VALUE, ModelCharacterPair } from '../lib/model-character';
 import { EventName, eventBus } from '../lib/event-emitter';
 

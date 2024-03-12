@@ -1,6 +1,7 @@
 import { ChangeEventHandler, useContext } from "react"
 import { selectableModels, allModels } from "../lib/ai-model"
-import { LocaleContext, getTranslations } from "../lib/LocaleContext"
+import { LocaleContext } from "@/lib/client/locale-context"
+import { getTranslations } from '@/lib/localizations';
 
 export default function ModelSelector({selectedValue, onChange: handleChange}:{selectedValue:string,  onChange:ChangeEventHandler<HTMLSelectElement>}) {
     // console.log('modelselector is initialized with', selectedValue)

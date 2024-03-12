@@ -9,10 +9,10 @@ import { ModelValue, doesModelAcceptImageUrl, getModelByValue } from '../lib/ai-
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
-import { LocaleContext, getTranslations } from '../lib/LocaleContext';
+import { LocaleContext } from "@/lib/client/locale-context"
+import { getTranslations } from '@/lib/localizations';
 import { Character, CharacterValue } from '../lib/model-character';
 import { EventName, eventBus } from '../lib/event-emitter';
-import { FormEvent } from "react";
 import ChatMessage from './chat-message';
 
 const defaultAssistantPromptContent = 'Understood.'

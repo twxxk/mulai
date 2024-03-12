@@ -6,7 +6,7 @@ import { LanguageSelector } from "@/components/component/language-selector";
 import { headers } from 'next/headers'
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-import { LocaleProvider } from "./lib/LocaleContext";
+import { LocaleProvider } from "@/lib/client/locale-context"
 
 export const metadata: Metadata = {
   title: (process.env.NODE_ENV === 'development' ? '(dev) ' : '')
