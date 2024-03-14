@@ -426,7 +426,7 @@ async function getExternalImage(image_url: string):Promise<{image_media_type: st
     if (matched) {
         const [_, matched_media_type, matched_data] = matched
         console.log('matched', matched_media_type)
-        if (!claude_supported_media_types.indexOf(matched_media_type)) {
+        if (claude_supported_media_types.indexOf(matched_media_type) < 0) {
             console.debug('media not supported')
             throw new Error('Unsupported Media')
         }
