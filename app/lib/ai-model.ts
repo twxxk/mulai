@@ -51,7 +51,7 @@ const allModels0:ChatModel0[] = [
     {label: 'GPT-4 Vision', provider: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096, doesToolSupport: true, }, 
 
     // in $0.25 / out $1.25 /1M tokens
-    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 253/256*100, japaneseScore:63, maxTokens: 4096},
+    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096},
     // in $3.00 / out $15.00 /1M tokens
     {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096},
     // in $15.00 / out $75.00 /1M tokens
@@ -95,7 +95,7 @@ const allModels0:ChatModel0[] = [
 
     {label: 'Groq Mixtral 8x7b', provider: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
-    {label: 'Groq Gemma 7B Instruct', provider: 'groq', modelValue: 'gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 82/256*100+2, japaneseScore:5},
+    {label: 'Groq Gemma 7B Instruct', provider: 'groq', modelValue: 'groq-gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 40/256*100+2, japaneseScore:10},
 
     {label: 'Mistral Small', provider: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 40, japaneseScore:5},
     // in 0.14€/M, out 0.42€/M

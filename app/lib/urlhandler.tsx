@@ -55,11 +55,11 @@ const freeValues:ModelCharacterPair[] = [
     google: [
         {modelValue: 'gemma-2b-it', characterValue: ''},
         {modelValue: 'gemma-7b-it', characterValue: ''},
+        {modelValue: 'groq-gemma-7b-it', characterValue: ''},
         {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     ],
     anthropic: [
-        {modelValue: 'anthropic.claude-instant-v1', characterValue: ''},
-        {modelValue: 'anthropic.claude-v2', characterValue: ''},
+        {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
         {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
         {modelValue: 'claude-3-opus-20240229', characterValue: ''},
     ],

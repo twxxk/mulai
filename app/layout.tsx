@@ -7,6 +7,7 @@ import { headers } from 'next/headers'
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import { LocaleProvider } from "@/lib/client/locale-context"
+import InfoLinks from "../lib/client/info-links";
 
 export const metadata: Metadata = {
   title: (process.env.NODE_ENV === 'development' ? '(dev) ' : '')
@@ -36,12 +37,12 @@ export default function RootLayout({
                 : <> - Chat with Multiple genAIs</>
               }
             </h1></a>
-            {/* copyright @twk all rights reserved */}
-            <a className='pt-1 text-teal-700 whitespace-nowrap overflow-x-hidden' href="https://twitter.com/twk" target="_blank" rel="noopener noreferrer">author: @twk</a>
             <Suspense>
               <ModelLinks
                 className="focus-visible:outline-none ml-2 mr-1 hover:text-teal-100 active:text-teal-50" />
               <LanguageSelector
+                className="focus-visible:outline-none ml-1 mr-1 hover:text-teal-100 active:text-teal-50" />
+              <InfoLinks selectedService="mulai"
                 className="focus-visible:outline-none ml-1 hover:text-teal-100 active:text-teal-50" />
             </Suspense>
           </header>
@@ -53,3 +54,4 @@ export default function RootLayout({
     </html>
   );
 }
+
