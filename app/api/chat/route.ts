@@ -242,7 +242,8 @@ const huggingFaceImageStream:ChatStreamFunction = async ({model, messages}) => {
     })
     // console.log(blob.type, blob.size, 'bytes')
 
-    const base64 = await blobToBase64(blob)
+    const arrayBuffer = await blob.arrayBuffer();
+    const base64 = abToBase64(arrayBuffer)
     const url = `data:${blob.type};base64,` + base64
 
     const responseMarkdown = imageMarkdown(url, prompt)
@@ -259,15 +260,17 @@ function imageMarkdown(url:string, prompt:string = 'Image') {
     return responseMarkdown
 }
 
-async function blobToBase64(blob:Blob) {
-    const arrayBuffer = await blob.arrayBuffer();
-    const bytes = new Uint8Array(arrayBuffer);
-    // TextDecoder does not work for binary
-    let chars = new Array(bytes.length);
-    for (let i = 0; i < bytes.length; i++) {
-        chars[i] = String.fromCharCode(bytes[i]);
-    }
-    const base64String = btoa(chars.join(''));
+function abToBase64(arrayBuffer:ArrayBuffer) {
+    // const bytes = new Uint8Array(arrayBuffer);
+    // // TextDecoder does not work for binary
+    // let chars = new Array(bytes.length);
+    // for (let i = 0; i < bytes.length; i++) {
+    //     chars[i] = String.fromCharCode(bytes[i]);
+    // }
+    // const base64String = btoa(chars.join(''));
+
+    // Edge Runtime friendly https://vercel.com/docs/functions/runtimes/edge-runtime
+    const base64String = Buffer.from(arrayBuffer).toString('base64');
     return base64String;
 }
 
@@ -415,21 +418,38 @@ export async function POST(req: Request) {
 }
 
 async function getExternalImage(image_url: string):Promise<{image_media_type: string, image_data: string}> {
-    // const image_url = 'https://t3.ftcdn.net/jpg/01/82/27/10/360_F_182271039_u23s5FCuAmZRVnp4Y8tQzqWeN6Se4mwp.jpg'
+    // https://docs.anthropic.com/claude/reference/messages-examples#vision
+    const claude_supported_media_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+
+    // handle base64 data url
+    const matched = image_url.match(/^data:(.*);base64,(.*)$/)
+    if (matched) {
+        const [_, matched_media_type, matched_data] = matched
+        console.log('matched', matched_media_type)
+        if (!claude_supported_media_types.indexOf(matched_media_type)) {
+            console.debug('media not supported')
+            throw new Error('Unsupported Media')
+        }
+        return {image_media_type: matched_media_type, image_data: matched_data}    
+    }
+
+    if (!image_url.match(/^https?:\/\//)) {
+        console.debug('unknown url format', image_url)
+        throw new Error('Unsupported URL')
+    }
+
     const res = await fetch(image_url)
     // const b = (await r.blob()).type
 
     const image_media_type = res.headers.get('content-type') ?? ''
     console.log(image_media_type)
     
-    // https://docs.anthropic.com/claude/reference/messages-examples#vision
-    const claude_supported_media_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
     if (claude_supported_media_types.indexOf(image_media_type) < 0) {
         console.debug('media not supported')
         throw new Error('Unsupported Media')
     }
     const image_array_buffer = await res.arrayBuffer();
-    const image_data = Buffer.from(image_array_buffer).toString('base64');
+    const image_data = abToBase64(image_array_buffer)
 
     return {image_media_type, image_data}    
 }
