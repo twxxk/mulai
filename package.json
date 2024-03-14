@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.16.1",
+    "@anthropic-ai/sdk": "^0.18.0",
     "@aws-sdk/client-bedrock-runtime": "^3.515.0",
     "@devbookhq/splitter": "^1.4.2",
     "@formatjs/intl-localematcher": "^0.5.4",
@@ -20,7 +20,7 @@
     "@tailwindcss/typography": "^0.5.10",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.10",
-    "ai": "^3.0.9",
+    "ai": "^3.0.11",
     "clsx": "^2.1.0",
     "lucide-react": "^0.325.0",
     "negotiator": "^0.6.3",

@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@anthropic-ai/sdk':
-    specifier: ^0.16.1
-    version: 0.16.1
+    specifier: ^0.18.0
+    version: 0.18.0
   '@aws-sdk/client-bedrock-runtime':
     specifier: ^3.515.0
     version: 3.515.0
@@ -39,8 +39,8 @@ dependencies:
     specifier: ^1.0.10
     version: 1.0.10(next@14.1.0)(react@18.2.0)(svelte@4.2.10)(vue@3.4.18)
   ai:
-    specifier: ^3.0.9
-    version: 3.0.9(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4)
+    specifier: ^3.0.11
+    version: 3.0.11(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4)
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -135,8 +135,8 @@ packages:
       '@jridgewell/trace-mapping': 0.3.22
     dev: false
 
-  /@anthropic-ai/sdk@0.16.1:
-    resolution: {integrity: sha512-vHgvfWEyFy5ktqam56Nrhv8MVa7EJthsRYNi+1OrFFfyrj9tR2/aji1QbVbQjYU/pPhPFaYrdCEC/MLPFrmKwA==}
+  /@anthropic-ai/sdk@0.18.0:
+    resolution: {integrity: sha512-3XsWEn/4nPGRd4AdSguugbSDFy6Z2AWTNOeI3iK+aV22+w23+vY9CEb3Hiy0kvKIQuxSmZz/+5WKC8nPWy8gVg==}
     dependencies:
       '@types/node': 18.19.15
       '@types/node-fetch': 2.6.11
@@ -2146,8 +2146,8 @@ packages:
       humanize-ms: 1.2.1
     dev: false
 
-  /ai@3.0.9(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4):
-    resolution: {integrity: sha512-v7y3+bSgGgiA1HkijvXcuHVSqZGljWRnBk/CFp5eJo+rSNFFSt/0s1IoAPZuE8hiWuqPrN9Pz9/cFKB1duh17g==}
+  /ai@3.0.11(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4):
+    resolution: {integrity: sha512-Y9bVYtENsyc/VcBUwsEv8Fj3J9z8bWmNP/rzZxvDZsDQ+WetnxsmH3vr7ZKiRwiu1MUOJGD/9G5LdL8ueKd+jQ==}
     engines: {node: '>=14.6'}
     peerDependencies:
       react: ^18.2.0
