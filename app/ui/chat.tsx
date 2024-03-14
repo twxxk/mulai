@@ -5,7 +5,7 @@ import { UseChatHelpers } from './chatOptions'
 import { RefreshCwIcon, Minimize2Icon, Maximize2Icon, SendIcon, XIcon, PlusIcon, ClipboardCopyIcon } from 'lucide-react';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import CharacterSelector from './characterSelector';
-import { ModelValue, doesModelAcceptImageUrl, getModelByValue } from '../lib/ai-model';
+import { ModelValue, getModelByValue } from '../lib/ai-model';
 import ModelSelector from './modelSelector';
 import { useChat } from 'ai/react';
 import EnterableTextarea from './enterableTextarea';
@@ -211,7 +211,7 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
   useEffect(() => {
     if (acceptsBroadcast) {
       let childValue
-      if (imageUrl && !doesModelAcceptImageUrl(modelValue)) {
+      if (imageUrl && !getModelByValue(modelValue)?.doesAcceptImageUrl) {
         // if the model does not accept separate fields
         childValue = imageUrl + "\n" + inputValue
       } else
@@ -252,9 +252,10 @@ export default function Chat({modelValue, character, index, hasClosePaneButton, 
     console.log('requesting model:' + modelValue)
     e.preventDefault()
 
+    const model = getModelByValue(modelValue)
     const options:ChatRequestOptions = {
       options:{headers:{model: modelValue}},
-      ...(doesModelAcceptImageUrl(modelValue) && imageUrl ? {
+      ...(model?.doesAcceptImageUrl && imageUrl ? {
         data: {imageUrl},
       } : {}),
     }

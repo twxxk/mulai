@@ -36,26 +36,27 @@ type ChatModel0 = {
     qualityScore: number,
     japaneseScore: number,
     maxTokens?: number,
-    doesToolSupport?: boolean,
+    doesSupportTool?: boolean,
+    doesAcceptImageUrl?: boolean,
 }
-// models will be displayed in this order
+
 const allModels0:ChatModel0[] = [
     // fast. in $0.0005/1K tokens, out $0.0015/1K tokens
-    {label: 'GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesToolSupport: true,},
+    {label: 'GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesSupportTool: true,},
     // in $0.03/1K tokens, out $0.06/1K tokens
-    {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesToolSupport: true,},
+    {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
     // in $0.01/1K tokens, out $0.03/1K tokens 
-    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77, doesToolSupport: true,},
+    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true,},
     // 1024x1024 in high costs 765 tokens
     // GPT-4 Vision responds only tens of chars if no max_tokens is given.
-    {label: 'GPT-4 Vision', provider: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096, doesToolSupport: true, }, 
+    {label: 'GPT-4 Vision', provider: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, }, 
 
     // in $0.25 / out $1.25 /1M tokens
-    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096},
+    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesAcceptImageUrl: true, },
     // in $3.00 / out $15.00 /1M tokens
-    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096},
+    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesAcceptImageUrl: true, },
     // in $15.00 / out $75.00 /1M tokens
-    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096},
+    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesAcceptImageUrl: true, },
 
     // free (up to 60queries/min) 
     {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
@@ -63,7 +64,7 @@ const allModels0:ChatModel0[] = [
     {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
     // cannot call from api. You can check available models from colab. https://ai.google.dev/tutorials/python_quickstart
     // {label: 'Google Gemini 1.5 Pro', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'gemini-1.5-pro-latest', qualityScore: 219/256*100, japaneseScore: 65},
-    {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64},
+    {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
     // no longer necessary. Claude 3 is cheeper and better
     // in $0.0008/1k tokens, out $0.0024/1k tokens
@@ -81,7 +82,7 @@ const allModels0:ChatModel0[] = [
     {label: 'Qwen 14B Chat', provider: 'fireworksai', modelValue: 'qwen-14b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-14b-chat', qualityScore: 35/256*100, japaneseScore:10},
 
     // free. OSS based
-    {label: 'FireLLaVA 13B', provider: 'fireworksai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15},
+    {label: 'FireLLaVA 13B', provider: 'fireworksai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
 
     {label: 'Perplexity Sonar Small', provider: 'perplexity', modelValue: 'sonar-small-chat', sdkModelValue: 'sonar-small-chat', qualityScore: 59, japaneseScore:12},
     // {label: 'Perplexity Sonar Small Online', provider: 'perplexity', modelValue: 'sonar-small-online', sdkModelValue: 'sonar-small-chat', qualityScore: 58, japaneseScore:11},
@@ -155,6 +156,7 @@ export type ChatModel = {
     japaneseScore: number, // 0..100 https://wandb.ai/wandb-japan/llm-leaderboard/reports/Nejumi-LLM-Neo--Vmlldzo2MTkyMTU0 as of 2024-02-23
     maxTokens?: number, // Only if it should be passed as a parameter
     doesToolSupport?: boolean, // If the model supports tools and function calls
+    doesAcceptImageUrl?: boolean,
 }
 
 
@@ -163,14 +165,6 @@ export const allModels:ChatModel[] = allModels0 as any
 export const DEFAULT_MODEL:ChatModel = allModels.find(model => model.modelValue === 'gemini-1.0-pro') as ChatModel
 
 export const allModelValues = allModels0.map(model => model.modelValue);
-
-
-export function doesModelAcceptImageUrl(modelValue:ModelValue) {
-    // Some other models have capabilities but the app implementation is not yet done.
-    return modelValue === 'gpt-4-vision-preview' || modelValue === 'firellava-13b'
-    || modelValue === 'gemini-pro-vision'
-    // return true
-}
 
 
 // models which are choosable with the selection

@@ -5,7 +5,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'next/navigation'
 import { UseChatHelpers } from './chatOptions'
 import { SendIcon, StopCircleIcon, Trash2Icon } from 'lucide-react';
-import { DEFAULT_MODEL, ModelValue, doesModelAcceptImageUrl } from '@/app/lib/ai-model';
+import { DEFAULT_MODEL, ModelValue, getModelByValue } from '@/app/lib/ai-model';
 import { useRouter } from 'next/navigation';
 import EnterableTextarea from './enterableTextarea';
 import { generateUrlToReplace, getModelCharacterValues } from '../lib/urlhandler';
@@ -30,7 +30,7 @@ export default function ChatsArea() {
   let splitSizes = splitToArray(modelCharacterValues.length)
   const [imageUrl, setImageUrl] = useState('')
 
-  const hasVisionModel = modelCharacterValues.findIndex(mc => doesModelAcceptImageUrl(mc.modelValue)) >= 0
+  const hasVisionModel = modelCharacterValues.findIndex(mc => getModelByValue(mc.modelValue)?.doesAcceptImageUrl) >= 0
 
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
@@ -231,7 +231,7 @@ export default function ChatsArea() {
   }
     
   return (
-  <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex-1 flex flex-row text-xs overflow-auto min-h-0', 'w-screen h-16 bottom-0 flex min-h-12']} onResizeFinished={handleVerticalResize}
+  <Splitter initialSizes={verticalSizes} direction={SplitDirection.Vertical} draggerClassName='dragger-vertical' gutterClassName="gutter gutter-vertical" key={modelCharacterValues.length} classes={['flex-1 flex flex-row text-xs overflow-auto min-h-0', 'w-screen bottom-0 flex min-h-20']} onResizeFinished={handleVerticalResize}
   >
     {/* 275 is the longest model label in Japanese */}
     <Splitter initialSizes={horizontalSizes} direction={SplitDirection.Horizontal} minWidths={Array(modelCharacterValues.length).fill(275)} draggerClassName='dragger-horizontal' gutterClassName="gutter gutter-horizontal" onResizeFinished={handleHorizontalResize}>

@@ -370,6 +370,18 @@ export async function POST(req: Request) {
 
         let m:any
         if (data?.imageUrl) {
+            let image_content:object = { type: 'image_url', image_url: { url: data!.imageUrl } }
+            if (modelData.provider === 'anthropic') {
+                const {image_media_type, image_data} = await getExternalImage(data!.imageUrl)
+                image_content = {
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": image_media_type,
+                        "data": image_data,
+                    },
+                }        
+            }
             // https://sdk.vercel.ai/docs/guides/providers/openai#guide-using-images-with-gpt-4-vision-and-usechat
             // https://readme.fireworks.ai/docs/querying-vision-language-models
             const initialMessages = messages.slice(0, -1);
@@ -380,7 +392,7 @@ export async function POST(req: Request) {
                     ...currentMessage,
                     content: [
                         { type: 'text', text: currentMessage.content },
-                        { type: 'image_url', image_url: { url: data!.imageUrl } },
+                        ...[image_content],
                     ]
                 }
             ]
@@ -400,4 +412,24 @@ export async function POST(req: Request) {
         const stream = stringToReadableStream(e.toString())
         return new StreamingTextResponse(stream)
     }
+}
+
+async function getExternalImage(image_url: string):Promise<{image_media_type: string, image_data: string}> {
+    // const image_url = 'https://t3.ftcdn.net/jpg/01/82/27/10/360_F_182271039_u23s5FCuAmZRVnp4Y8tQzqWeN6Se4mwp.jpg'
+    const res = await fetch(image_url)
+    // const b = (await r.blob()).type
+
+    const image_media_type = res.headers.get('content-type') ?? ''
+    console.log(image_media_type)
+    
+    // https://docs.anthropic.com/claude/reference/messages-examples#vision
+    const claude_supported_media_types = ['image/jpeg', 'image/png', 'image/gif', 'image/webp']
+    if (claude_supported_media_types.indexOf(image_media_type) < 0) {
+        console.debug('media not supported')
+        throw new Error('Unsupported Media')
+    }
+    const image_array_buffer = await res.arrayBuffer();
+    const image_data = Buffer.from(image_array_buffer).toString('base64');
+
+    return {image_media_type, image_data}    
 }
