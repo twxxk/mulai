@@ -39,8 +39,8 @@ dependencies:
     specifier: ^1.0.10
     version: 1.0.10(next@14.1.0)(react@18.2.0)(svelte@4.2.10)(vue@3.4.18)
   ai:
-    specifier: ^3.0.11
-    version: 3.0.11(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4)
+    specifier: ^3.0.12
+    version: 3.0.12(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4)
   clsx:
     specifier: ^2.1.0
     version: 2.1.0
@@ -2146,8 +2146,8 @@ packages:
       humanize-ms: 1.2.1
     dev: false
 
-  /ai@3.0.11(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4):
-    resolution: {integrity: sha512-Y9bVYtENsyc/VcBUwsEv8Fj3J9z8bWmNP/rzZxvDZsDQ+WetnxsmH3vr7ZKiRwiu1MUOJGD/9G5LdL8ueKd+jQ==}
+  /ai@3.0.12(react@18.2.0)(solid-js@1.8.14)(svelte@4.2.10)(vue@3.4.18)(zod@3.22.4):
+    resolution: {integrity: sha512-cP/Moag7PcDOE3kA7WU00YS+mQiuPpAxY+uf57lkWwnqSB1K3/RzwnRF+LD1FqgJfCubI4WEbajMPbnnCr8lAg==}
     engines: {node: '>=14.6'}
     peerDependencies:
       react: ^18.2.0
