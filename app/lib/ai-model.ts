@@ -13,6 +13,7 @@
 //   https://fireworks.ai/models
 //   fireworks.ai is free (some models) in dev 10q/min. devpro $1/1M tokens, 100q/min 
 // # AWS Bedrock Anthropic Claude
+//   https://docs.aws.amazon.com/bedrock/latest/userguide/model-ids.html
 //   https://aws.amazon.com/jp/bedrock/pricing/
 // # Mistral
 //   https://docs.mistral.ai/platform/endpoints/
@@ -66,6 +67,9 @@ const allModels0:ChatModel0[] = [
     // {label: 'Google Gemini 1.5 Pro', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'gemini-1.5-pro-latest', qualityScore: 219/256*100, japaneseScore: 65},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
+    // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
+    {label: 'Cohere Command R+', provider: 'cohere', modelValue: 'command-r-plus', sdkModelValue: 'command-r-plus', qualityScore: 147/256*100, japaneseScore:67},
+
     // no longer necessary. Claude 3 is cheeper and better
     // in $0.0008/1k tokens, out $0.0024/1k tokens
     {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
@@ -105,6 +109,7 @@ const allModels0:ChatModel0[] = [
     // in:$0.4/M out:$1.6/M
     {label: 'Mixtral MoE 8x7B Instruct', provider: 'fireworksai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', qualityScore: 120/256*100, japaneseScore:5},
     {label: 'Mistral 7B Instruct', provider: 'fireworksai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', qualityScore: 152/256*100, japaneseScore:0},
+
     {label: 'Cohere Command Nightly', provider: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', qualityScore: 40, japaneseScore:0},
     {label: 'Cohere Command Light Nightly', provider: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', qualityScore: 40, japaneseScore:0},
 
