@@ -10,11 +10,11 @@ const freeValues:ModelCharacterPair[] = [
   ]
   // for production
   const bestQualityValues:ModelCharacterPair[] = [
-    {modelValue: 'gpt-3.5-turbo', characterValue: ''},
     {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
-    {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+    {modelValue: 'command-r-plus', characterValue: ''},
     {modelValue: 'claude-3-opus-20240229', characterValue: ''},
+    {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [

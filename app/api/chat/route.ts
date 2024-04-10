@@ -104,7 +104,7 @@ const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
 const googleChatStream:ChatStreamFunction = async({model, messages}) => {
     const prompts = buildGoogleGenAIPrompt(messages)
     const geminiStream = await google
-        .getGenerativeModel({ model: model.sdkModelValue })
+        .getGenerativeModel({ model: model.sdkModelValue }, { apiVersion: "v1beta"})
         .generateContentStream(prompts)
 
     // Convert the response into a friendly text-stream

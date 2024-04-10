@@ -18,8 +18,8 @@ dependencies:
     specifier: ^0.5.4
     version: 0.5.4
   '@google/generative-ai':
-    specifier: ^0.2.0
-    version: 0.2.0
+    specifier: ^0.5.0
+    version: 0.5.0
   '@huggingface/inference':
     specifier: ^2.6.4
     version: 2.6.4
@@ -748,8 +748,8 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@google/generative-ai@0.2.0:
-    resolution: {integrity: sha512-ivlJS7H/9YY1CMrGmcSXm7CRGDept5uvamIEZwHrInX0lA4K55U2YEjQyhRV+M0wgYix6EezEVCJzSdvxeZEkA==}
+  /@google/generative-ai@0.5.0:
+    resolution: {integrity: sha512-uxfN3mROgVxb+9KrlVHIiglcWgNE86pVTS9TRkGS6hMvQoZ5TrB1TIMcW5ZYWxlRhMwtmEdJnNMUxSqM3Qp/Ag==}
     engines: {node: '>=18.0.0'}
     dev: false
 

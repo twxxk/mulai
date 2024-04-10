@@ -59,6 +59,8 @@ const allModels0:ChatModel0[] = [
     // in $15.00 / out $75.00 /1M tokens
     {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesAcceptImageUrl: true, },
 
+    // preview (up to 2queries/min) 
+    {label: 'Google Gemini 1.5 Pro Preview', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
     // free (up to 60queries/min) 
     {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     // free (up to 60queries/min) 
