@@ -47,10 +47,7 @@ const allModels0:ChatModel0[] = [
     // in $0.03/1K tokens, out $0.06/1K tokens
     {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
     // in $0.01/1K tokens, out $0.03/1K tokens 
-    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo-preview', sdkModelValue: 'gpt-4-turbo-preview', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true,},
-    // 1024x1024 in high costs 765 tokens
-    // GPT-4 Vision responds only tens of chars if no max_tokens is given.
-    {label: 'GPT-4 Vision', provider: 'openai', modelValue: 'gpt-4-vision-preview', sdkModelValue: 'gpt-4-vision-preview', qualityScore: 118/256*100, japaneseScore: 67, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, }, 
+    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true, doesAcceptImageUrl: true, },
 
     // in $0.25 / out $1.25 /1M tokens
     {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesAcceptImageUrl: true, },

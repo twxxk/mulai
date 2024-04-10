@@ -14,7 +14,7 @@ const freeValues:ModelCharacterPair[] = [
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'command-r-plus', characterValue: ''},
     {modelValue: 'claude-3-opus-20240229', characterValue: ''},
-    {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+    {modelValue: 'gpt-4-turbo', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [
@@ -49,7 +49,7 @@ const freeValues:ModelCharacterPair[] = [
     ],
     gpt: [
         {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-        {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
+        {modelValue: 'gpt-4-turbo', characterValue: ''},
         {modelValue: 'gpt-4', characterValue: ''},
     ],
     google: [
