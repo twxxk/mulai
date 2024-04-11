@@ -1,26 +1,30 @@
-import { StreamingTextResponse, Message } from 'ai';
-import { OpenAIStream, GoogleGenerativeAIStream, CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
-import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt, ChatCompletionMessageParam } from 'ai/prompts';
+import { StreamingTextResponse, Message, experimental_streamText, ExperimentalMessage } from 'ai';
+import { OpenAIStream, CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
+import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt } from 'ai/prompts';
 import OpenAI from 'openai';
-// import does not work with google https://ai.google.dev/tutorials/node_quickstart
-const { GoogleGenerativeAI } = require("@google/generative-ai");
 import { HfInference } from '@huggingface/inference';
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
 import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModel } from '@/app/lib/ai-model';
-// Note: There are no types for the Mistral API client yet.
-// @ts-ignore
-import MistralClient from '@mistralai/mistralai';
-import { ChatCompletionChunk, ImageGenerateParams } from 'openai/resources/index.mjs';
-import Anthropic from '@anthropic-ai/sdk';
-import { AnthropicStream } from 'ai';
-import { MessageParam } from '@anthropic-ai/sdk/resources/messages.mjs';
+import { ImageGenerateParams } from 'openai/resources/index.mjs';
+import { Google } from 'ai/google';
+import { Anthropic } from 'ai/anthropic';
+import { Mistral } from 'ai/mistral';
 
 // Create ai clients (they're edge friendly!)
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY, });
-const google = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
+const openai = new OpenAI({ 
+    apiKey: process.env.OPENAI_API_KEY, 
+});
 const fireworks = new OpenAI({
     apiKey: process.env.FIREWORKS_API_KEY || '',
     baseURL: 'https://api.fireworks.ai/inference/v1',
+});
+const groq = new OpenAI({
+    apiKey: process.env.GROQ_API_KEY || '',
+    baseURL: 'https://api.groq.com/openai/v1',
+});
+const perplexity  = new OpenAI({
+    apiKey: process.env.PERPLEXITY_API_KEY || '',
+    baseURL: 'https://api.perplexity.ai/',
 });
 const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 const bedrockClient = new BedrockRuntimeClient({
@@ -30,18 +34,10 @@ const bedrockClient = new BedrockRuntimeClient({
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
     },
 });
-const groq = new OpenAI({
-    apiKey: process.env.GROQ_API_KEY || '',
-    baseURL: 'https://api.groq.com/openai/v1',
-})
-const mistral = new MistralClient(process.env.MISTRAL_API_KEY || '');
-const perplexity  = new OpenAI({
-    apiKey: process.env.PERPLEXITY_API_KEY || '',
-    baseURL: 'https://api.perplexity.ai/',
-})
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
+
+const google = new Google({ apiKey: process.env.GOOGLE_API_KEY || '' });
+const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
+const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY || ''});
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -102,27 +98,11 @@ const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
 // Google Gemini
 // https://sdk.vercel.ai/docs/guides/providers/google
 const googleChatStream:ChatStreamFunction = async({model, messages}) => {
-    const prompts = buildGoogleGenAIPrompt(messages)
-    const geminiStream = await google
-        .getGenerativeModel({ model: model.sdkModelValue }, { apiVersion: "v1beta"})
-        .generateContentStream(prompts)
-
-    // Convert the response into a friendly text-stream
-    const stream = GoogleGenerativeAIStream(geminiStream)
-    return stream
-
-    // convert messages from the Vercel AI SDK Format to the format
-    // that is expected by the Google GenAI SDK
-    function buildGoogleGenAIPrompt(messages: Message[]) {
-        return ({
-            contents: messages
-                .filter(message => message.role === 'user' || message.role === 'assistant')
-                .map(message => ({
-                    role: message.role === 'user' ? 'user' : 'model',
-                    parts: [{ text: message.content }],
-                })),
-        });
-    }
+    const result = await experimental_streamText({
+        model: google.generativeAI('models/' + model.sdkModelValue),
+        messages: messages as ExperimentalMessage[],
+    });
+    return result.toAIStream();
 }
 
 // fireworks.ai
@@ -206,15 +186,11 @@ const perplexityChatStream:ChatStreamFunction = async ({model, messages}) => {
 }
 
 const mistralChatStream:ChatStreamFunction = async ({model, messages}) => {
-    // @see https://sdk.vercel.ai/docs/guides/providers/mistral
-    const chatStream = await mistral.chatStream({
-      model: model.sdkModelValue,
-      messages,
+    const result = await experimental_streamText({
+        model: mistral.chat(model.sdkModelValue),
+        messages: messages as ExperimentalMessage[],
     });
-    const asyncIterable = chatStream as AsyncIterable<ChatCompletionChunk>;
-
-    const stream = OpenAIStream(asyncIterable);    
-    return stream
+    return result.toAIStream();
 }
 
 const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
@@ -318,17 +294,11 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
 }
 
 const anthropicChatStream:ChatStreamFunction = async ({model, messages}) => {
-  // Ask Claude for a streaming chat completion given the prompt
-  const response = await anthropic.messages.create({
-    messages: messages as MessageParam[],
-    model: model.sdkModelValue,
-    stream: true,
-    max_tokens: model.maxTokens ?? 4096,
-  });
- 
-  // Convert the response into a friendly text-stream
-  const stream = AnthropicStream(response);
-  return stream    
+    const result = await experimental_streamText({
+        model: anthropic.messages(model.sdkModelValue),
+        messages: messages as ExperimentalMessage[],
+    });
+    return result.toAIStream();
 }
 
 // factory method
@@ -374,16 +344,14 @@ export async function POST(req: Request) {
         let m:any
         if (data?.imageUrl) {
             let image_content:object = { type: 'image_url', image_url: { url: data!.imageUrl } }
-            if (modelData.provider === 'anthropic') {
+            // : { type: 'image', image: new URL(data!.imageUrl) } // 'AI_UnsupportedFunctionalityError: \'URL image parts\' functionality not supported.'
+            if (modelData.provider !== 'openai') {
                 const {image_media_type, image_data} = await getExternalImage(data!.imageUrl)
                 image_content = {
-                    "type": "image",
-                    "source": {
-                        "type": "base64",
-                        "media_type": image_media_type,
-                        "data": image_data,
-                    },
-                }        
+                    type: "image",
+                    image: image_data,
+                    mimeType: image_media_type,
+                }
             }
             // https://sdk.vercel.ai/docs/guides/providers/openai#guide-using-images-with-gpt-4-vision-and-usechat
             // https://readme.fireworks.ai/docs/querying-vision-language-models
