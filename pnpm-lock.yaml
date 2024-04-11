@@ -17,15 +17,9 @@ dependencies:
   '@formatjs/intl-localematcher':
     specifier: ^0.5.4
     version: 0.5.4
-  '@google/generative-ai':
-    specifier: ^0.5.0
-    version: 0.5.0
   '@huggingface/inference':
     specifier: ^2.6.4
     version: 2.6.4
-  '@mistralai/mistralai':
-    specifier: ^0.0.10
-    version: 0.0.10
   '@radix-ui/react-dropdown-menu':
     specifier: ^2.0.6
     version: 2.0.6(@types/react-dom@18.2.19)(@types/react@18.2.55)(react-dom@18.2.0)(react@18.2.0)
@@ -755,11 +749,6 @@ packages:
       tslib: 2.6.2
     dev: false
 
-  /@google/generative-ai@0.5.0:
-    resolution: {integrity: sha512-uxfN3mROgVxb+9KrlVHIiglcWgNE86pVTS9TRkGS6hMvQoZ5TrB1TIMcW5ZYWxlRhMwtmEdJnNMUxSqM3Qp/Ag==}
-    engines: {node: '>=18.0.0'}
-    dev: false
-
   /@huggingface/inference@2.6.4:
     resolution: {integrity: sha512-Xna7arltBSBoKaH3diGi3sYvkExgJMd/pF4T6vl2YbmDccbr1G/X5EPZ2048p+YgrJYG1jTYFCtY6Dr3HvJaow==}
     engines: {node: '>=18'}
@@ -845,14 +834,6 @@ packages:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.4.15
-    dev: false
-
-  /@mistralai/mistralai@0.0.10:
-    resolution: {integrity: sha512-fZOt7A32DcPSff58wTa44pKUBoJBH5toAuzNI9yoM7s5NjTupa1IYcSqqk2LigO8M5EtOEkFsD/XzdyWPnhaRA==}
-    dependencies:
-      node-fetch: 2.7.0
-    transitivePeerDependencies:
-      - encoding
     dev: false
 
   /@next/env@14.1.0:

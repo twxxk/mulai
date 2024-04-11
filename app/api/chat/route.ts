@@ -7,8 +7,10 @@ import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws
 import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModel } from '@/app/lib/ai-model';
 import { ImageGenerateParams } from 'openai/resources/index.mjs';
 import { Google } from 'ai/google';
-import { Anthropic } from 'ai/anthropic';
 import { Mistral } from 'ai/mistral';
+import Anthropic from '@anthropic-ai/sdk';
+import { AnthropicStream } from 'ai';
+import { MessageParam } from '@anthropic-ai/sdk/resources/messages.mjs';
 
 // Create ai clients (they're edge friendly!)
 const openai = new OpenAI({ 
@@ -34,9 +36,10 @@ const bedrockClient = new BedrockRuntimeClient({
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
     },
 });
-
+const anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
+});
 const google = new Google({ apiKey: process.env.GOOGLE_API_KEY || '' });
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY || '' });
 const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY || ''});
 
 // Set the runtime to edge for best performance
@@ -294,11 +297,17 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
 }
 
 const anthropicChatStream:ChatStreamFunction = async ({model, messages}) => {
-    const result = await experimental_streamText({
-        model: anthropic.messages(model.sdkModelValue),
-        messages: messages as ExperimentalMessage[],
-    });
-    return result.toAIStream();
+  // Ask Claude for a streaming chat completion given the prompt
+  const response = await anthropic.messages.create({
+    messages: messages as MessageParam[],
+    model: model.sdkModelValue,
+    stream: true,
+    max_tokens: model.maxTokens ?? 4096,
+  });
+ 
+  // Convert the response into a friendly text-stream
+  const stream = AnthropicStream(response);
+  return stream    
 }
 
 // factory method
@@ -343,15 +352,19 @@ export async function POST(req: Request) {
 
         let m:any
         if (data?.imageUrl) {
-            let image_content:object = { type: 'image_url', image_url: { url: data!.imageUrl } }
-            // : { type: 'image', image: new URL(data!.imageUrl) } // 'AI_UnsupportedFunctionalityError: \'URL image parts\' functionality not supported.'
-            if (modelData.provider !== 'openai') {
+            let image_content:object = { type: 'image', image: new URL(data!.imageUrl) } 
+            if (modelData.provider === 'openai') {
+                image_content = { type: 'image_url', image_url: { url: data!.imageUrl } }
+            } else if (modelData.provider === 'anthropic') {
                 const {image_media_type, image_data} = await getExternalImage(data!.imageUrl)
                 image_content = {
-                    type: "image",
-                    image: image_data,
-                    mimeType: image_media_type,
-                }
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": image_media_type,
+                        "data": image_data,
+                    },
+                }        
             }
             // https://sdk.vercel.ai/docs/guides/providers/openai#guide-using-images-with-gpt-4-vision-and-usechat
             // https://readme.fireworks.ai/docs/querying-vision-language-models
