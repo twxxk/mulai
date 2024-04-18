@@ -92,14 +92,14 @@ const allModels0:ChatModel0[] = [
     {label: 'Perplexity Sonar Medium', provider: 'perplexity', modelValue: 'sonar-medium-chat', sdkModelValue: 'sonar-medium-chat', qualityScore: 61, japaneseScore:14},
     // {label: 'Perplexity Sonar Medium Online', provider: 'perplexity', modelValue: 'sonar-medium-online', sdkModelValue: 'sonar-medium-chat', qualityScore: 60, japaneseScore:13},
 
-    {label: 'Gemma 7B Instruct', provider: 'huggingface', modelValue: 'gemma-7b-it', sdkModelValue: 'google/gemma-7b-it', qualityScore: 40, japaneseScore:10},
-    {label: 'Gemma 7B', provider: 'huggingface', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 40-1, japaneseScore:10},
-    {label: 'Gemma 2B Instruct', provider: 'huggingface', modelValue: 'gemma-2b-it', sdkModelValue: 'google/gemma-2b-it', qualityScore: 40/7*2, japaneseScore:0},
-    {label: 'Gemma 2B', provider: 'huggingface', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 40/7*2-1, japaneseScore:0},
+    {label: 'Gemma 1.1 7B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-7b-it', sdkModelValue: 'google/gemma-1.1-7b-it', qualityScore: 86/256*100, japaneseScore:10},
+    {label: 'Gemma 7B', provider: 'huggingface', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 86/256*100-2, japaneseScore:10},
+    {label: 'Gemma 1.1 2B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-2b-it', sdkModelValue: 'google/gemma-1.1-2b-it', qualityScore: 86/256*100-1, japaneseScore:0},
+    {label: 'Gemma 2B', provider: 'huggingface', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 86/256*100-3, japaneseScore:0},
 
     {label: 'Groq Mixtral 8x7b', provider: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
-    {label: 'Groq Gemma 7B Instruct', provider: 'groq', modelValue: 'groq-gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 40/256*100+2, japaneseScore:10},
+    {label: 'Groq Gemma 1.1 7B', provider: 'groq', modelValue: 'groq-gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 40/256*100+2, japaneseScore:15},
 
     {label: 'Mistral Small', provider: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 40, japaneseScore:5},
     // in 0.14€/M, out 0.42€/M
