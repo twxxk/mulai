@@ -339,8 +339,8 @@ function chatStreamFactory(model: ChatModel):ChatStreamFunction {
 }
 
 export async function POST(req: Request) {
+    const { messages, data } = await req.json();
     try {
-        const { messages, data } = await req.json();
         let modelValue = req.headers.get('Model') ?? ''
 
         let modelData = getModelByValue(modelValue as ModelValue)
@@ -398,11 +398,15 @@ export async function POST(req: Request) {
         // https://sdk.vercel.ai/docs/guides/providers/openai#guide-handling-errors
         // https://github.com/openai/openai-node?tab=readme-ov-file#handling-errors
         // https://github.com/groq/groq-typescript
-        console.warn(err.status, err.name, err.headers)
-        console.debug('request', await req.text())
-
+        let errorMessage = err?.message || err.toString()
+        console.warn(err.status, err.name, errorMessage, messages)
+        // if (err instanceof OpenAI.APIError) {
+        //     console.debug(err.error)
+        // }
+        console.debug(messages, err?.error)
+      
         // throw e; // when you would like to check the details
-        const stream = stringToReadableStream(`0: "${err.toString()}"`)
+        const stream = stringToReadableStream(`0: "${errorMessage}"`)
         return new StreamingTextResponse(stream, {
             // status is overwritten by StreamingTextResponse. It could be good to generate contents to the user
             // status: err.status,
