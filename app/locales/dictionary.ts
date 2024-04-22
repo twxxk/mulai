@@ -11,6 +11,7 @@ const en:{[key:string]: any} = {
 	imageUrlPlaceholder: 'Image URL (PNG, JPEG, WEBP, and non-animated GIF). Only works for a few models.',
 
 	defaultModelsLabel: 'Default',
+	ejModelsLabel: 'English Japanese',
 	magiModelsLabel: 'MAGI',
 	optpessModelsLabel: 'Optim/Pessi',
 	gptModelsLabel: 'OpenAI GPT',
@@ -50,6 +51,7 @@ const ja:{[key:string]: any} = {
 	imageUrlPlaceholder: '画像URL（PNG、JPEG、WEBP、非アニメーションGIF)。一部モデルでのみ動作します。',
 
 	defaultModelsLabel: 'おすすめ',
+	ejModelsLabel: '翻訳応答',
 	magiModelsLabel: 'MAGI',
 	optpessModelsLabel: '楽観悲観',
 	gptModelsLabel: 'OpenAI GPT',

@@ -13,7 +13,6 @@ const freeValues:ModelCharacterPair[] = [
     {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'command-r-plus', characterValue: ''},
-    {modelValue: 'gemini-1.5-pro-latest', characterValue: ''},
     {modelValue: 'gpt-4-turbo', characterValue: ''},
   ]
   // for debug purpose
@@ -36,9 +35,15 @@ const freeValues:ModelCharacterPair[] = [
   
   const specialPairs:{[key:string]:ModelCharacterPair[]} = {
     default: (
-        process.env.NODE_ENV === 'development' ? freeValues : 
+        // process.env.NODE_ENV === 'development' ? freeValues : 
         bestQualityValues),
-    magi: [
+    ej: [
+        {modelValue: 'qwen-72b-chat', characterValue: 'ej'},
+        {modelValue: 'firellava-13b', characterValue: 'ej'},
+        {modelValue: 'sonar-medium-chat', characterValue: 'ej'},
+        {modelValue: 'groq-llama3-70b-8192', characterValue: 'ej'},
+    ],
+        magi: [
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},
@@ -88,6 +93,9 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
     }
 
     // Evangelion
+    if (modelsParam === 'ej') {
+        return specialPairs.ej
+    }
     if (modelsParam === 'magi') {
         return specialPairs.magi
     }

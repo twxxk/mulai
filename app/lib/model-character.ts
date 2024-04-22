@@ -1,6 +1,6 @@
 import { DEFAULT_MODEL, ModelValue, allModelValues } from "./ai-model";
 
-export const characterValues = ['', 'child', 'bullets', 'steps', 'proofreading', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
+export const characterValues = ['', 'ej', 'child', 'bullets', 'steps', 'proofreading', 'optimist', 'pessimist', 'melchior', 'balthasar', 'caspar'] as const;
 export type CharacterValue = typeof characterValues[number];
 export const DEFAULT_CHARACTER_VALUE:CharacterValue = ''
 
