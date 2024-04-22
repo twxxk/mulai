@@ -13,7 +13,7 @@ const freeValues:ModelCharacterPair[] = [
     {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'command-r-plus', characterValue: ''},
-    {modelValue: 'claude-3-opus-20240229', characterValue: ''},
+    {modelValue: 'gemini-1.5-pro-latest', characterValue: ''},
     {modelValue: 'gpt-4-turbo', characterValue: ''},
   ]
   // for debug purpose
