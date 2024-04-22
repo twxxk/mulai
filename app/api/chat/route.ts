@@ -388,13 +388,27 @@ export async function POST(req: Request) {
         const responseStreamGenerator = chatStreamFactory(modelData)
         const stream = await responseStreamGenerator({model:modelData, messages: m})
 
+        // return new Response('0: "Dummy Error"', {
+        //     statusText: "dummy error",
+        //     headers: { 'original-status': "403" },
+        // });
         return new StreamingTextResponse(stream)
-    } catch (e:any) {
-        // any network error etc
+    } catch (err:any) {
+        // Groq sometimes return html errors with 403 via cloudflare.
+        // https://sdk.vercel.ai/docs/guides/providers/openai#guide-handling-errors
+        // https://github.com/openai/openai-node?tab=readme-ov-file#handling-errors
+        // https://github.com/groq/groq-typescript
+        console.warn(err.status, err.name, err.headers)
+        console.debug('request', await req.text())
+
         // throw e; // when you would like to check the details
-        console.error(e.status, e.toString(), e)
-        const stream = stringToReadableStream(e.toString())
-        return new StreamingTextResponse(stream)
+        const stream = stringToReadableStream(`0: "${err.toString()}"`)
+        return new StreamingTextResponse(stream, {
+            // status is overwritten by StreamingTextResponse. It could be good to generate contents to the user
+            // status: err.status,
+            headers: { 'original-status': err.status },
+            statusText: err.statusText,
+        })
     }
 }
 
