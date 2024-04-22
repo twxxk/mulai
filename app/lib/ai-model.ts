@@ -97,6 +97,8 @@ const allModels0:ChatModel0[] = [
     {label: 'Gemma 1.1 2B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-2b-it', sdkModelValue: 'google/gemma-1.1-2b-it', qualityScore: 86/256*100-1, japaneseScore:0},
     {label: 'Gemma 2B', provider: 'huggingface', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 86/256*100-3, japaneseScore:0},
 
+    {label: 'Groq Llama 3 70b', provider: 'groq', modelValue: 'groq-llama3-70b-8192', sdkModelValue: 'llama3-70b-8192', qualityScore: 152/256*100+2, japaneseScore:5},
+    {label: 'Groq Llama 3 8b', provider: 'groq', modelValue: 'groq-llama3-8b-8192', sdkModelValue: 'llama3-8b-8192', qualityScore: 152/256*100+2, japaneseScore:5},
     {label: 'Groq Mixtral 8x7b', provider: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
     {label: 'Groq Gemma 1.1 7B', provider: 'groq', modelValue: 'groq-gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 40/256*100+2, japaneseScore:15},
