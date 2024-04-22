@@ -398,12 +398,12 @@ export async function POST(req: Request) {
         // https://sdk.vercel.ai/docs/guides/providers/openai#guide-handling-errors
         // https://github.com/openai/openai-node?tab=readme-ov-file#handling-errors
         // https://github.com/groq/groq-typescript
-        let errorMessage = err?.message || err.toString()
-        console.warn(err.status, err.name, errorMessage, messages)
+        const errorMessage = err?.message || err?.statusText
+        console.warn(err.status, errorMessage, err?.error)
         // if (err instanceof OpenAI.APIError) {
         //     console.debug(err.error)
         // }
-        console.debug(messages, err?.error)
+        console.debug(messages, err.toString())
       
         // throw e; // when you would like to check the details
         const stream = stringToReadableStream(`0: "${errorMessage}"`)
