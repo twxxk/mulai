@@ -394,19 +394,19 @@ export async function POST(req: Request) {
         // });
         return new StreamingTextResponse(stream)
     } catch (err:any) {
-        // Groq sometimes return html errors with 403 via cloudflare.
+        // Groq sometimes return the 403 error of which err.message is the cloudflare error html
         // https://sdk.vercel.ai/docs/guides/providers/openai#guide-handling-errors
         // https://github.com/openai/openai-node?tab=readme-ov-file#handling-errors
         // https://github.com/groq/groq-typescript
-        const errorMessage = err?.message || err?.statusText
-        console.warn(err.status, errorMessage, err?.error)
+        const errorText = err?.statusText || err?.name || `Unexpected Error. Status=${err.status}` 
+        console.warn(err.status, errorText, err?.error, err?.message)
         // if (err instanceof OpenAI.APIError) {
         //     console.debug(err.error)
         // }
         console.debug(messages, err.toString())
       
         // throw e; // when you would like to check the details
-        const stream = stringToReadableStream(`0: "${errorMessage}"`)
+        const stream = stringToReadableStream(`0: "${errorText}"`)
         return new StreamingTextResponse(stream, {
             // status is overwritten by StreamingTextResponse. It could be good to generate contents to the user
             // status: err.status,
