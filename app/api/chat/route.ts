@@ -1,32 +1,45 @@
 import { StreamingTextResponse, Message, experimental_streamText, ExperimentalMessage } from 'ai';
-import { OpenAIStream, CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
+import { CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
 import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt } from 'ai/prompts';
 import OpenAI from 'openai';
 import { HfInference } from '@huggingface/inference';
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
 import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModel } from '@/app/lib/ai-model';
 import { ImageGenerateParams } from 'openai/resources/index.mjs';
-import { Google } from 'ai/google';
-import { Mistral } from 'ai/mistral';
-import Anthropic from '@anthropic-ai/sdk';
-import { AnthropicStream } from 'ai';
-import { MessageParam } from '@anthropic-ai/sdk/resources/messages.mjs';
+import { createOpenAI } from '@ai-sdk/openai';
+import { createMistral } from '@ai-sdk/mistral';
+import { createGoogleGenerativeAI } from '@ai-sdk/google';
+import { createAnthropic } from '@ai-sdk/anthropic';
+import { type LanguageModelV1 } from '@ai-sdk/provider'
 
 // Create ai clients (they're edge friendly!)
-const openai = new OpenAI({ 
+const openai = createOpenAI({ 
     apiKey: process.env.OPENAI_API_KEY, 
 });
-const fireworks = new OpenAI({
+const fireworks = createOpenAI({
     apiKey: process.env.FIREWORKS_API_KEY || '',
     baseURL: 'https://api.fireworks.ai/inference/v1',
 });
-const groq = new OpenAI({
+const groq = createOpenAI({
     apiKey: process.env.GROQ_API_KEY || '',
     baseURL: 'https://api.groq.com/openai/v1',
 });
-const perplexity  = new OpenAI({
+const perplexity = createOpenAI({
     apiKey: process.env.PERPLEXITY_API_KEY || '',
     baseURL: 'https://api.perplexity.ai/',
+});
+const anthropic = createAnthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || '',
+});
+const google = createGoogleGenerativeAI({ apiKey: process.env.GOOGLE_API_KEY || '' });
+const mistral = createMistral({ apiKey: process.env.MISTRAL_API_KEY || ''});
+
+const openaiImage = new OpenAI({ 
+    apiKey: process.env.OPENAI_API_KEY, 
+});
+const fireworksImage = new OpenAI({
+    apiKey: process.env.FIREWORKS_API_KEY || '',
+    baseURL: 'https://api.fireworks.ai/inference/v1',
 });
 const Hf = new HfInference(process.env.HUGGINGFACE_API_KEY);
 const bedrockClient = new BedrockRuntimeClient({
@@ -36,11 +49,6 @@ const bedrockClient = new BedrockRuntimeClient({
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY ?? '',
     },
 });
-const anthropic = new Anthropic({
-    apiKey: process.env.ANTHROPIC_API_KEY || '',
-});
-const google = new Google({ apiKey: process.env.GOOGLE_API_KEY || '' });
-const mistral = new Mistral({ apiKey: process.env.MISTRAL_API_KEY || ''});
 
 // Set the runtime to edge for best performance
 export const runtime = 'edge';
@@ -59,23 +67,6 @@ function stringToReadableStream(str:string):ReadableStream {
     });
 }
 
-// OpenAI
-// https://sdk.vercel.ai/docs/guides/providers/openai
-const openaiChatStream:ChatStreamFunction = async({model, messages}) => {
-    // Ask OpenAI for a streaming chat completion given the prompt
-    const defaultParams = {
-        model: model.sdkModelValue,
-        stream: true,
-        messages,
-    }
-    const params = model.maxTokens ? {...defaultParams, max_tokens: model.maxTokens} : defaultParams
-    const response = await openai.chat.completions.create(params as any)
-
-    // Convert the response into a friendly text-stream
-    const stream = OpenAIStream(response as any)
-    return stream
-}
-
 const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
     const prompt = messages[messages.length - 1].content
 
@@ -87,7 +78,7 @@ const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
         // size: '256x256', // for dall-e-2
         // size: '1024x1024' // for dall-e-3
     }
-    const response = await openai.images.generate(params)
+    const response = await openaiImage.images.generate(params)
     // console.log(response.data) // [{url:string}, ...]
 
     const responseMarkdown = response.data.map((datum) => 
@@ -95,31 +86,6 @@ const openaiImageStream:ChatStreamFunction = async({model, messages}) => {
     ).join('\n')
 
     const stream = stringToReadableStream(responseMarkdown)
-    return stream    
-}
-
-// Google Gemini
-// https://sdk.vercel.ai/docs/guides/providers/google
-const googleChatStream:ChatStreamFunction = async({model, messages}) => {
-    const result = await experimental_streamText({
-        model: google.generativeAI('models/' + model.sdkModelValue),
-        messages: messages as ExperimentalMessage[],
-    });
-    return result.toAIStream();
-}
-
-// fireworks.ai
-const fireworksChatStream:ChatStreamFunction = async ({model, messages}) => {
-    // Ask Fireworks for a streaming chat completion using Llama 2 70b model
-    // @see https://app.fireworks.ai/models/fireworks/llama-v2-70b-chat
-    const response = await fireworks.chat.completions.create({
-        model: model.sdkModelValue,
-        stream: true,
-        max_tokens: 4096,
-        messages: messages as any,
-    });
-
-    const stream = OpenAIStream(response);
     return stream    
 }
 
@@ -135,7 +101,7 @@ const fireworksImageStream:ChatStreamFunction = async ({model, messages}) => {
         response_format: 'url',
     }
     // console.log('params', params)
-    const response = await fireworks.images.generate(params)
+    const response = await fireworksImage.images.generate(params)
 
     const responseMarkdown = response.data.map((datum) => 
         datum.url ? imageMarkdown(datum.url as string, prompt) : ''
@@ -162,38 +128,6 @@ const awsAnthropicChatStream:ChatStreamFunction = async ({model, messages})=>{
  
     const stream = AWSBedrockAnthropicStream(bedrockResponse);
     return stream    
-}
-
-const groqChatStream:ChatStreamFunction = async ({model, messages})=>{
-    // @see https://docs.api.groq.com/md/openai.oas.html
-    const response = await groq.chat.completions.create({
-        model: model.sdkModelValue,
-        stream: true,
-        messages: messages as any,
-    });
-
-    const stream = OpenAIStream(response);
-    return stream    
-}
-
-const perplexityChatStream:ChatStreamFunction = async ({model, messages}) => {
-    // @see https://sdk.vercel.ai/docs/guides/providers/perplexity
-    const response = await perplexity.chat.completions.create({
-        model: model.sdkModelValue,
-        stream: true,
-        messages: messages as any,
-    });
-
-    const stream = OpenAIStream(response);
-    return stream    
-}
-
-const mistralChatStream:ChatStreamFunction = async ({model, messages}) => {
-    const result = await experimental_streamText({
-        model: mistral.chat(model.sdkModelValue),
-        messages: messages as ExperimentalMessage[],
-    });
-    return result.toAIStream();
 }
 
 const huggingFaceStream:ChatStreamFunction = async ({model, messages}) => {
@@ -296,39 +230,25 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
     return stream
 }
 
-const anthropicChatStream:ChatStreamFunction = async ({model, messages}) => {
-  // Ask Claude for a streaming chat completion given the prompt
-  const response = await anthropic.messages.create({
-    messages: messages as MessageParam[],
-    model: model.sdkModelValue,
-    stream: true,
-    max_tokens: model.maxTokens ?? 4096,
-  });
- 
-  // Convert the response into a friendly text-stream
-  const stream = AnthropicStream(response);
-  return stream    
-}
-
 // factory method
 // might be returned undefined
-function chatStreamFactory(model: ChatModel):ChatStreamFunction {
+function traditionalChatStreamFactory(model: ChatModel):ChatStreamFunction {
     // key is actually ModelProvider
     const providerMap:{[key:string]:ChatStreamFunction} = {
-        'openai': openaiChatStream,
+        // 'openai': openaiChatStream,
         'openai-image': openaiImageStream,
-        'google': googleChatStream,
-        'fireworksai': fireworksChatStream,
+        // 'google': googleChatStream,
+        // 'fireworksai': fireworksChatStream,
         'fireworksai-image': fireworksImageStream,
         'huggingface': huggingFaceStream,
         'huggingface-image': huggingFaceImageStream,
-        'groq': groqChatStream,
+        // 'groq': groqChatStream,
         'cohere': cohereChatStream,
         'aws': awsAnthropicChatStream,
-        'mistral': mistralChatStream,
-        'perplexity': perplexityChatStream,
+        // 'mistral': mistralChatStream,
+        // 'perplexity': perplexityChatStream,
         // 'langchain': langchainChatStream,
-        'anthropic': anthropicChatStream,
+        // 'anthropic': anthropicChatStream,
     }
     const stream = providerMap[model.provider as string]
     if (!stream) {
@@ -336,6 +256,25 @@ function chatStreamFactory(model: ChatModel):ChatStreamFunction {
         throw new Error('unexpected request')
     }
     return stream
+}
+
+function aiChatModelFactory(model: ChatModel):LanguageModelV1 {
+    // key is actually ModelProvider
+    const providerMap:{[key:string]:LanguageModelV1} = {
+        'openai': openai.chat(model.sdkModelValue),
+        'google': google.chat(model.sdkModelValue),
+        'fireworksai': fireworks.chat(model.sdkModelValue),
+        'groq': groq.chat(model.sdkModelValue),
+        'perplexity': perplexity.chat(model.sdkModelValue),
+        'anthropic': anthropic.chat(model.sdkModelValue),
+        'mistral': mistral.chat(model.sdkModelValue),
+    }
+    const aiChatModel = providerMap[model.provider as string]
+    if (!aiChatModel) {
+        console.error('unexpected model', model)
+        throw new Error('unexpected request')
+    }
+    return aiChatModel
 }
 
 export async function POST(req: Request) {
@@ -385,24 +324,32 @@ export async function POST(req: Request) {
         }
         // console.log(m)
 
-        const responseStreamGenerator = chatStreamFactory(modelData)
-        const stream = await responseStreamGenerator({model:modelData, messages: m})
-
         // return new Response('0: "Dummy Error"', {
         //     statusText: "dummy error",
         //     headers: { 'original-status': "403" },
         // });
-        return new StreamingTextResponse(stream)
+        if (['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral'].indexOf(modelData.provider) >= 0) {
+            // https://sdk.vercel.ai/docs/ai-core/settings
+            const aiChatModel:LanguageModelV1 = aiChatModelFactory(modelData)
+            const result = await experimental_streamText({
+                model: aiChatModel, 
+                messages: messages as ExperimentalMessage[], 
+                maxRetries: 1,
+                ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
+            })
+            return new StreamingTextResponse(result.toAIStream())
+        } else {
+            const responseStreamGenerator = traditionalChatStreamFactory(modelData)
+            const stream = await responseStreamGenerator({model:modelData, messages: m})
+            return new StreamingTextResponse(stream)
+        }
     } catch (err:any) {
         // Groq sometimes return the 403 error of which err.message is the cloudflare error html
         // https://sdk.vercel.ai/docs/guides/providers/openai#guide-handling-errors
         // https://github.com/openai/openai-node?tab=readme-ov-file#handling-errors
         // https://github.com/groq/groq-typescript
-        const errorText = err?.statusText || err?.name || `Unexpected Error. Status=${err.status}` 
+        const errorText = err?.message || err?.statusText || err?.name || `Unexpected Error. Status=${err.status}` 
         console.warn(err.status, errorText, err?.error, err?.message)
-        // if (err instanceof OpenAI.APIError) {
-        //     console.debug(err.error)
-        // }
         console.debug(messages, err.toString())
       
         // throw e; // when you would like to check the details
