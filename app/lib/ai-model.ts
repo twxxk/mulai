@@ -56,15 +56,13 @@ const allModels0:ChatModel0[] = [
     // in $15.00 / out $75.00 /1M tokens
     {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesAcceptImageUrl: true, },
 
+    // free (up to 60queries/min) 
+    {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'models/gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
+    // free (up to 60queries/min) 
+    {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'models/gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
     // preview (up to 2queries/min) 
-    {label: 'Google Gemini 1.5 Pro Preview', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
-    // free (up to 60queries/min) 
-    {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
-    // free (up to 60queries/min) 
-    {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
-    // cannot call from api. You can check available models from colab. https://ai.google.dev/tutorials/python_quickstart
-    // {label: 'Google Gemini 1.5 Pro', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'gemini-1.5-pro-latest', qualityScore: 219/256*100, japaneseScore: 65},
-    {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
+    {label: 'Google Gemini 1.5 Pro Preview', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'models/gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
+    {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
     // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
     {label: 'Cohere Command R+', provider: 'cohere', modelValue: 'command-r-plus', sdkModelValue: 'command-r-plus', qualityScore: 147/256*100, japaneseScore:67},
@@ -77,6 +75,7 @@ const allModels0:ChatModel0[] = [
 
     // in 2.5€/M, out 7.5€/M
     {label: 'Mistral Medium', provider: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
+    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
 
     // free
     {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
