@@ -80,8 +80,7 @@ const allModels0:ChatModel0[] = [
     // free
     {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
 
-    {label: 'Qwen 72B Chat', provider: 'fireworksai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
-    {label: 'Qwen 14B Chat', provider: 'fireworksai', modelValue: 'qwen-14b-chat', sdkModelValue: 'accounts/fireworks/models/qwen-14b-chat', qualityScore: 35/256*100, japaneseScore:10},
+    {label: 'Qwen1.5 72B Chat', provider: 'fireworksai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen1p5-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
 
     // free. OSS based
     {label: 'FireLLaVA 13B', provider: 'fireworksai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
