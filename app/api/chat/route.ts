@@ -353,7 +353,7 @@ export async function POST(req: Request) {
         console.debug(messages, err.toString())
       
         // throw e; // when you would like to check the details
-        const stream = stringToReadableStream(`0: "${errorText}"`)
+        const stream = stringToReadableStream(`0: "${errorText.replaceAll('"', '\\"')}"`)
         return new StreamingTextResponse(stream, {
             // status is overwritten by StreamingTextResponse. It could be good to generate contents to the user
             // status: err.status,
