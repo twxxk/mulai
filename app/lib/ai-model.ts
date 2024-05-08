@@ -85,8 +85,14 @@ const allModels0:ChatModel0[] = [
     // free. OSS based
     {label: 'FireLLaVA 13B', provider: 'fireworksai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
 
-    {label: 'Perplexity Llama 3 Small', provider: 'perplexity', modelValue: 'llama-3-sonar-small-chat', sdkModelValue: 'llama-3-sonar-small-32k-online', qualityScore: 61, japaneseScore:0},
-    {label: 'Perplexity Llama 3 Large', provider: 'perplexity', modelValue: 'llama-3-sonar-large-chat', sdkModelValue: 'llama-3-sonar-large-32k-online', qualityScore: 61, japaneseScore:0},
+    // 0.2/1M tokens
+    {label: 'Perplexity Llama 3 Small', provider: 'perplexity', modelValue: 'llama-3-sonar-small-chat', sdkModelValue: 'llama-3-sonar-small-32k-chat', qualityScore: 61, japaneseScore:0},
+    // 0.6/1M tokens
+    {label: 'Perplexity Llama 3 Large', provider: 'perplexity', modelValue: 'llama-3-sonar-large-chat', sdkModelValue: 'llama-3-sonar-large-32k-chat', qualityScore: 61, japaneseScore:0},
+    // + $5/1k req
+    {label: 'Perplexity Llama 3 Small Online', provider: 'perplexity', modelValue: 'llama-3-sonar-small-online', sdkModelValue: 'llama-3-sonar-small-32k-online', qualityScore: 61, japaneseScore:20},
+    // + $5/1k req
+    {label: 'Perplexity Llama 3 Large Online', provider: 'perplexity', modelValue: 'llama-3-sonar-large-online', sdkModelValue: 'llama-3-sonar-large-32k-online', qualityScore: 61, japaneseScore:20},
 
     {label: 'Gemma 1.1 7B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-7b-it', sdkModelValue: 'google/gemma-1.1-7b-it', qualityScore: 86/256*100, japaneseScore:10},
     {label: 'Gemma 7B', provider: 'huggingface', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 86/256*100-2, japaneseScore:10},
