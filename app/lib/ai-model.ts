@@ -42,12 +42,14 @@ type ChatModel0 = {
 }
 
 const allModels0:ChatModel0[] = [
-    // fast. in $0.0005/1K tokens, out $0.0015/1K tokens
+    // in $0.5/M tokens, out $1.5/M tokens
     {label: 'GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesSupportTool: true,},
-    // in $0.03/1K tokens, out $0.06/1K tokens
-    {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
-    // in $0.01/1K tokens, out $0.03/1K tokens 
+    // // in $0.03/1K tokens, out $0.06/1K tokens
+    // {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
+    // in $10/M tokens, out $30/M tokens 
     {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $5/1M tokens, out $15/M tokens
+    {label: 'GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true, doesAcceptImageUrl: true, },
 
     // in $0.25 / out $1.25 /1M tokens
     {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesAcceptImageUrl: true, },

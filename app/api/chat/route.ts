@@ -11,6 +11,7 @@ import { createMistral } from '@ai-sdk/mistral';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { type LanguageModelV1 } from '@ai-sdk/provider'
+import { CustomProvider } from '@/lib/provider/custom-provider-facade'
 
 // Create ai clients (they're edge friendly!)
 const openai = createOpenAI({ 
@@ -222,9 +223,6 @@ const cohereChatStream:ChatStreamFunction = async ({model, messages}) => {
       stream: true,
     }),
   })
-  
-    // const result = await response.json() // when stream: false
-    // const stream = stringToReadableStream(result.generations[0].text.substring(0))
 
     const stream = CohereStream(response);
     return stream
@@ -338,6 +336,20 @@ export async function POST(req: Request) {
                 ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
             })
             return new StreamingTextResponse(result.toAIStream())
+        // } else if (modelData.provider === 'custom') {
+            // console.log('custom')
+            // const customProvider = new CustomProvider({
+            //     apiKey: process.env.CUSTOM_API_KEY,
+            //     baseURL: 'https://api.custom.ai/generate',
+            // });
+            // const customModelId = modelData.sdkModelValue;
+            // const aiChatModel = customProvider.chat(customModelId)
+            // const result = await experimental_streamText({
+            //     model: aiChatModel, 
+            //     messages: messages as ExperimentalMessage[], 
+            //     // ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
+            // })
+            // return new StreamingTextResponse(result.toAIStream())
         } else {
             const responseStreamGenerator = traditionalChatStreamFactory(modelData)
             const stream = await responseStreamGenerator({model:modelData, messages: m})

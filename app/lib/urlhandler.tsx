@@ -13,13 +13,11 @@ const freeValues:ModelCharacterPair[] = [
     {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
     {modelValue: 'command-r-plus', characterValue: ''},
-    {modelValue: 'gpt-4-turbo', characterValue: ''},
+    {modelValue: 'gpt-4o', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [
   //   {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-  //   {modelValue: 'gpt-4', characterValue: ''},
-  //   {modelValue: 'gpt-4-turbo-preview', characterValue: ''},
   //   {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
   //   {modelValue: 'gemini-1.0-pro', characterValue: ''},
   //   {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
@@ -55,7 +53,7 @@ const freeValues:ModelCharacterPair[] = [
     gpt: [
         {modelValue: 'gpt-3.5-turbo', characterValue: ''},
         {modelValue: 'gpt-4-turbo', characterValue: ''},
-        {modelValue: 'gpt-4', characterValue: ''},
+        {modelValue: 'gpt-4o', characterValue: ''},
     ],
     google: [
         {modelValue: 'gemma-1.1-2b-it', characterValue: ''},
