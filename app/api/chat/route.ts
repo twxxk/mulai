@@ -1,4 +1,4 @@
-import { StreamingTextResponse, Message, experimental_streamText, ExperimentalMessage } from 'ai';
+import { StreamingTextResponse, Message, streamText, CoreMessage } from 'ai';
 import { CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
 import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt } from 'ai/prompts';
 import OpenAI from 'openai';
@@ -329,9 +329,9 @@ export async function POST(req: Request) {
         if (['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral'].indexOf(modelData.provider) >= 0) {
             // https://sdk.vercel.ai/docs/ai-core/settings
             const aiChatModel:LanguageModelV1 = aiChatModelFactory(modelData)
-            const result = await experimental_streamText({
+            const result = await streamText({
                 model: aiChatModel, 
-                messages: messages as ExperimentalMessage[], 
+                messages: messages as CoreMessage[], 
                 maxRetries: 1,
                 ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
             })
@@ -344,7 +344,7 @@ export async function POST(req: Request) {
             // });
             // const customModelId = modelData.sdkModelValue;
             // const aiChatModel = customProvider.chat(customModelId)
-            // const result = await experimental_streamText({
+            // const result = await streamText({
             //     model: aiChatModel, 
             //     messages: messages as ExperimentalMessage[], 
             //     // ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
