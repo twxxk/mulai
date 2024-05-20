@@ -49,7 +49,7 @@ const allModels0:ChatModel0[] = [
     // in $10/M tokens, out $30/M tokens 
     {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $5/1M tokens, out $15/M tokens
-    {label: 'GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, doesSupportTool: true, doesAcceptImageUrl: false, },
 
     // in $0.25 / out $1.25 /1M tokens
     {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesAcceptImageUrl: true, },
@@ -62,6 +62,8 @@ const allModels0:ChatModel0[] = [
     {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'models/gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     // free (up to 60queries/min) 
     {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'models/gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
+    // 
+    {label: 'Google Gemini 1.5 Flash Preview', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
     // preview (up to 2queries/min) 
     {label: 'Google Gemini 1.5 Pro Preview', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'models/gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },

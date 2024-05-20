@@ -56,10 +56,9 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'gpt-4o', characterValue: ''},
     ],
     google: [
-        {modelValue: 'gemma-1.1-2b-it', characterValue: ''},
-        {modelValue: 'gemma-1.1-7b-it', characterValue: ''},
-        {modelValue: 'groq-gemma-7b-it', characterValue: ''},
         {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
+        {modelValue: 'gemini-1.5-flash-latest', characterValue: ''},
+        {modelValue: 'gemini-1.5-pro-latest', characterValue: ''},
     ],
     anthropic: [
         {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
