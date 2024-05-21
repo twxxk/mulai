@@ -51,9 +51,8 @@ const bedrockClient = new BedrockRuntimeClient({
     },
 });
 
-// Set the runtime to edge for best performance
-export const runtime = 'edge';
-
+// Set the runtime to edge for best performance. Unset for the best compatibility
+// export const runtime = 'edge';
 
 interface ChatStreamFunction {
     ({model, messages}: {model: ChatModel, messages: Message[]}): Promise<ReadableStream>;
@@ -274,38 +273,6 @@ function aiChatModelFactory(model: ChatModel):LanguageModelV1 {
     }
     return aiChatModel
 }
-
-// export async function POST(req:Request) {
-//     const { messages } = await req.json();
-  
-//     let lastElement = messages[messages.length - 1];
-//     if (Array.isArray(lastElement.content)) {
-//       const imageUrl = 'https://nature-and-science.jp/wp-content/uploads/2020/10/27133000452.jpg'
-//       const {image_media_type, image_data} = await getExternalImage(imageUrl)
-//     }
-
-//     const messages = [
-//         {
-//         role: 'assistant',
-//         content: 'Hello Tim! How can I help you today?'
-//       },
-//         {
-//         role: 'user',
-//         content: [
-//         { type: 'text', text: 'Tell me what you see in the image.’ },
-//         { type: 'image', image: image_data }
-//       ]
-//       }
-//     ]
-    
-//     const result = await streamText({
-//       model: openai('gpt-4o'),
-//       system: "You are a helpful assistant.",
-//       messages,
-//     });
-  
-//     return new StreamingTextResponse(result.toAIStream());
-//   }
 
 export async function POST(req: Request) {
     const { messages, data } = await req.json();
