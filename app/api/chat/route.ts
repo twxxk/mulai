@@ -1,4 +1,4 @@
-import { StreamingTextResponse, Message, streamText, CoreMessage } from 'ai';
+import { StreamingTextResponse, Message, streamText, CoreMessage, ImagePart } from 'ai';
 import { CohereStream, AWSBedrockAnthropicStream, HuggingFaceStream } from 'ai';
 import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPrompt } from 'ai/prompts';
 import OpenAI from 'openai';
@@ -275,6 +275,38 @@ function aiChatModelFactory(model: ChatModel):LanguageModelV1 {
     return aiChatModel
 }
 
+// export async function POST(req:Request) {
+//     const { messages } = await req.json();
+  
+//     let lastElement = messages[messages.length - 1];
+//     if (Array.isArray(lastElement.content)) {
+//       const imageUrl = 'https://nature-and-science.jp/wp-content/uploads/2020/10/27133000452.jpg'
+//       const {image_media_type, image_data} = await getExternalImage(imageUrl)
+//     }
+
+//     const messages = [
+//         {
+//         role: 'assistant',
+//         content: 'Hello Tim! How can I help you today?'
+//       },
+//         {
+//         role: 'user',
+//         content: [
+//         { type: 'text', text: 'Tell me what you see in the image.’ },
+//         { type: 'image', image: image_data }
+//       ]
+//       }
+//     ]
+    
+//     const result = await streamText({
+//       model: openai('gpt-4o'),
+//       system: "You are a helpful assistant.",
+//       messages,
+//     });
+  
+//     return new StreamingTextResponse(result.toAIStream());
+//   }
+
 export async function POST(req: Request) {
     const { messages, data } = await req.json();
     try {
@@ -289,25 +321,17 @@ export async function POST(req: Request) {
 
         let m:any
         if (data?.imageUrl) {
-            let image_content:object = { type: 'image', image: new URL(data!.imageUrl) } 
-            if (modelData.provider === 'openai') {
-                image_content = { type: 'image_url', image_url: { url: data!.imageUrl } }
-            } else if (modelData.provider === 'anthropic') {
+            // https://sdk.vercel.ai/docs/reference/ai-sdk-core/stream-text
+            let image_content:ImagePart = { type: 'image', image: new URL(data!.imageUrl) }
+            if (modelData.provider === 'anthropic') {
+                // Anthropic responds "URL image parts' functionality not supported."
                 const {image_media_type, image_data} = await getExternalImage(data!.imageUrl)
-                image_content = {
-                    "type": "image",
-                    "source": {
-                        "type": "base64",
-                        "media_type": image_media_type,
-                        "data": image_data,
-                    },
-                }        
+                image_content = { type: 'image', image: image_data, mimeType: image_media_type }
             }
-            // https://sdk.vercel.ai/docs/guides/providers/openai#guide-using-images-with-gpt-4-vision-and-usechat
-            // https://readme.fireworks.ai/docs/querying-vision-language-models
             const initialMessages = messages.slice(0, -1);
             const currentMessage = messages[messages.length - 1];        
             m = [
+                // { role: 'system', content: 'You are a assistant with the vision based model, allowing image descriptions and other visual tasks from the given url and the image data.'},
                 ...initialMessages,
                 {
                     ...currentMessage,
@@ -331,7 +355,7 @@ export async function POST(req: Request) {
             const aiChatModel:LanguageModelV1 = aiChatModelFactory(modelData)
             const result = await streamText({
                 model: aiChatModel, 
-                messages: messages as CoreMessage[], 
+                messages: m as CoreMessage[], 
                 maxRetries: 1,
                 ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
             })

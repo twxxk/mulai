@@ -69,7 +69,7 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
         {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
         {modelValue: 'claude-3-opus-20240229', characterValue: ''},
-        {modelValue: 'gpt-4-vision-preview', characterValue: ''},
+        {modelValue: 'gpt-4o', characterValue: ''},
     ],
     generateimage: [
         {modelValue: 'stable-diffusion-2', characterValue: ''},
