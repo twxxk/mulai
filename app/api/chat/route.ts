@@ -12,6 +12,7 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { type LanguageModelV1 } from '@ai-sdk/provider'
 import { CustomProvider } from '@/lib/provider/custom-provider-facade'
+import { NextRequest } from 'next/server';
 
 // Create ai clients (they're edge friendly!)
 const openai = createOpenAI({ 
@@ -274,7 +275,7 @@ function aiChatModelFactory(model: ChatModel):LanguageModelV1 {
     return aiChatModel
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
     const { messages, data } = await req.json();
     try {
         let modelValue = req.headers.get('Model') ?? ''

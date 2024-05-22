@@ -38,10 +38,10 @@ const freeValues:ModelCharacterPair[] = [
     ej: [
         {modelValue: 'qwen-72b-chat', characterValue: 'ej'},
         {modelValue: 'firellava-13b', characterValue: 'ej'},
-        {modelValue: 'sonar-medium-chat', characterValue: 'ej'},
+        {modelValue: 'llama-3-sonar-large-chat', characterValue: 'ej'},
         {modelValue: 'groq-llama3-70b-8192', characterValue: 'ej'},
     ],
-        magi: [
+    magi: [
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'melchior'},
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'balthasar'},
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'caspar'},

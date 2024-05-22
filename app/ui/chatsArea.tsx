@@ -33,6 +33,8 @@ export default function ChatsArea() {
   const hasVisionModel = modelCharacterValues.findIndex(mc => getModelByValue(mc.modelValue)?.doesAcceptImageUrl) >= 0
 
   const formRef = useRef<HTMLFormElement>(null);
+  // const fileImageRef = useRef<HTMLInputElement>(null)
+  // const [fileSelected, setFileSelected] = useState(false)
   const [isLoadingAnyChat, setIsLoadingAnyChat] = useState(false)
   const isUsingIME = useRef(false)
 
@@ -267,11 +269,34 @@ export default function ChatsArea() {
           onCompositeChange={(value)=>isUsingIME.current = value}
           placeholder={t('parentInputPlaceholder')}
         />
-        <input type="text" className={'mx-1 mb-1 p-1 border border-gray-300rounded ' +
-          (hasVisionModel ? '' : ' hidden')} 
-          placeholder={t('imageUrlPlaceholder')} 
-          value={imageUrl}
-          onChange={(e)=>{setImageUrl(e.currentTarget.value)}}/>
+
+        <div className={'mb-1 p-1 flex-1 flex flex-row ' + (hasVisionModel ? '' : ' hidden')}>
+          {/* <button className={'mx-1 ' + (fileSelected ? 'text-teal-700 active:text-teal-600' : '')} onClick={() => fileImageRef.current?.click()}>
+            <PaperclipIcon className="h-5 w-5" />
+            <span className="sr-only">Upload</span>
+          </button> */}
+          <input type="file" id="attachedFile" accept="image/jpeg, image/png, image/gif, image/webp" 
+            onChange={(evt) => {
+              // Read the file content and convert to data URI in the client side
+              const selectedFile = evt.target.files![0];
+              // setFileSelected(!!selectedFile)
+              if (!selectedFile) {
+                setImageUrl('')
+                return
+              }
+          
+              const reader = new FileReader();
+              reader.onload = () => {
+                const dataImageUrl = reader.result as string
+                setImageUrl(dataImageUrl);
+              };
+              reader.readAsDataURL(selectedFile);
+            }}/>
+          <input type="text" className='flex-1 border border-gray-300rounded'
+            placeholder={t('imageUrlPlaceholder')} 
+            value={imageUrl}
+            onChange={(e)=>{setImageUrl(e.currentTarget.value)}}/>
+        </div>
       </div>
 
       {/* disabled is useful to stop submitting with enter */}
