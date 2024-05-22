@@ -21,6 +21,8 @@ const en:{[key:string]: any} = {
 	generateImageModelsLabel: 'Generate Image',
 	randomModelsLabel: 'Random',
 
+	surveyLabelTitle: '',
+	surveyLabel: 'Survey',
 	authorLabel: 'author: twk',
 	mulaiTitleLabel: 'More Client Components with more models & image descriptions',
 	mulai3TitleLabel: 'More RSC with function calls',
@@ -61,6 +63,8 @@ const ja:{[key:string]: any} = {
 	generateImageModelsLabel: '画像生成',
 	randomModelsLabel: 'ランダム',
 
+	surveyLabelTitle: 'アンケートにご協力ください',
+	surveyLabel: 'アンケート',
 	authorLabel: '作者: twk',
 	mulaiTitleLabel: 'モデル多数。画像説明あり。クライアントコンポーネント',
 	mulai3TitleLabel: '関数呼び出しあり。RSC',

@@ -275,7 +275,7 @@ export default function ChatsArea() {
             <PaperclipIcon className="h-5 w-5" />
             <span className="sr-only">Upload</span>
           </button> */}
-          <input type="file" id="attachedFile" accept="image/jpeg, image/png, image/gif, image/webp" 
+          <input type="file" accept="image/jpeg, image/png, image/gif, image/webp" 
             onChange={(evt) => {
               // Read the file content and convert to data URI in the client side
               const selectedFile = evt.target.files![0];

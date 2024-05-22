@@ -29,6 +29,11 @@ export default function InfoLinks({selectedService, className}:{selectedService:
                     href="https://mulai3.vercel.app/" title={t('mulai3TitleLabel')}>Mulai3</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
+                <a className="size-full" 
+                    href="https://forms.gle/7TrHHb1mfRmwjg8R6" title={t('surveyLabelTitle')}
+                    target="_blank" rel="noopener noreferrer">{t('surveyLabel')}</a>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
                 {/* Copyright twk. All rights reserved. */}
                 <a className="size-full" 
                     href="https://twitter.com/twk" title="Copyright twk. All rights reserved."
