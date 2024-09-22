@@ -37,11 +37,6 @@ export default function RootLayout({
                 : <> - Chat with Multiple genAIs</>
               }
             </h1></a>
-            <a className="mx-4 text-lg" 
-                    href="https://forms.gle/7TrHHb1mfRmwjg8R6"
-                    target="_blank" rel="noopener noreferrer">{
-                      (locale == 'ja') ? 'アンケートにご協力ください!' : 'Plase help us improve the service!'
-                    }</a>            
             <Suspense>
               <ModelLinks
                 className="focus-visible:outline-none ml-2 mr-1 hover:text-teal-100 active:text-teal-50" />
