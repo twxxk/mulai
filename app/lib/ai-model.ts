@@ -52,11 +52,11 @@ const allModels0:ChatModel0[] = [
     {label: 'GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
 
     // in $0.25 / out $1.25 /1M tokens
-    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $3.00 / out $15.00 /1M tokens
-    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $15.00 / out $75.00 /1M tokens
-    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
 
     // free (up to 60queries/min) 
     {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'models/gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
@@ -69,7 +69,9 @@ const allModels0:ChatModel0[] = [
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
     // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
+    {label: 'Cohere Command R 08-2024', provider: 'cohere', modelValue: 'command-r-08-2024', sdkModelValue: 'command-r-08-2024', qualityScore: 40, japaneseScore:0}, // does not work
     {label: 'Cohere Command R+', provider: 'cohere', modelValue: 'command-r-plus', sdkModelValue: 'command-r-plus', qualityScore: 147/256*100, japaneseScore:67},
+    {label: 'Cohere Command R+ 08-2024', provider: 'cohere', modelValue: 'command-r-plus-08-2024', sdkModelValue: 'command-r-plus-08-2024', qualityScore: 148/256*100, japaneseScore:67},
 
     // no longer necessary. Claude 3 is cheeper and better
     // in $0.0008/1k tokens, out $0.0024/1k tokens
@@ -102,6 +104,9 @@ const allModels0:ChatModel0[] = [
     {label: 'Gemma 7B', provider: 'huggingface', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 86/256*100-2, japaneseScore:10},
     {label: 'Gemma 1.1 2B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-2b-it', sdkModelValue: 'google/gemma-1.1-2b-it', qualityScore: 86/256*100-1, japaneseScore:0},
     {label: 'Gemma 2B', provider: 'huggingface', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 86/256*100-3, japaneseScore:0},
+    // > 100GB
+    // {label: 'Gemma 2 9B', provider: 'huggingface', modelValue: 'gemma-2-9b', sdkModelValue: 'google/gemma-2-9b', qualityScore: 86/256*100-3, japaneseScore:0},
+    // {label: 'Gemma 2 27B', provider: 'huggingface', modelValue: 'gemma-2-27b', sdkModelValue: 'google/gemma-2-27b', qualityScore: 86/256*100-3, japaneseScore:0},
 
     {label: 'Groq Llama 3 70b', provider: 'groq', modelValue: 'groq-llama3-70b-8192', sdkModelValue: 'llama3-70b-8192', qualityScore: 198/256*100+2, japaneseScore:5},
     {label: 'Groq Llama 3 8b', provider: 'groq', modelValue: 'groq-llama3-8b-8192', sdkModelValue: 'llama3-8b-8192', qualityScore: 137/256*100+2, japaneseScore:5},
