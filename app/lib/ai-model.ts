@@ -42,48 +42,80 @@ type ChatModel0 = {
 }
 
 const allModels0:ChatModel0[] = [
-    // in $0.5/M tokens, out $1.5/M tokens
-    {label: 'GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesSupportTool: true,},
-    // // in $0.03/1K tokens, out $0.06/1K tokens
-    // {label: 'GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
-    // in $10/M tokens, out $30/M tokens 
-    {label: 'GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // https://openai.com/api/pricing/
+    // 
+    {label: 'OpenAI ChatGPT-4o', provider: 'openai', modelValue: 'chatgpt-4o-latest', sdkModelValue: 'chatgpt-4o-latest', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $5/1M tokens, out $15/M tokens
-    {label: 'GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'OpenAI GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $2.5/1M, out $10/1M
+    {label: 'OpenAI GPT-4o-2024-08-06', provider: 'openai', modelValue: 'gpt-4o-2024-08-06', sdkModelValue: 'gpt-4o-2024-08-06', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.15/1M, out $0.6/1M
+    {label: 'OpenAI GPT-4o-mini', provider: 'openai', modelValue: 'gpt-4o-mini', sdkModelValue: 'gpt-4o-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // // in $0.03/1K tokens, out $0.06/1K tokens
+    // {label: 'OpenAI GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
+    // in $10/M tokens, out $30/M tokens 
+    {label: 'OpenAI GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // complex reasoning
+    // in $15/1M, out $60/1M
+    // {label: 'OpenAI o1-preview', provider: 'openai', modelValue: 'o1-preview', sdkModelValue: 'o1-preview', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $3/1M out $12/1M
+    // {label: 'OpenAI o1-mini', provider: 'openai', modelValue: 'o1-mini', sdkModelValue: 'o1-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.5/M tokens, out $1.5/M tokens
+    {label: 'OpenAI GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesSupportTool: true,},
 
-    // in $0.25 / out $1.25 /1M tokens
-    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $3.00 / out $15.00 /1M tokens
-    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $15.00 / out $75.00 /1M tokens
-    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-
-    // free (up to 60queries/min) 
-    {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'models/gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
+    // preview (up to 2queries/min) 
+    {label: 'Google Gemini 1.5 Pro', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'models/gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
+    // 
+    {label: 'Google Gemini 1.5 Flash', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
+    {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
+    // // free (up to 60queries/min) 
+    // {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'models/gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
     // free (up to 60queries/min) 
     {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'models/gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
-    // 
-    {label: 'Google Gemini 1.5 Flash Preview', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
-    // preview (up to 2queries/min) 
-    {label: 'Google Gemini 1.5 Pro Preview', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'models/gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
-    {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
-    // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
+    {label: 'Cohere Command R+ 08-2024', provider: 'cohere', modelValue: 'command-r-plus-08-2024', sdkModelValue: 'command-r-plus-08-2024', qualityScore: 148/256*100, japaneseScore:67},
     {label: 'Cohere Command R 08-2024', provider: 'cohere', modelValue: 'command-r-08-2024', sdkModelValue: 'command-r-08-2024', qualityScore: 40, japaneseScore:0}, // does not work
     {label: 'Cohere Command R+', provider: 'cohere', modelValue: 'command-r-plus', sdkModelValue: 'command-r-plus', qualityScore: 147/256*100, japaneseScore:67},
-    {label: 'Cohere Command R+ 08-2024', provider: 'cohere', modelValue: 'command-r-plus-08-2024', sdkModelValue: 'command-r-plus-08-2024', qualityScore: 148/256*100, japaneseScore:67},
+    // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
+
+    // https://console.groq.com/docs/models
+    {label: 'Groq Llama 3 70b', provider: 'groq', modelValue: 'groq-llama3-70b-8192', sdkModelValue: 'llama3-70b-8192', qualityScore: 198/256*100+2, japaneseScore:5},
+    // $0.59/$0.79 1M
+    {label: 'Groq Llama 3.1 70b', provider: 'groq', modelValue: 'groq-llama-3.1-70b-versatile', sdkModelValue: 'llama-3.1-70b-versatile', qualityScore: 198/256*100+2, japaneseScore:5},
+    // $0.05/$0.08 1M
+    {label: 'Groq Llama 3.1 8b', provider: 'groq', modelValue: 'groq-llama-3.1-8b-instant', sdkModelValue: 'llama-3.1-8b-instant', qualityScore: 137/256*100+2, japaneseScore:5},
+    // $0.2/$0.2 /1M
+    // {label: 'Groq Gemma2 9b It', provider: 'groq', modelValue: 'groq-gemma2-9b-it', sdkModelValue: 'gemma2-9b-it', qualityScore: 137/256*100+2, japaneseScore:5},
+
+    // $3/1M in/out tokens https://fireworks.ai/pricing#text
+    {label: 'Meta Llama 3.1 405B', provider: 'fireworksai', modelValue: 'llama-v3p1-405b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p1-405b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
+
+    // in $15.00 / out $75.00 /1M tokens
+    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $3.00 / out $15.00 /1M tokens
+    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.25 / out $1.25 /1M tokens
+    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+
+
+    // Hugging Face free account
+    {label: 'Gemma 2 27B It', provider: 'huggingface', modelValue: 'gemma-2-27b-it', sdkModelValue: 'google/gemma-2-27b-it', qualityScore: 86/256*100-3, japaneseScore:0},
+    {label: 'Gemma 2 9B It', provider: 'huggingface', modelValue: 'gemma-2-9b-it', sdkModelValue: 'google/gemma-2-9b-it', qualityScore: 86/256*100-3, japaneseScore:0},
+    {label: 'Gemma 2 2B It', provider: 'huggingface', modelValue: 'gemma-2-2b-it', sdkModelValue: 'google/gemma-2-2b-it', qualityScore: 86/256*100-3, japaneseScore:0},
 
     // no longer necessary. Claude 3 is cheeper and better
-    // in $0.0008/1k tokens, out $0.0024/1k tokens
-    {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
     // in $0.008/1k tokens, out $0.024/1k tokens
-    {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
+    // {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
+    // // in $0.0008/1k tokens, out $0.0024/1k tokens
+    // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
 
+    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
     // in 2.5€/M, out 7.5€/M
     {label: 'Mistral Medium', provider: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
-    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
 
-    // free
+    // No Response
+    {label: 'Japanese StableLM 2 Instruct 1.6B', provider: 'huggingface', modelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', sdkModelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', qualityScore: 40, japaneseScore:37},
+    // free - AI_APICallError "Not Found"
     {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
 
     {label: 'Qwen1.5 72B Chat', provider: 'fireworksai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen1p5-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
@@ -107,14 +139,10 @@ const allModels0:ChatModel0[] = [
     // {label: 'Perplexity Llama 3.1 Large 70B', provider: 'perplexity', modelValue: 'llama-3.1-sonar-large-128k-chat', sdkModelValue: 'llama-3.1-sonar-large-128k-chat', qualityScore: 61, japaneseScore:0},
 
     {label: 'Gemma 1.1 7B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-7b-it', sdkModelValue: 'google/gemma-1.1-7b-it', qualityScore: 86/256*100, japaneseScore:10},
-    {label: 'Gemma 7B', provider: 'huggingface', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 86/256*100-2, japaneseScore:10},
     {label: 'Gemma 1.1 2B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-2b-it', sdkModelValue: 'google/gemma-1.1-2b-it', qualityScore: 86/256*100-1, japaneseScore:0},
+    {label: 'Gemma 7B', provider: 'huggingface', modelValue: 'gemma-7b', sdkModelValue: 'google/gemma-7b', qualityScore: 86/256*100-2, japaneseScore:10},
     {label: 'Gemma 2B', provider: 'huggingface', modelValue: 'gemma-2b', sdkModelValue: 'google/gemma-2b', qualityScore: 86/256*100-3, japaneseScore:0},
-    // > 100GB
-    // {label: 'Gemma 2 9B', provider: 'huggingface', modelValue: 'gemma-2-9b', sdkModelValue: 'google/gemma-2-9b', qualityScore: 86/256*100-3, japaneseScore:0},
-    // {label: 'Gemma 2 27B', provider: 'huggingface', modelValue: 'gemma-2-27b', sdkModelValue: 'google/gemma-2-27b', qualityScore: 86/256*100-3, japaneseScore:0},
 
-    {label: 'Groq Llama 3 70b', provider: 'groq', modelValue: 'groq-llama3-70b-8192', sdkModelValue: 'llama3-70b-8192', qualityScore: 198/256*100+2, japaneseScore:5},
     {label: 'Groq Llama 3 8b', provider: 'groq', modelValue: 'groq-llama3-8b-8192', sdkModelValue: 'llama3-8b-8192', qualityScore: 137/256*100+2, japaneseScore:5},
     {label: 'Groq Mixtral 8x7b', provider: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
@@ -141,15 +169,15 @@ const allModels0:ChatModel0[] = [
     {label: 'Capybara 34B', provider: 'fireworksai', modelValue: 'yi-34b-200k-capybara', sdkModelValue: 'accounts/fireworks/models/yi-34b-200k-capybara', qualityScore: 111/256*100, japaneseScore:5},
     {label: 'Open-Assistant SFT-4 12B', provider: 'huggingface', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', qualityScore: 40, japaneseScore:0},
     // free. very low quality
-    // {label: 'Japanese Stable LM Instruct Gamma 7B', provider: 'fireworks.ai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', qualityScore: 40, japaneseScore:20}, // only work with 1 or 2 messages
+    // {label: 'Japanese Stable LM Instruct Gamma 7B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', qualityScore: 40, japaneseScore:20}, // only work with 1 or 2 messages
     {label: 'StableLM Zephyr 3B', provider: 'fireworksai', modelValue: 'stablelm-zephyr-3b', sdkModelValue: 'accounts/stability/models/stablelm-zephyr-3b', qualityScore: 40, japaneseScore:0},
 
     // Vercel AI SDK for AWS supports Claude body format (prompt) but not titan (inputText)
     // {label: 'Titan Text G1 - Express', provider: 'aws', modelValue: 'amazon.titan-text-express-v1', sdkModelValue: 'amazon.titan-text-express-v1', recommendScore:20},  
 
     // Image generation - Works fine, but UI should be updated
-    {label: 'DALL·E 2', provider: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
     {label: 'DALL·E 3', provider: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:40},
+    {label: 'DALL·E 2', provider: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
     {label: 'Stable Diffusion 2', provider: 'huggingface-image', modelValue: 'stable-diffusion-2', sdkModelValue: 'stabilityai/stable-diffusion-2', qualityScore: 40, japaneseScore:10},
     ...(process.env.NODE_ENV === 'development' ? [
     // The following Models are not found...
