@@ -45,6 +45,7 @@ type ChatModel0 = {
     temperature?: number,
     doesSupportTool?: boolean,
     doesAcceptImageUrl?: boolean,
+    isDisabled?: boolean,
 }
 
 const allModels0:ChatModel0[] = [
@@ -121,11 +122,11 @@ const allModels0:ChatModel0[] = [
     // https://www.anthropic.com/pricing#anthropic-api
     // We cannot pay for the anthropic credit for some reason. Disabling models
     // in $15.00 / out $75.00 /1M tokens
-    // {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
     // in $3.00 / out $15.00 /1M tokens
-    // {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
     // in $0.25 / out $1.25 /1M tokens
-    // {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
 
     // Hugging Face free account
     {label: 'Gemma 2 27B It', provider: 'huggingface', modelValue: 'gemma-2-27b-it', sdkModelValue: 'google/gemma-2-27b-it', qualityScore: 86/256*100-3, japaneseScore:0},
@@ -237,6 +238,7 @@ export type ChatModel = {
     temperature?: number,
     doesToolSupport?: boolean, // If the model supports tools and function calls
     doesAcceptImageUrl?: boolean,
+    isDisabled?: boolean, // technically possible but do not let the user choose the model
 }
 
 

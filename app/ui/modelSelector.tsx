@@ -18,12 +18,12 @@ export default function ModelSelector({selectedValue, onChange: handleChange}:{s
     return (<span className="whitespace-nowrap overflow-hidden mr-1">
         {t('model')} <select value={selectedValue} onChange={handleChange} className="font-bold">
             {(!isModelSelectable && modelData) &&
-                (<option key={modelData!.label} value={modelData!.modelValue}>
+                (<option key={modelData!.label} value={modelData!.modelValue} disabled={modelData.isDisabled}>
                     {modelData!.label}
                 </option>)}
             {selectableModels.map((value) => (
                 // show non recommended model with weak colors
-                <option key={value.label} value={value.modelValue} className={locale == 'ja' 
+                <option key={value.label} value={value.modelValue} disabled={value.isDisabled} className={locale == 'ja' 
                     ? (value.japaneseScore >= 50 ? 'text-black' : value.japaneseScore >= 15 ? 'text-gray-400' : 'text-gray-200') 
                     : (value.qualityScore > 50 ? 'text-black' : value.qualityScore >= 40 ? 'text-gray-400' : 'text-gray-200')
                 }>
