@@ -9,11 +9,11 @@ const freeValues:ModelCharacterPair[] = [
     {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
   ]
   // for production
-  const bestQualityValues:ModelCharacterPair[] = [
-    {modelValue: 'llama-v3p1-405b-instruct', characterValue: ''},
-    {modelValue: 'gemini-1.5-flash-latest', characterValue: ''},
+  const defaultModelValues:ModelCharacterPair[] = [
+    {modelValue: 'gemini-2.0-flash', characterValue: ''},
     {modelValue: 'command-r-plus-08-2024', characterValue: ''},
-    {modelValue: 'gpt-4o-2024-08-06', characterValue: ''},
+    {modelValue: 'gpt-4o-mini', characterValue: ''},
+    {modelValue: 'codestral-latest', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [
@@ -34,7 +34,7 @@ const freeValues:ModelCharacterPair[] = [
   const specialPairs:{[key:string]:ModelCharacterPair[]} = {
     default: (
         // process.env.NODE_ENV === 'development' ? freeValues : 
-        bestQualityValues),
+        defaultModelValues),
     ej: [
         {modelValue: 'qwen-72b-chat', characterValue: 'ej'},
         {modelValue: 'firellava-13b', characterValue: 'ej'},
@@ -51,24 +51,23 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
     ],
     gpt: [
-        {modelValue: 'gpt-3.5-turbo', characterValue: ''},
-        {modelValue: 'gpt-4-turbo', characterValue: ''},
+        {modelValue: 'gpt-4o-mini', characterValue: ''},
         {modelValue: 'gpt-4o', characterValue: ''},
+        {modelValue: 'o3-mini', characterValue: ''},
+        {modelValue: 'o1', characterValue: ''},
     ],
     google: [
-        {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
         {modelValue: 'gemini-1.5-flash-latest', characterValue: ''},
         {modelValue: 'gemini-1.5-pro-latest', characterValue: ''},
+        {modelValue: 'gemini-2.0-flash', characterValue: ''},
     ],
-    anthropic: [
-        {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
-        {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
-        {modelValue: 'claude-3-opus-20240229', characterValue: ''},
-    ],
+    anthropic: defaultModelValues,
+    // [
+        // {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
+        // {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
+        // {modelValue: 'claude-3-opus-20240229', characterValue: ''},
+    // ],
     describeimage: [
-        {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
-        {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
-        {modelValue: 'claude-3-opus-20240229', characterValue: ''},
         {modelValue: 'gpt-4o', characterValue: ''},
     ],
     generateimage: [
@@ -118,7 +117,7 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
     // 1..5. Only shorthand to longhand. No generate this url.
     const modelsNumber = parseInt(modelsParam ?? '0')
     if (modelsNumber >= 1 && modelsNumber <= 5)
-        return bestQualityValues.slice(0, modelsNumber)
+        return defaultModelValues.slice(0, modelsNumber)
 
     // model1(:character1),model2(:character2),...
     return modelsParam.split(',').map((value, index) => {

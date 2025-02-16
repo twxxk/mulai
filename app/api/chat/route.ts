@@ -325,7 +325,9 @@ export async function POST(req: NextRequest) {
                 model: aiChatModel, 
                 messages: m as CoreMessage[], 
                 maxRetries: 1,
-                ...(modelData.maxTokens ? {maxTokens:modelData.maxTokens} : {})
+                ...(modelData.temperature ? {temperature: modelData.temperature} : {}),
+                ...(modelData.maxCompletionTokens ? {maxCompletionTokens: modelData.maxCompletionTokens} : {}),
+                ...(modelData.maxTokens ? {maxTokens: modelData.maxTokens} : {}),
             })
             return new StreamingTextResponse(result.toAIStream())
         // } else if (modelData.provider === 'custom') {

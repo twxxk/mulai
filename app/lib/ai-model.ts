@@ -39,6 +39,8 @@ type ChatModel0 = {
     qualityScore: number,
     japaneseScore: number,
     maxTokens?: number,
+    maxCompletionTokens?: number,
+    temperature?: number,
     doesSupportTool?: boolean,
     doesAcceptImageUrl?: boolean,
 }
@@ -46,41 +48,59 @@ type ChatModel0 = {
 const allModels0:ChatModel0[] = [
     // https://openai.com/api/pricing/
     // 
+    // in $15.00/M (cached $7.50/M), out $60.00/M
+    {label: 'OpenAI o1', provider: 'openai', modelValue: 'o1', sdkModelValue: 'o1', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, doesSupportTool: true, doesAcceptImageUrl: true, },    
+    // in $1.1/M (cached $0.55/M), out $4.4/M
+    // AI_APICallError: Unsupported parameter: 'temperature' is not supported with this model. - But temparature:1 works.
+    {label: 'OpenAI o3-mini', provider: 'openai', modelValue: 'o3-mini', sdkModelValue: 'o3-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $1.1/M (cached $0.55), out $4.4/M
+    {label: 'OpenAI o1-mini', provider: 'openai', modelValue: 'o1-mini', sdkModelValue: 'o1-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+
+    // ?
     {label: 'OpenAI ChatGPT-4o', provider: 'openai', modelValue: 'chatgpt-4o-latest', sdkModelValue: 'chatgpt-4o-latest', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $5/1M tokens, out $15/M tokens
+    // in $2.5/1M (cached $1.25/M), out $10/1M
     {label: 'OpenAI GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $2.5/1M, out $10/1M
-    {label: 'OpenAI GPT-4o-2024-08-06', provider: 'openai', modelValue: 'gpt-4o-2024-08-06', sdkModelValue: 'gpt-4o-2024-08-06', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $0.15/1M, out $0.6/1M
     {label: 'OpenAI GPT-4o-mini', provider: 'openai', modelValue: 'gpt-4o-mini', sdkModelValue: 'gpt-4o-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // // in $0.03/1K tokens, out $0.06/1K tokens
     // {label: 'OpenAI GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
     // in $10/M tokens, out $30/M tokens 
     {label: 'OpenAI GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // complex reasoning
-    // in $15/1M, out $60/1M
-    // {label: 'OpenAI o1-preview', provider: 'openai', modelValue: 'o1-preview', sdkModelValue: 'o1-preview', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $3/1M out $12/1M
-    // {label: 'OpenAI o1-mini', provider: 'openai', modelValue: 'o1-mini', sdkModelValue: 'o1-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $0.5/M tokens, out $1.5/M tokens
     {label: 'OpenAI GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesSupportTool: true,},
 
-    // preview (up to 2queries/min) 
+    // https://ai.google.dev/gemini-api/docs/pricing
+    // in $0.1/M, out $0.4/M after free tier
+    {label: 'Google Gemini 2.0 Flash', provider: 'google', modelValue: 'gemini-2.0-flash', sdkModelValue: 'models/gemini-2.0-flash', qualityScore: 122/256*100, japaneseScore: 64},
+    // in $1.25/M, out $5/M
     {label: 'Google Gemini 1.5 Pro', provider: 'google', modelValue: 'gemini-1.5-pro-latest', sdkModelValue: 'models/gemini-1.5-pro-latest', qualityScore: 122/256*100, japaneseScore: 64},
-    // 
+    // in $0.075/M, out $0.3
     {label: 'Google Gemini 1.5 Flash', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
-    // // free (up to 60queries/min) 
-    // {label: 'Google Gemini 1.0 Pro', provider: 'google', modelValue: 'gemini-1.0-pro', sdkModelValue: 'models/gemini-pro', qualityScore: 122/256*100, japaneseScore: 64},
-    // free (up to 60queries/min) 
-    {label: 'Google Gemini 1.0 Pro Latest', provider: 'google', modelValue: 'gemini-1.0-pro-latest', sdkModelValue: 'models/gemini-1.0-pro-latest', qualityScore: 218/256*100, japaneseScore: 64},
 
+    // https://docs.mistral.ai/getting-started/models/models_overview/
+    // https://mistral.ai/en/products/la-plateforme#pricing    
+    // in: $2, out: $6
+    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
+    // in: $0.3, out: $0.9
+    {label: 'Codestral', provider: 'mistral', modelValue: 'codestral-latest', sdkModelValue: 'codestral-latest', qualityScore: 40, japaneseScore:52},
+
+    // https://cohere.com/pricing
+    // https://docs.cohere.com/docs/command-r7b
+    // in: $2.5/M, out: $10/M
     {label: 'Cohere Command R+ 08-2024', provider: 'cohere', modelValue: 'command-r-plus-08-2024', sdkModelValue: 'command-r-plus-08-2024', qualityScore: 148/256*100, japaneseScore:67},
+    // in: $0.15/M, out: $0.60/M
     {label: 'Cohere Command R 08-2024', provider: 'cohere', modelValue: 'command-r-08-2024', sdkModelValue: 'command-r-08-2024', qualityScore: 40, japaneseScore:0}, // does not work
+    // in: $2.5/M, out: $10/M
     {label: 'Cohere Command R+', provider: 'cohere', modelValue: 'command-r-plus', sdkModelValue: 'command-r-plus', qualityScore: 147/256*100, japaneseScore:67},
+    // command-r7b-12-2024 does not work
+    // in: $0.0375/M, out: $0.15/M
+    // {label: 'Cohere Command R7B 12-2024', provider: 'cohere', modelValue: 'command-r7b-12-2024', sdkModelValue: 'command-r7b-12-2024', qualityScore: 148/256*100, japaneseScore:67},
     // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
 
     // https://console.groq.com/docs/models
+    {label: 'Groq DeepSeek Qwen 32B', provider: 'groq', modelValue: 'deepseek-r1-distill-qwen-32b', sdkModelValue: 'deepseek-r1-distill-qwen-32b', qualityScore: 198/256*100+2, japaneseScore:5},
+    {label: 'Groq DeepSeek Llama 70B', provider: 'groq', modelValue: 'deepseek-r1-distill-llama-70b', sdkModelValue: 'deepseek-r1-distill-llama-70b', qualityScore: 198/256*100+2, japaneseScore:5},
     {label: 'Groq Llama 3 70b', provider: 'groq', modelValue: 'groq-llama3-70b-8192', sdkModelValue: 'llama3-70b-8192', qualityScore: 198/256*100+2, japaneseScore:5},
     // $0.59/$0.79 1M
     {label: 'Groq Llama 3.1 70b', provider: 'groq', modelValue: 'groq-llama-3.1-70b-versatile', sdkModelValue: 'llama-3.1-70b-versatile', qualityScore: 198/256*100+2, japaneseScore:5},
@@ -111,10 +131,6 @@ const allModels0:ChatModel0[] = [
     // {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
     // // in $0.0008/1k tokens, out $0.0024/1k tokens
     // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
-
-    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
-    // in 2.5€/M, out 7.5€/M
-    {label: 'Mistral Medium', provider: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
 
     // No Response
     {label: 'Japanese StableLM 2 Instruct 1.6B', provider: 'huggingface', modelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', sdkModelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', qualityScore: 40, japaneseScore:37},
@@ -151,6 +167,8 @@ const allModels0:ChatModel0[] = [
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
     {label: 'Groq Gemma 1.1 7B', provider: 'groq', modelValue: 'groq-gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 40/256*100+2, japaneseScore:15},
 
+    // in 2.5€/M, out 7.5€/M
+    {label: 'Mistral Medium', provider: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
     {label: 'Mistral Small', provider: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 40, japaneseScore:5},
     // in 0.14€/M, out 0.42€/M
     {label: 'Mistral Tiny', provider: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 40, japaneseScore:10},
@@ -209,6 +227,8 @@ export type ChatModel = {
     qualityScore: number, // 0..100 (1000..1256) https://chat.lmsys.org/?arena as of 2024-02-23
     japaneseScore: number, // 0..100 https://wandb.ai/wandb-japan/llm-leaderboard/reports/Nejumi-LLM-Neo--Vmlldzo2MTkyMTU0 as of 2024-02-23
     maxTokens?: number, // Only if it should be passed as a parameter
+    maxCompletionTokens?: number, // deprecating maxTokens https://platform.openai.com/docs/api-reference/debugging-requests
+    temperature?: number,
     doesToolSupport?: boolean, // If the model supports tools and function calls
     doesAcceptImageUrl?: boolean,
 }
