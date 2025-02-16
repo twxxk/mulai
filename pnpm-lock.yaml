@@ -18,8 +18,8 @@ dependencies:
     specifier: ^0.0.13
     version: 0.0.13(zod@3.24.2)
   '@ai-sdk/provider':
-    specifier: ^0.0.0
-    version: 0.0.0
+    specifier: ^0.0.26
+    version: 0.0.26
   '@ai-sdk/provider-utils':
     specifier: ^0.0.1
     version: 0.0.1(zod@3.24.2)
@@ -3345,8 +3345,8 @@ packages:
       estraverse: 5.3.0
     dev: true
 
-  /esrap@1.4.4:
-    resolution: {integrity: sha512-tDN6xP/r/b3WmdpWm7LybrD252hY52IokcycPnO+WHfhFF0+n5AWtcLLK7VNV6m0uYgVRhGVs8OkZwRyfC7HzQ==}
+  /esrap@1.4.5:
+    resolution: {integrity: sha512-CjNMjkBWWZeHn+VX+gS8YvFwJ5+NDhg8aWZBSFJPR8qQduDNjbJodA2WcwCm7uQa5Rjqj+nZvVmceg1RbHFB9g==}
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
     dev: false
@@ -5784,7 +5784,7 @@ packages:
       axobject-query: 4.1.0
       clsx: 2.1.1
       esm-env: 1.2.2
-      esrap: 1.4.4
+      esrap: 1.4.5
       is-reference: 3.0.3
       locate-character: 3.0.0
       magic-string: 0.30.17

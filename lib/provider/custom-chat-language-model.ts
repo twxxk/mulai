@@ -125,7 +125,7 @@ export class CustomChatLanguageModel implements LanguageModelV1 {
                 return {
                     args: {
                         ...baseArgs,
-                        tools: tools?.map(tool => ({
+                        tools: tools?.map((tool:any) => ({
                             type: 'function',
                             function: {
                                 name: tool.name,
@@ -159,11 +159,11 @@ export class CustomChatLanguageModel implements LanguageModelV1 {
                 };
             }
 
-            case 'object-grammar': {
-                throw new UnsupportedFunctionalityError({
-                    functionality: 'object-grammar mode',
-                });
-            }
+            // case 'object-grammar': {
+            //     throw new UnsupportedFunctionalityError({
+            //         functionality: 'object-grammar mode',
+            //     });
+            // }
 
             default: {
                 const _exhaustiveCheck: never = type;

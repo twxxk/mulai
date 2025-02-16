@@ -10,7 +10,7 @@ import { createOpenAI } from '@ai-sdk/openai';
 import { createMistral } from '@ai-sdk/mistral';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
-import { type LanguageModelV1 } from '@ai-sdk/provider'
+
 import { CustomProvider } from '@/lib/provider/custom-provider-facade'
 import { NextRequest } from 'next/server';
 
@@ -256,9 +256,9 @@ function traditionalChatStreamFactory(model: ChatModel):ChatStreamFunction {
     return stream
 }
 
-function aiChatModelFactory(model: ChatModel):LanguageModelV1 {
+function aiChatModelFactory(model: ChatModel):any {
     // key is actually ModelProvider
-    const providerMap:{[key:string]:LanguageModelV1} = {
+    const providerMap:{[key:string]:any} = {
         'openai': openai.chat(model.sdkModelValue),
         'google': google.chat(model.sdkModelValue),
         'fireworksai': fireworks.chat(model.sdkModelValue),
@@ -320,7 +320,7 @@ export async function POST(req: NextRequest) {
         // });
         if (['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral'].indexOf(modelData.provider) >= 0) {
             // https://sdk.vercel.ai/docs/ai-core/settings
-            const aiChatModel:LanguageModelV1 = aiChatModelFactory(modelData)
+            const aiChatModel:any = aiChatModelFactory(modelData)
             const result = await streamText({
                 model: aiChatModel, 
                 messages: m as CoreMessage[], 
