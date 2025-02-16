@@ -4,12 +4,13 @@ import { experimental_buildOpenAssistantPrompt, experimental_buildAnthropicPromp
 import OpenAI from 'openai';
 import { HfInference } from '@huggingface/inference';
 import { BedrockRuntimeClient, InvokeModelWithResponseStreamCommand } from '@aws-sdk/client-bedrock-runtime';
-import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModel } from '@/app/lib/ai-model';
+import { DEFAULT_MODEL, getModelByValue, ModelValue, ChatModel, openAiCompatipleProviders } from '@/app/lib/ai-model';
 import { ImageGenerateParams } from 'openai/resources/index.mjs';
 import { createOpenAI } from '@ai-sdk/openai';
 import { createMistral } from '@ai-sdk/mistral';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
+import { createDeepSeek } from '@ai-sdk/deepseek';
 
 import { CustomProvider } from '@/lib/provider/custom-provider-facade'
 import { NextRequest } from 'next/server';
@@ -35,6 +36,9 @@ const anthropic = createAnthropic({
 });
 const google = createGoogleGenerativeAI({ apiKey: process.env.GOOGLE_API_KEY || '' });
 const mistral = createMistral({ apiKey: process.env.MISTRAL_API_KEY || ''});
+const deepseek = createDeepSeek({
+    apiKey: process.env.DEEPSEEK_API_KEY || '',
+});
 
 const openaiImage = new OpenAI({ 
     apiKey: process.env.OPENAI_API_KEY, 
@@ -250,7 +254,7 @@ function traditionalChatStreamFactory(model: ChatModel):ChatStreamFunction {
     }
     const stream = providerMap[model.provider as string]
     if (!stream) {
-        console.error('unexpected model', model)
+        console.error('unexpected model (traditional)', model)
         throw new Error('unexpected request')
     }
     return stream
@@ -266,6 +270,7 @@ function aiChatModelFactory(model: ChatModel):any {
         'perplexity': perplexity.chat(model.sdkModelValue),
         'anthropic': anthropic.chat(model.sdkModelValue),
         'mistral': mistral.chat(model.sdkModelValue),
+        'deepseek': deepseek.chat(model.sdkModelValue),
     }
     const aiChatModel = providerMap[model.provider as string]
     if (!aiChatModel) {
@@ -318,7 +323,7 @@ export async function POST(req: NextRequest) {
         //     statusText: "dummy error",
         //     headers: { 'original-status': "403" },
         // });
-        if (['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral'].indexOf(modelData.provider) >= 0) {
+        if (openAiCompatipleProviders.indexOf(modelData.provider) >= 0) {
             // https://sdk.vercel.ai/docs/ai-core/settings
             const aiChatModel:any = aiChatModelFactory(modelData)
             const result = await streamText({

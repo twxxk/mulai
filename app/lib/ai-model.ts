@@ -25,10 +25,12 @@
 //   https://docs.perplexity.ai/docs/model-cards
 // # Anthropic
 //   https://docs.anthropic.com/claude/docs/models-overview
+// # Deepseek
+//   https://api-docs.deepseek.com/quick_start/pricing/
 
 export type ModelProvider = 'openai' | 'google' | 'fireworksai' | 'huggingface' | 'cohere' | 'aws' | 'mistral' | 'groq' | 'perplexity' | 'langchain' | 'anthropic'
-    | 'openai-image' | 'huggingface-image' | 'fireworksai-image'
-export const openAiCompatipleProviders:ModelProvider[] = ['openai', 'fireworksai', 'groq', 'perplexity'] as const
+    | 'openai-image' | 'huggingface-image' | 'fireworksai-image' | 'deepseek'
+export const openAiCompatipleProviders:ModelProvider[] = ['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral', 'deepseek'] as const
 
 // Declare the internal type to avoid build errors
 type ChatModel0 = {
@@ -77,6 +79,10 @@ const allModels0:ChatModel0[] = [
     // in $0.075/M, out $0.3
     {label: 'Google Gemini 1.5 Flash', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
+
+    // Cannot test yet
+    // in $0.27/M (cached $0.07), out $1.10
+    // {label: 'DeepSeek Chat', provider: 'deepseek', modelValue: 'deepseek-chat', sdkModelValue: 'deepseek-chat', maxTokens: 8192, qualityScore: 152+1/256*100, japaneseScore:50+1},
 
     // https://docs.mistral.ai/getting-started/models/models_overview/
     // https://mistral.ai/en/products/la-plateforme#pricing    
@@ -236,7 +242,7 @@ export type ChatModel = {
 
 export const allModels:ChatModel[] = allModels0 as any
 // fall back free model.
-export const DEFAULT_MODEL:ChatModel = allModels.find(model => model.modelValue === 'gemini-1.0-pro') as ChatModel
+export const DEFAULT_MODEL:ChatModel = allModels.find(model => model.modelValue === 'gemma-2-27b-it') as ChatModel
 
 export const allModelValues = allModels0.map(model => model.modelValue);
 

@@ -120,6 +120,7 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
         return defaultModelValues.slice(0, modelsNumber)
 
     // model1(:character1),model2(:character2),...
+    // wrong values might be passed
     return modelsParam.split(',').map((value, index) => {
         const [modelValueString, characterValueString] = value.split(':')
         return validateModelCharacter(modelValueString, characterValueString ?? '') // undefined => ''
