@@ -1,8 +1,6 @@
 // AI models info
 // called from edge and webapp
 
-// 2025-02-16 fireworksai fails with AI_APICallError: Precondition Failed
-
 // # openai 
 //   https://openai.com/pricing#language-models
 //   https://platform.openai.com/docs/models/gpt-4-and-gpt-4-turbo
@@ -116,8 +114,14 @@ const allModels0:ChatModel0[] = [
     // $0.2/$0.2 /1M
     // {label: 'Groq Gemma2 9b It', provider: 'groq', modelValue: 'groq-gemma2-9b-it', sdkModelValue: 'gemma2-9b-it', qualityScore: 137/256*100+2, japaneseScore:5},
 
-    // $3/1M in/out tokens https://fireworks.ai/pricing#text
-    // {label: 'Meta Llama 3.1 405B', provider: 'fireworksai', modelValue: 'llama-v3p1-405b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p1-405b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
+    // in $3/M, out: $8/M
+    {label: 'DeepSeek R1', provider: 'fireworksai', modelValue: 'deepseek-r1', sdkModelValue: 'accounts/fireworks/models/deepseek-r1', qualityScore: 111/256*100, japaneseScore:50},
+    // $0.9/M
+    {label: 'DeepSeek V3', provider: 'fireworksai', modelValue: 'deepseek-v3', sdkModelValue: 'accounts/fireworks/models/deepseek-v3', qualityScore: 111/256*100, japaneseScore:30},
+    // $3/1M in/out tokens
+    {label: 'Meta Llama 3.1 405B', provider: 'fireworksai', modelValue: 'llama-v3p1-405b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p1-405b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
+    // $0.1/M
+    {label: 'Meta Llama 3.3 70B Instruct', provider: 'fireworksai', modelValue: 'llama-v3p3-70b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p3-70b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
 
     // https://www.anthropic.com/pricing#anthropic-api
     // We cannot pay for the anthropic credit for some reason. Disabling models
@@ -139,15 +143,14 @@ const allModels0:ChatModel0[] = [
     // // in $0.0008/1k tokens, out $0.0024/1k tokens
     // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
 
-    // No Response
-    {label: 'Japanese StableLM 2 Instruct 1.6B', provider: 'huggingface', modelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', sdkModelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', qualityScore: 40, japaneseScore:37},
-    // free - AI_APICallError "Not Found"
+    // AI_APICallError "Not Found"
+    // {label: 'Japanese StableLM 2 Instruct 1.6B', provider: 'huggingface', modelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', sdkModelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', qualityScore: 40, japaneseScore:37},
+    // AI_APICallError "Not Found"
     // {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
 
-    // {label: 'Qwen1.5 72B Chat', provider: 'fireworksai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen1p5-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
-
-    // free. OSS based
-    // {label: 'FireLLaVA 13B', provider: 'fireworksai', modelValue: 'firellava-13b', sdkModelValue: 'accounts/fireworks/models/firellava-13b', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
+//    {label: 'Qwen1.5 72B Chat', provider: 'fireworksai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen1p5-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
+    // $0.9/M
+    {label: 'Qwen2.5 72B Instruct', provider: 'fireworksai', modelValue: 'qwen2p5-72b-instruct', sdkModelValue: 'accounts/fireworks/models/qwen2p5-72b-instruct', qualityScore: 147/256*100, japaneseScore:20},
 
     // https://docs.perplexity.ai/guides/pricing
     // Bad Request
@@ -172,29 +175,22 @@ const allModels0:ChatModel0[] = [
     {label: 'Groq Llama 3 8b', provider: 'groq', modelValue: 'groq-llama3-8b-8192', sdkModelValue: 'llama3-8b-8192', qualityScore: 137/256*100+2, japaneseScore:5},
     {label: 'Groq Mixtral 8x7b', provider: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
-    {label: 'Groq Gemma 1.1 7B', provider: 'groq', modelValue: 'groq-gemma-7b-it', sdkModelValue: 'gemma-7b-it', qualityScore: 40/256*100+2, japaneseScore:15},
 
+    // $1.2/M
+    {label: 'Mixtral 8x22B Instruct', provider: 'fireworksai', modelValue: 'mixtral-8x22b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x22b-instruct', qualityScore: 120/256*100, japaneseScore:50},
+    // $0.2/M
+    {label: 'Mixtral MoE 8x7B Instruct', provider: 'fireworksai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', qualityScore: 120/256*100, japaneseScore:5},
     // in 2.5€/M, out 7.5€/M
-    {label: 'Mistral Medium', provider: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:50},
+    {label: 'Mistral Medium', provider: 'mistral', modelValue: 'mistral-medium', sdkModelValue: 'mistral-medium', qualityScore: 152/256*100, japaneseScore:20},
     {label: 'Mistral Small', provider: 'mistral', modelValue: 'mistral-small', sdkModelValue: 'mistral-small', qualityScore: 40, japaneseScore:5},
     // in 0.14€/M, out 0.42€/M
     {label: 'Mistral Tiny', provider: 'mistral', modelValue: 'mistral-tiny', sdkModelValue: 'mistral-tiny', qualityScore: 40, japaneseScore:10},
-    // {label: 'Mixtral 8x7b MoE (Hugging Face)', provider: 'fireworksai', modelValue: 'mixtral-8x7b-instruct-hf', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct-hf', qualityScore: 120/256*100, japaneseScore:5},
-    // in:$0.4/M out:$1.6/M
-    // {label: 'Mixtral MoE 8x7B Instruct', provider: 'fireworksai', modelValue: 'mixtral-8x7b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x7b-instruct', qualityScore: 120/256*100, japaneseScore:5},
-    // {label: 'Mistral 7B Instruct', provider: 'fireworksai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', qualityScore: 152/256*100, japaneseScore:0},
+    {label: 'Mistral 7B Instruct', provider: 'fireworksai', modelValue: 'mistral-7b-instruct-4k', sdkModelValue: 'accounts/fireworks/models/mistral-7b-instruct-4k', qualityScore: 152/256*100, japaneseScore:0},
 
     {label: 'Cohere Command Nightly', provider: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', qualityScore: 40, japaneseScore:0},
     {label: 'Cohere Command Light Nightly', provider: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', qualityScore: 40, japaneseScore:0},
 
-    // free
-    // {label: 'Llama 2 70B Chat', provider: 'fireworksai', modelValue: 'llama-v2-70b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-chat', qualityScore: 82/256*100+1, japaneseScore:5},
-    // {label: 'Llama 2 70B Code Llama instruct', provider: 'fireworksai', modelValue: 'llama-v2-70b-code-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v2-70b-code-instruct', qualityScore: 82/256*100, japaneseScore:5},
-    // free
-    // {label: 'Llama 2 13B Chat', provider: 'fireworksai', modelValue: 'llama-v2-13b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-13b-chat', qualityScore: 45/256*100, japaneseScore:5},
-    // {label: 'Llama 2 7B Chat', provider: 'fireworksai', modelValue: 'llama-v2-7b-chat', sdkModelValue: 'accounts/fireworks/models/llama-v2-7b-chat', qualityScore: 27/256*100, japaneseScore:5},
-
-    // {label: 'Capybara 34B', provider: 'fireworksai', modelValue: 'yi-34b-200k-capybara', sdkModelValue: 'accounts/fireworks/models/yi-34b-200k-capybara', qualityScore: 111/256*100, japaneseScore:5},
+    {label: 'Yi-Large', provider: 'fireworksai', modelValue: 'yi-large', sdkModelValue: 'accounts/yi-01-ai/models/yi-large', qualityScore: 111/256*100, japaneseScore:5},
     {label: 'Open-Assistant SFT-4 12B', provider: 'huggingface', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', qualityScore: 40, japaneseScore:0},
     // free. very low quality
     // {label: 'Japanese Stable LM Instruct Gamma 7B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', qualityScore: 40, japaneseScore:20}, // only work with 1 or 2 messages

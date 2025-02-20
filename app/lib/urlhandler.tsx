@@ -20,12 +20,9 @@ const freeValues:ModelCharacterPair[] = [
   //   {modelValue: 'gpt-3.5-turbo', characterValue: ''},
   //   {modelValue: 'gemini-1.0-pro-latest', characterValue: ''},
   //   {modelValue: 'gemini-1.0-pro', characterValue: ''},
-  //   {modelValue: 'japanese-stablelm-instruct-beta-70b', characterValue: ''},
-  //   {modelValue: 'japanese-stablelm-instruct-gamma-7b', characterValue: ''},
   //   {modelValue: 'firellava-13b', characterValue: ''},
   //   {modelValue: 'qwen-14b-chat', characterValue: ''},
   //   {modelValue: 'qwen-72b-chat', characterValue: ''},
-  //   {modelValue: 'mixtral-8x7b-instruct', characterValue: ''},
   //   {modelValue: 'llama-v2-7b-chat', characterValue: ''},
   //   {modelValue: 'llama-v2-13b-chat', characterValue: ''},
   //   {modelValue: 'llama-v2-70b-chat', characterValue: ''},
@@ -37,7 +34,6 @@ const freeValues:ModelCharacterPair[] = [
         defaultModelValues),
     ej: [
         {modelValue: 'qwen-72b-chat', characterValue: 'ej'},
-        {modelValue: 'firellava-13b', characterValue: 'ej'},
         {modelValue: 'llama-3-sonar-large-chat', characterValue: 'ej'},
         {modelValue: 'groq-llama3-70b-8192', characterValue: 'ej'},
     ],
@@ -74,6 +70,11 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'stable-diffusion-2', characterValue: ''},
         {modelValue: 'dall-e-2', characterValue: ''},
         {modelValue: 'dall-e-3', characterValue: ''},
+    ],
+    inference: [
+        {modelValue: 'o3-mini', characterValue: ''},
+        {modelValue: 'gpt-o1', characterValue: ''},
+        {modelValue: 'deepseek-r1', characterValue: ''},
     ],
   }
   
@@ -112,6 +113,9 @@ export function getModelCharacterValues(modelsParam: string): ModelCharacterPair
     }
     if (modelsParam === 'anthropic') {
         return specialPairs.anthropic
+    }
+    if (modelsParam == 'inference') {
+        return specialPairs.inference
     }
 
     // 1..5. Only shorthand to longhand. No generate this url.

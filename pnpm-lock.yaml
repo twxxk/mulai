@@ -11,6 +11,9 @@ dependencies:
   '@ai-sdk/deepseek':
     specifier: ^0.1.10
     version: 0.1.10(zod@3.24.2)
+  '@ai-sdk/fireworks':
+    specifier: ^0.1.10
+    version: 0.1.10(zod@3.24.2)
   '@ai-sdk/google':
     specifier: ^0.0.5
     version: 0.0.5(zod@3.24.2)
@@ -149,6 +152,18 @@ packages:
 
   /@ai-sdk/deepseek@0.1.10(zod@3.24.2):
     resolution: {integrity: sha512-JCYFEYog365yFXXrbySAwuYfe6zHKuBPmdOIa3xl0LSE0p1GcvGkZn80lNPLLzqR8GO8S4qUZoH+HL1kqYHaYA==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.0.0
+    dependencies:
+      '@ai-sdk/openai-compatible': 0.1.10(zod@3.24.2)
+      '@ai-sdk/provider': 1.0.7
+      '@ai-sdk/provider-utils': 2.1.8(zod@3.24.2)
+      zod: 3.24.2
+    dev: false
+
+  /@ai-sdk/fireworks@0.1.10(zod@3.24.2):
+    resolution: {integrity: sha512-IbpvL5Bep8r8d14esKQwpd/ZtmsXRLPip3MGzVIo2yGo9cUmmjanlOZlatEXipSIYxliztNfuLVcvhtfWljpGw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.0.0

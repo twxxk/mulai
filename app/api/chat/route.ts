@@ -11,6 +11,7 @@ import { createMistral } from '@ai-sdk/mistral';
 import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createDeepSeek } from '@ai-sdk/deepseek';
+import { createFireworks } from '@ai-sdk/fireworks';
 
 import { CustomProvider } from '@/lib/provider/custom-provider-facade'
 import { NextRequest } from 'next/server';
@@ -19,9 +20,8 @@ import { NextRequest } from 'next/server';
 const openai = createOpenAI({ 
     apiKey: process.env.OPENAI_API_KEY, 
 });
-const fireworks = createOpenAI({
+const fireworks = createFireworks({
     apiKey: process.env.FIREWORKS_API_KEY || '',
-    baseURL: 'https://api.fireworks.ai/inference/v1',
 });
 const groq = createOpenAI({
     apiKey: process.env.GROQ_API_KEY || '',
@@ -265,7 +265,7 @@ function aiChatModelFactory(model: ChatModel):any {
     const providerMap:{[key:string]:any} = {
         'openai': openai.chat(model.sdkModelValue),
         'google': google.chat(model.sdkModelValue),
-        'fireworksai': fireworks.chat(model.sdkModelValue),
+        'fireworksai': fireworks.chatModel(model.sdkModelValue),
         'groq': groq.chat(model.sdkModelValue),
         'perplexity': perplexity.chat(model.sdkModelValue),
         'anthropic': anthropic.chat(model.sdkModelValue),
