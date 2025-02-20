@@ -88,7 +88,7 @@ const allModels0:ChatModel0[] = [
     // in: $2, out: $6
     {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
     // in: $0.3, out: $0.9
-    {label: 'Codestral', provider: 'mistral', modelValue: 'codestral-latest', sdkModelValue: 'codestral-latest', qualityScore: 40, japaneseScore:52},
+    {label: 'Mistral Codestral', provider: 'mistral', modelValue: 'codestral-latest', sdkModelValue: 'codestral-latest', qualityScore: 40, japaneseScore:52},
 
     // https://cohere.com/pricing
     // https://docs.cohere.com/docs/command-r7b
@@ -152,20 +152,14 @@ const allModels0:ChatModel0[] = [
     // $0.9/M
     {label: 'Qwen2.5 72B Instruct', provider: 'fireworksai', modelValue: 'qwen2p5-72b-instruct', sdkModelValue: 'accounts/fireworks/models/qwen2p5-72b-instruct', qualityScore: 147/256*100, japaneseScore:20},
 
-    // https://docs.perplexity.ai/guides/pricing
-    // Bad Request
-    // 0.2/1M tokens
-    // {label: 'Perplexity Llama 3 Small', provider: 'perplexity', modelValue: 'llama-3-sonar-small-chat', sdkModelValue: 'llama-3-sonar-small-32k-chat', qualityScore: 61, japaneseScore:0},
-    // $0.2/1M
-    // {label: 'Perplexity Llama 3.1 Small 8B', provider: 'perplexity', modelValue: 'llama-3.1-sonar-small-128k-chat', sdkModelValue: 'llama-3.1-sonar-small-128k-chat', qualityScore: 61, japaneseScore:0},
-    // // 0.6/1M tokens
-    // {label: 'Perplexity Llama 3 Large', provider: 'perplexity', modelValue: 'llama-3-sonar-large-chat', sdkModelValue: 'llama-3-sonar-large-32k-chat', qualityScore: 61, japaneseScore:0},
-    // // + $5/1k req
-    // {label: 'Perplexity Llama 3 Small Online', provider: 'perplexity', modelValue: 'llama-3-sonar-small-online', sdkModelValue: 'llama-3-sonar-small-32k-online', qualityScore: 61, japaneseScore:20},
-    // // + $5/1k req
-    // {label: 'Perplexity Llama 3 Large Online', provider: 'perplexity', modelValue: 'llama-3-sonar-large-online', sdkModelValue: 'llama-3-sonar-large-32k-online', qualityScore: 61, japaneseScore:20},
-    // // $1/1M
-    // {label: 'Perplexity Llama 3.1 Large 70B', provider: 'perplexity', modelValue: 'llama-3.1-sonar-large-128k-chat', sdkModelValue: 'llama-3.1-sonar-large-128k-chat', qualityScore: 61, japaneseScore:0},
+    // in: $2/M, out: $8/M
+    {label: 'Perplexity Sonar Reasoning Pro', provider: 'perplexity', modelValue: 'sonar-reasoning-pro', sdkModelValue: 'sonar-reasoning-pro', qualityScore: 61, japaneseScore:0},
+    // in: $1/M, out: $5/M
+    {label: 'Perplexity Sonar Reasoning', provider: 'perplexity', modelValue: 'sonar-reasoning', sdkModelValue: 'sonar-reasoning', qualityScore: 61, japaneseScore:0},
+    // in: $3/M, out: $15/M
+    {label: 'Perplexity Sonar Pro', provider: 'perplexity', modelValue: 'sonar-pro', sdkModelValue: 'sonar-pro', qualityScore: 61, japaneseScore:0},
+    // in: $1/M, out: $1/M
+    {label: 'Perplexity Sonar', provider: 'perplexity', modelValue: 'sonar', sdkModelValue: 'sonar', qualityScore: 61, japaneseScore:0},
 
     {label: 'Gemma 1.1 7B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-7b-it', sdkModelValue: 'google/gemma-1.1-7b-it', qualityScore: 86/256*100, japaneseScore:10},
     {label: 'Gemma 1.1 2B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-2b-it', sdkModelValue: 'google/gemma-1.1-2b-it', qualityScore: 86/256*100-1, japaneseScore:0},

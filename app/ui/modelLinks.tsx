@@ -40,6 +40,9 @@ export default function ModelLinks({className}:{className:string}) {
                 <a className="size-full" href="/">{t('defaultModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>
+                <a className="size-full" href="/?models=inference">{t('inferenceModelsLabel')}</a>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
                 <a className="size-full" href="/?models=ej">{t('ejModelsLabel')}</a>
             </DropdownMenuItem>
             <DropdownMenuItem>

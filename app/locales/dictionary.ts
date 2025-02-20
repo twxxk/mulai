@@ -11,6 +11,7 @@ const en:{[key:string]: any} = {
 	imageUrlPlaceholder: 'Image URL (PNG, JPEG, WEBP, and non-animated GIF). Only works for a few models.',
 
 	defaultModelsLabel: 'Default',
+	inferenceModelsLabel: 'Inference',
 	ejModelsLabel: 'English Japanese',
 	magiModelsLabel: 'MAGI',
 	optpessModelsLabel: 'Optim/Pessi',
@@ -52,7 +53,8 @@ const ja:{[key:string]: any} = {
 	parentInputPlaceholder: "全体に送信...",
 	imageUrlPlaceholder: '画像URL（PNG、JPEG、WEBP、非アニメーションGIF)。一部モデルでのみ動作します。',
 
-	defaultModelsLabel: 'おすすめ',
+	defaultModelsLabel: '標準',
+	inferenceModelsLabel: '推論',
 	ejModelsLabel: '翻訳応答',
 	magiModelsLabel: 'MAGI',
 	optpessModelsLabel: '楽観悲観',

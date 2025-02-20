@@ -32,6 +32,13 @@ const freeValues:ModelCharacterPair[] = [
     default: (
         // process.env.NODE_ENV === 'development' ? freeValues : 
         defaultModelValues),
+    inference: [
+        {modelValue: 'o3-mini', characterValue: ''},
+        {modelValue: 'o1', characterValue: ''},
+        {modelValue: 'deepseek-v3', characterValue: ''},
+        {modelValue: 'deepseek-r1', characterValue: ''},
+        {modelValue: 'sonar-reasoning-pro', characterValue: ''},
+    ],
     ej: [
         {modelValue: 'qwen-72b-chat', characterValue: 'ej'},
         {modelValue: 'llama-3-sonar-large-chat', characterValue: 'ej'},
@@ -70,11 +77,6 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'stable-diffusion-2', characterValue: ''},
         {modelValue: 'dall-e-2', characterValue: ''},
         {modelValue: 'dall-e-3', characterValue: ''},
-    ],
-    inference: [
-        {modelValue: 'o3-mini', characterValue: ''},
-        {modelValue: 'gpt-o1', characterValue: ''},
-        {modelValue: 'deepseek-r1', characterValue: ''},
     ],
   }
   

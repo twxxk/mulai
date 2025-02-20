@@ -12,6 +12,8 @@ import { createGoogleGenerativeAI } from '@ai-sdk/google';
 import { createAnthropic } from '@ai-sdk/anthropic';
 import { createDeepSeek } from '@ai-sdk/deepseek';
 import { createFireworks } from '@ai-sdk/fireworks';
+import { createGroq } from '@ai-sdk/groq';
+import { createPerplexity } from '@ai-sdk/perplexity';
 
 import { CustomProvider } from '@/lib/provider/custom-provider-facade'
 import { NextRequest } from 'next/server';
@@ -23,13 +25,11 @@ const openai = createOpenAI({
 const fireworks = createFireworks({
     apiKey: process.env.FIREWORKS_API_KEY || '',
 });
-const groq = createOpenAI({
+const groq = createGroq({
     apiKey: process.env.GROQ_API_KEY || '',
-    baseURL: 'https://api.groq.com/openai/v1',
 });
-const perplexity = createOpenAI({
+const perplexity = createPerplexity({
     apiKey: process.env.PERPLEXITY_API_KEY || '',
-    baseURL: 'https://api.perplexity.ai/',
 });
 const anthropic = createAnthropic({
     apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -266,8 +266,8 @@ function aiChatModelFactory(model: ChatModel):any {
         'openai': openai.chat(model.sdkModelValue),
         'google': google.chat(model.sdkModelValue),
         'fireworksai': fireworks.chatModel(model.sdkModelValue),
-        'groq': groq.chat(model.sdkModelValue),
-        'perplexity': perplexity.chat(model.sdkModelValue),
+        'groq': groq.languageModel(model.sdkModelValue),
+        'perplexity': perplexity.languageModel(model.sdkModelValue),
         'anthropic': anthropic.chat(model.sdkModelValue),
         'mistral': mistral.chat(model.sdkModelValue),
         'deepseek': deepseek.chat(model.sdkModelValue),
