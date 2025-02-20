@@ -79,17 +79,6 @@ const allModels0:ChatModel0[] = [
     {label: 'Google Gemini 1.5 Flash', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
-    // Cannot test yet
-    // in $0.27/M (cached $0.07), out $1.10
-    // {label: 'DeepSeek Chat', provider: 'deepseek', modelValue: 'deepseek-chat', sdkModelValue: 'deepseek-chat', maxTokens: 8192, qualityScore: 152+1/256*100, japaneseScore:50+1},
-
-    // https://docs.mistral.ai/getting-started/models/models_overview/
-    // https://mistral.ai/en/products/la-plateforme#pricing    
-    // in: $2, out: $6
-    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
-    // in: $0.3, out: $0.9
-    {label: 'Mistral Codestral', provider: 'mistral', modelValue: 'codestral-latest', sdkModelValue: 'codestral-latest', qualityScore: 40, japaneseScore:52},
-
     // https://cohere.com/pricing
     // https://docs.cohere.com/docs/command-r7b
     // in: $2.5/M, out: $10/M
@@ -103,6 +92,33 @@ const allModels0:ChatModel0[] = [
     // {label: 'Cohere Command R7B 12-2024', provider: 'cohere', modelValue: 'command-r7b-12-2024', sdkModelValue: 'command-r7b-12-2024', qualityScore: 148/256*100, japaneseScore:67},
     // {label: 'Cohere Command R', provider: 'cohere', modelValue: 'command-r', sdkModelValue: 'command-r', qualityScore: 40, japaneseScore:0}, // does not work
 
+    // in $3/M, out: $8/M
+    {label: 'DeepSeek R1', provider: 'fireworksai', modelValue: 'deepseek-r1', sdkModelValue: 'accounts/fireworks/models/deepseek-r1', qualityScore: 111/256*100, japaneseScore:50},
+    // $0.9/M
+    {label: 'DeepSeek V3', provider: 'fireworksai', modelValue: 'deepseek-v3', sdkModelValue: 'accounts/fireworks/models/deepseek-v3', qualityScore: 111/256*100, japaneseScore:30},
+    // $0.1/M
+    {label: 'Meta Llama 3.3 70B Instruct', provider: 'fireworksai', modelValue: 'llama-v3p3-70b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p3-70b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
+    // $3/M
+    {label: 'Yi-Large', provider: 'fireworksai', modelValue: 'yi-large', sdkModelValue: 'accounts/yi-01-ai/models/yi-large', qualityScore: 111/256*100, japaneseScore:5},
+    // $3/1M in/out tokens
+    {label: 'Meta Llama 3.1 405B', provider: 'fireworksai', modelValue: 'llama-v3p1-405b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p1-405b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
+
+    // in: $2/M, out: $8/M
+    {label: 'Perplexity Sonar Reasoning Pro', provider: 'perplexity', modelValue: 'sonar-reasoning-pro', sdkModelValue: 'sonar-reasoning-pro', qualityScore: 61, japaneseScore:0},
+    // in: $1/M, out: $5/M
+    {label: 'Perplexity Sonar Reasoning', provider: 'perplexity', modelValue: 'sonar-reasoning', sdkModelValue: 'sonar-reasoning', qualityScore: 61, japaneseScore:0},
+    // in: $3/M, out: $15/M
+    {label: 'Perplexity Sonar Pro', provider: 'perplexity', modelValue: 'sonar-pro', sdkModelValue: 'sonar-pro', qualityScore: 61, japaneseScore:0},
+    // in: $1/M, out: $1/M
+    {label: 'Perplexity Sonar', provider: 'perplexity', modelValue: 'sonar', sdkModelValue: 'sonar', qualityScore: 61, japaneseScore:0},
+
+    // https://docs.mistral.ai/getting-started/models/models_overview/
+    // https://mistral.ai/en/products/la-plateforme#pricing    
+    // in: $2, out: $6
+    {label: 'Mistral Large', provider: 'mistral', modelValue: 'mistral-large', sdkModelValue: 'mistral-large-latest', qualityScore: 152+1/256*100, japaneseScore:50+1},
+    // in: $0.3, out: $0.9
+    {label: 'Mistral Codestral', provider: 'mistral', modelValue: 'codestral-latest', sdkModelValue: 'codestral-latest', qualityScore: 40, japaneseScore:52},
+
     // https://console.groq.com/docs/models
     {label: 'Groq DeepSeek Qwen 32B', provider: 'groq', modelValue: 'deepseek-r1-distill-qwen-32b', sdkModelValue: 'deepseek-r1-distill-qwen-32b', qualityScore: 198/256*100+2, japaneseScore:5},
     {label: 'Groq DeepSeek Llama 70B', provider: 'groq', modelValue: 'deepseek-r1-distill-llama-70b', sdkModelValue: 'deepseek-r1-distill-llama-70b', qualityScore: 198/256*100+2, japaneseScore:5},
@@ -114,52 +130,10 @@ const allModels0:ChatModel0[] = [
     // $0.2/$0.2 /1M
     // {label: 'Groq Gemma2 9b It', provider: 'groq', modelValue: 'groq-gemma2-9b-it', sdkModelValue: 'gemma2-9b-it', qualityScore: 137/256*100+2, japaneseScore:5},
 
-    // in $3/M, out: $8/M
-    {label: 'DeepSeek R1', provider: 'fireworksai', modelValue: 'deepseek-r1', sdkModelValue: 'accounts/fireworks/models/deepseek-r1', qualityScore: 111/256*100, japaneseScore:50},
-    // $0.9/M
-    {label: 'DeepSeek V3', provider: 'fireworksai', modelValue: 'deepseek-v3', sdkModelValue: 'accounts/fireworks/models/deepseek-v3', qualityScore: 111/256*100, japaneseScore:30},
-    // $3/1M in/out tokens
-    {label: 'Meta Llama 3.1 405B', provider: 'fireworksai', modelValue: 'llama-v3p1-405b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p1-405b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
-    // $0.1/M
-    {label: 'Meta Llama 3.3 70B Instruct', provider: 'fireworksai', modelValue: 'llama-v3p3-70b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p3-70b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
-
-    // https://www.anthropic.com/pricing#anthropic-api
-    // We cannot pay for the anthropic credit for some reason. Disabling models
-    // in $15.00 / out $75.00 /1M tokens
-    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
-    // in $3.00 / out $15.00 /1M tokens
-    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
-    // in $0.25 / out $1.25 /1M tokens
-    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
-
     // Hugging Face free account
     {label: 'Gemma 2 27B It', provider: 'huggingface', modelValue: 'gemma-2-27b-it', sdkModelValue: 'google/gemma-2-27b-it', qualityScore: 86/256*100-3, japaneseScore:0},
     {label: 'Gemma 2 9B It', provider: 'huggingface', modelValue: 'gemma-2-9b-it', sdkModelValue: 'google/gemma-2-9b-it', qualityScore: 86/256*100-3, japaneseScore:0},
     {label: 'Gemma 2 2B It', provider: 'huggingface', modelValue: 'gemma-2-2b-it', sdkModelValue: 'google/gemma-2-2b-it', qualityScore: 86/256*100-3, japaneseScore:0},
-
-    // no longer necessary. Claude 3 is cheeper and better
-    // in $0.008/1k tokens, out $0.024/1k tokens
-    // {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
-    // // in $0.0008/1k tokens, out $0.0024/1k tokens
-    // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
-
-    // AI_APICallError "Not Found"
-    // {label: 'Japanese StableLM 2 Instruct 1.6B', provider: 'huggingface', modelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', sdkModelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', qualityScore: 40, japaneseScore:37},
-    // AI_APICallError "Not Found"
-    // {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
-
-//    {label: 'Qwen1.5 72B Chat', provider: 'fireworksai', modelValue: 'qwen-72b-chat', sdkModelValue: 'accounts/fireworks/models/qwen1p5-72b-chat', qualityScore: 147/256*100, japaneseScore:20},
-    // $0.9/M
-    {label: 'Qwen2.5 72B Instruct', provider: 'fireworksai', modelValue: 'qwen2p5-72b-instruct', sdkModelValue: 'accounts/fireworks/models/qwen2p5-72b-instruct', qualityScore: 147/256*100, japaneseScore:20},
-
-    // in: $2/M, out: $8/M
-    {label: 'Perplexity Sonar Reasoning Pro', provider: 'perplexity', modelValue: 'sonar-reasoning-pro', sdkModelValue: 'sonar-reasoning-pro', qualityScore: 61, japaneseScore:0},
-    // in: $1/M, out: $5/M
-    {label: 'Perplexity Sonar Reasoning', provider: 'perplexity', modelValue: 'sonar-reasoning', sdkModelValue: 'sonar-reasoning', qualityScore: 61, japaneseScore:0},
-    // in: $3/M, out: $15/M
-    {label: 'Perplexity Sonar Pro', provider: 'perplexity', modelValue: 'sonar-pro', sdkModelValue: 'sonar-pro', qualityScore: 61, japaneseScore:0},
-    // in: $1/M, out: $1/M
-    {label: 'Perplexity Sonar', provider: 'perplexity', modelValue: 'sonar', sdkModelValue: 'sonar', qualityScore: 61, japaneseScore:0},
 
     {label: 'Gemma 1.1 7B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-7b-it', sdkModelValue: 'google/gemma-1.1-7b-it', qualityScore: 86/256*100, japaneseScore:10},
     {label: 'Gemma 1.1 2B Instruct', provider: 'huggingface', modelValue: 'gemma-1.1-2b-it', sdkModelValue: 'google/gemma-1.1-2b-it', qualityScore: 86/256*100-1, japaneseScore:0},
@@ -169,6 +143,9 @@ const allModels0:ChatModel0[] = [
     {label: 'Groq Llama 3 8b', provider: 'groq', modelValue: 'groq-llama3-8b-8192', sdkModelValue: 'llama3-8b-8192', qualityScore: 137/256*100+2, japaneseScore:5},
     {label: 'Groq Mixtral 8x7b', provider: 'groq', modelValue: 'groq-Mixtral-8x7b-Instruct-v0.1', sdkModelValue: 'mixtral-8x7b-32768', qualityScore: 152/256*100+1, japaneseScore:5},
     {label: 'Groq Llama 2 70B Chat', provider: 'groq', modelValue: 'groq-LLaMA2-70b-chat', sdkModelValue: 'llama2-70b-4096', qualityScore: 82/256*100+2, japaneseScore:5},
+
+    // $0.9/M
+    {label: 'Qwen2.5 72B Instruct', provider: 'fireworksai', modelValue: 'qwen2p5-72b-instruct', sdkModelValue: 'accounts/fireworks/models/qwen2p5-72b-instruct', qualityScore: 147/256*100, japaneseScore:20},
 
     // $1.2/M
     {label: 'Mixtral 8x22B Instruct', provider: 'fireworksai', modelValue: 'mixtral-8x22b-instruct', sdkModelValue: 'accounts/fireworks/models/mixtral-8x22b-instruct', qualityScore: 120/256*100, japaneseScore:50},
@@ -184,7 +161,6 @@ const allModels0:ChatModel0[] = [
     {label: 'Cohere Command Nightly', provider: 'cohere', modelValue: 'cohere-command-nightly', sdkModelValue: 'command-nightly', qualityScore: 40, japaneseScore:0},
     {label: 'Cohere Command Light Nightly', provider: 'cohere', modelValue: 'cohere-command-light-nightly', sdkModelValue: 'command-light-nightly', qualityScore: 40, japaneseScore:0},
 
-    {label: 'Yi-Large', provider: 'fireworksai', modelValue: 'yi-large', sdkModelValue: 'accounts/yi-01-ai/models/yi-large', qualityScore: 111/256*100, japaneseScore:5},
     {label: 'Open-Assistant SFT-4 12B', provider: 'huggingface', modelValue: 'oasst-sft-4-pythia-12b-epoch-3.5', sdkModelValue: 'OpenAssistant/oasst-sft-4-pythia-12b-epoch-3.5', qualityScore: 40, japaneseScore:0},
     // free. very low quality
     // {label: 'Japanese Stable LM Instruct Gamma 7B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-gamma-7b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-gamma-7b', qualityScore: 40, japaneseScore:20}, // only work with 1 or 2 messages
@@ -197,6 +173,26 @@ const allModels0:ChatModel0[] = [
     {label: 'DALL·E 3', provider: 'openai-image', modelValue: 'dall-e-3', sdkModelValue: 'dall-e-3', qualityScore: 40, japaneseScore:40},
     {label: 'DALL·E 2', provider: 'openai-image', modelValue: 'dall-e-2', sdkModelValue: 'dall-e-2', qualityScore: 40, japaneseScore:10},
     {label: 'Stable Diffusion 2', provider: 'huggingface-image', modelValue: 'stable-diffusion-2', sdkModelValue: 'stabilityai/stable-diffusion-2', qualityScore: 40, japaneseScore:10},
+
+    // AI_APICallError "Not Found"
+    // {label: 'Japanese StableLM 2 Instruct 1.6B', provider: 'huggingface', modelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', sdkModelValue: 'stabilityai/japanese-stablelm-2-instruct-1_6b', qualityScore: 40, japaneseScore:37},
+    // AI_APICallError "Not Found"
+    // {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
+
+    // https://www.anthropic.com/pricing#anthropic-api
+    // We cannot pay for the anthropic credit for some reason. Disabling models
+    // in $15.00 / out $75.00 /1M tokens
+    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $3.00 / out $15.00 /1M tokens
+    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $0.25 / out $1.25 /1M tokens
+    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // no longer necessary. Claude 3 is cheeper and better
+    // in $0.008/1k tokens, out $0.024/1k tokens
+    // {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
+    // // in $0.0008/1k tokens, out $0.0024/1k tokens
+    // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
+    
     ...(process.env.NODE_ENV === 'development' ? [
     // The following Models are not found...
     // https://readme.fireworks.ai/docs/querying-vision-language-models#can-firellava-generate-images
