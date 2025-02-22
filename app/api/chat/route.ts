@@ -14,6 +14,7 @@ import { createDeepSeek } from '@ai-sdk/deepseek';
 import { createFireworks } from '@ai-sdk/fireworks';
 import { createGroq } from '@ai-sdk/groq';
 import { createPerplexity } from '@ai-sdk/perplexity';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
 
 import { CustomProvider } from '@/lib/provider/custom-provider-facade'
 import { NextRequest } from 'next/server';
@@ -38,6 +39,9 @@ const google = createGoogleGenerativeAI({ apiKey: process.env.GOOGLE_API_KEY || 
 const mistral = createMistral({ apiKey: process.env.MISTRAL_API_KEY || ''});
 const deepseek = createDeepSeek({
     apiKey: process.env.DEEPSEEK_API_KEY || '',
+});
+const openrouter = createOpenRouter({
+    apiKey: process.env.OPENROUTER_API_KEY || ''
 });
 
 const openaiImage = new OpenAI({ 
@@ -271,6 +275,7 @@ function aiChatModelFactory(model: ChatModel):any {
         'anthropic': anthropic.chat(model.sdkModelValue),
         'mistral': mistral.chat(model.sdkModelValue),
         'deepseek': deepseek.chat(model.sdkModelValue),
+        'openrouter': openrouter.chat(model.sdkModelValue),
     }
     const aiChatModel = providerMap[model.provider as string]
     if (!aiChatModel) {

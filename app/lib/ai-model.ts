@@ -25,10 +25,12 @@
 //   https://docs.anthropic.com/claude/docs/models-overview
 // # Deepseek
 //   https://api-docs.deepseek.com/quick_start/pricing/
+// # OpenRouter
+//   https://openrouter.ai/models?q=claude&order=top-weekly
 
 export type ModelProvider = 'openai' | 'google' | 'fireworksai' | 'huggingface' | 'cohere' | 'aws' | 'mistral' | 'groq' | 'perplexity' | 'langchain' | 'anthropic'
-    | 'openai-image' | 'huggingface-image' | 'fireworksai-image' | 'deepseek'
-export const openAiCompatipleProviders:ModelProvider[] = ['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral', 'deepseek'] as const
+    | 'openai-image' | 'huggingface-image' | 'fireworksai-image' | 'deepseek' | 'openrouter'
+export const openAiCompatipleProviders:ModelProvider[] = ['openai', 'google', 'fireworksai', 'groq', 'perplexity', 'anthropic', 'mistral', 'deepseek', 'openrouter'] as const
 
 // Declare the internal type to avoid build errors
 type ChatModel0 = {
@@ -79,6 +81,27 @@ const allModels0:ChatModel0[] = [
     {label: 'Google Gemini 1.5 Flash', provider: 'google', modelValue: 'gemini-1.5-flash-latest', sdkModelValue: 'models/gemini-1.5-flash-latest', qualityScore: 122/256*100, japaneseScore: 64},
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
+    // in $15/M, out $75/M
+    {label: 'Anthropic Claude 3 Opus (OpenRouter)', provider: 'openrouter', modelValue: 'anthropic/claude-3-opus', sdkModelValue: 'anthropic/claude-3-opus', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $3/M, out $15/M
+    {label: 'Anthropic Claude 3.5 Sonnet (OpenRouter)', provider: 'openrouter', modelValue: 'anthropic/claude-3.5-sonnet', sdkModelValue: 'anthropic/claude-3.5-sonnet', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.25/M, out $1.25/M
+    {label: 'Anthropic Claude 3 Haiku (OpenRouter)', provider: 'openrouter', modelValue: 'anthropic/claude-3-haiku', sdkModelValue: 'anthropic/claude-3-haiku', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    
+    // https://www.anthropic.com/pricing#anthropic-api
+    // We cannot pay for the anthropic credit for some reason. Disabling models
+    // in $15.00 / out $75.00 /1M tokens
+    // {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $3.00 / out $15.00 /1M tokens
+    // {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $0.25 / out $1.25 /1M tokens
+    // {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // no longer necessary. Claude 3 is cheeper and better
+    // in $0.008/1k tokens, out $0.024/1k tokens
+    // {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
+    // // in $0.0008/1k tokens, out $0.0024/1k tokens
+    // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
+    
     // https://cohere.com/pricing
     // https://docs.cohere.com/docs/command-r7b
     // in: $2.5/M, out: $10/M
@@ -96,6 +119,7 @@ const allModels0:ChatModel0[] = [
     {label: 'DeepSeek R1', provider: 'fireworksai', modelValue: 'deepseek-r1', sdkModelValue: 'accounts/fireworks/models/deepseek-r1', qualityScore: 111/256*100, japaneseScore:50},
     // $0.9/M
     {label: 'DeepSeek V3', provider: 'fireworksai', modelValue: 'deepseek-v3', sdkModelValue: 'accounts/fireworks/models/deepseek-v3', qualityScore: 111/256*100, japaneseScore:30},
+
     // $0.1/M
     {label: 'Meta Llama 3.3 70B Instruct', provider: 'fireworksai', modelValue: 'llama-v3p3-70b-instruct', sdkModelValue: 'accounts/fireworks/models/llama-v3p3-70b-instruct', qualityScore: 33, japaneseScore:15, doesAcceptImageUrl: true, },
     // $3/M
@@ -179,20 +203,6 @@ const allModels0:ChatModel0[] = [
     // AI_APICallError "Not Found"
     // {label: 'Japanese StableLM Instruct Beta 70B', provider: 'fireworksai', modelValue: 'japanese-stablelm-instruct-beta-70b', sdkModelValue: 'accounts/stability/models/japanese-stablelm-instruct-beta-70b', qualityScore: 40, japaneseScore:37},
 
-    // https://www.anthropic.com/pricing#anthropic-api
-    // We cannot pay for the anthropic credit for some reason. Disabling models
-    // in $15.00 / out $75.00 /1M tokens
-    {label: 'Anthropic Claude 3 Opus', provider: 'anthropic', modelValue: 'claude-3-opus-20240229', sdkModelValue: 'claude-3-opus-20240229', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
-    // in $3.00 / out $15.00 /1M tokens
-    {label: 'Anthropic Claude 3 Sonnet', provider: 'anthropic', modelValue: 'claude-3-sonnet-20240229', sdkModelValue: 'claude-3-sonnet-20240229', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
-    // in $0.25 / out $1.25 /1M tokens
-    {label: 'Anthropic Claude 3 Haiku', provider: 'anthropic', modelValue: 'claude-3-haiku-20240307', sdkModelValue: 'claude-3-haiku-20240307', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
-    // no longer necessary. Claude 3 is cheeper and better
-    // in $0.008/1k tokens, out $0.024/1k tokens
-    // {label: 'Anthropic Claude 2.1', provider: 'aws', modelValue: 'anthropic.claude-v2', sdkModelValue: 'anthropic.claude-v2:1', qualityScore: 120/256*100, japaneseScore:67},
-    // // in $0.0008/1k tokens, out $0.0024/1k tokens
-    // {label: 'Anthropic Claude Instant', provider: 'aws', modelValue: 'anthropic.claude-instant-v1', sdkModelValue: 'anthropic.claude-instant-v1', qualityScore: 150/256*100, japaneseScore:64}, // fast
-    
     ...(process.env.NODE_ENV === 'development' ? [
     // The following Models are not found...
     // https://readme.fireworks.ai/docs/querying-vision-language-models#can-firellava-generate-images
