@@ -59,6 +59,8 @@ const allModels0:ChatModel0[] = [
     // in $1.1/M (cached $0.55), out $4.4/M
     {label: 'OpenAI o1-mini', provider: 'openai', modelValue: 'o1-mini', sdkModelValue: 'o1-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
 
+    // in $75/M (cached $37.5/M) out $150/M
+    {label: 'OpenAI GPT-4.5 Preview', provider: 'openai', modelValue: 'gpt-4.5-preview', sdkModelValue: 'gpt-4.5-preview', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // ?
     {label: 'OpenAI ChatGPT-4o', provider: 'openai', modelValue: 'chatgpt-4o-latest', sdkModelValue: 'chatgpt-4o-latest', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $2.5/1M (cached $1.25/M), out $10/1M
