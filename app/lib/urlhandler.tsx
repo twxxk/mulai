@@ -11,9 +11,9 @@ const freeValues:ModelCharacterPair[] = [
   // for production
   const defaultModelValues:ModelCharacterPair[] = [
     {modelValue: 'gemini-2.0-flash', characterValue: ''},
+    {modelValue: 'gpt-4.1', characterValue: ''},
+    {modelValue: 'claude-3.5-sonnet', characterValue: ''},
     {modelValue: 'command-r-plus-08-2024', characterValue: ''},
-    {modelValue: 'gpt-4o-mini', characterValue: ''},
-    {modelValue: 'codestral-latest', characterValue: ''},
   ]
   // for debug purpose
   // const allValues:ModelCharacterPair[] = [
@@ -33,8 +33,7 @@ const freeValues:ModelCharacterPair[] = [
         // process.env.NODE_ENV === 'development' ? freeValues : 
         defaultModelValues),
     inference: [
-        {modelValue: 'o3-mini', characterValue: ''},
-        {modelValue: 'o1', characterValue: ''},
+        {modelValue: 'o4-mini', characterValue: ''},
         {modelValue: 'deepseek-v3', characterValue: ''},
         {modelValue: 'deepseek-r1', characterValue: ''},
         {modelValue: 'sonar-reasoning-pro', characterValue: ''},
@@ -54,22 +53,16 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'gemini-1.0-pro-latest', characterValue: 'pessimist'},
     ],
     gpt: [
-        {modelValue: 'gpt-4o-mini', characterValue: ''},
+        {modelValue: 'gpt-4.1', characterValue: ''},
         {modelValue: 'gpt-4o', characterValue: ''},
         {modelValue: 'o3-mini', characterValue: ''},
-        {modelValue: 'o1', characterValue: ''},
+        {modelValue: 'o1-mini', characterValue: ''},
     ],
     google: [
-        {modelValue: 'gemini-1.5-flash-latest', characterValue: ''},
-        {modelValue: 'gemini-1.5-pro-latest', characterValue: ''},
+        {modelValue: 'gemini-2.5-pro', characterValue: ''},
+        {modelValue: 'gemini-2.5-flash', characterValue: ''},
         {modelValue: 'gemini-2.0-flash', characterValue: ''},
     ],
-    anthropic: defaultModelValues,
-    // [
-        // {modelValue: 'claude-3-haiku-20240307', characterValue: ''},
-        // {modelValue: 'claude-3-sonnet-20240229', characterValue: ''},
-        // {modelValue: 'claude-3-opus-20240229', characterValue: ''},
-    // ],
     describeimage: [
         {modelValue: 'gpt-4o', characterValue: ''},
     ],

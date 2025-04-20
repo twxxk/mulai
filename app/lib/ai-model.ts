@@ -50,31 +50,47 @@ type ChatModel0 = {
 
 const allModels0:ChatModel0[] = [
     // https://openai.com/api/pricing/
-    // 
-    // in $15.00/M (cached $7.50/M), out $60.00/M
-    {label: 'OpenAI o1', provider: 'openai', modelValue: 'o1', sdkModelValue: 'o1', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, doesSupportTool: true, doesAcceptImageUrl: true, },    
+    // in $2/M (cached $0.5/M), out $8/M
+    {label: 'OpenAI GPT-4.1', provider: 'openai', modelValue: 'gpt-4.1', sdkModelValue: 'gpt-4.1', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.4/M (cached $0.1/M), out $1.6/M
+    {label: 'OpenAI GPT-4.1 mini', provider: 'openai', modelValue: 'gpt-4.1-mini', sdkModelValue: 'gpt-4.1-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.1/M (cached $0.025/M), out $0.4/M
+    {label: 'OpenAI GPT-4.1 nano', provider: 'openai', modelValue: 'gpt-4.1-nano', sdkModelValue: 'gpt-4.1-nano', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $2.5/1M (cached $1.25/M), out $10/1M
+    {label: 'OpenAI GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    // in $0.15/1M, out $0.6/1M
+    {label: 'OpenAI GPT-4o-mini', provider: 'openai', modelValue: 'gpt-4o-mini', sdkModelValue: 'gpt-4o-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+
+    // in $1.1/M (cached $0.55/M), out $4.4/M
+    {label: 'OpenAI o4-mini', provider: 'openai', modelValue: 'o4-mini', sdkModelValue: 'o4-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $1.1/M (cached $0.55/M), out $4.4/M
     // AI_APICallError: Unsupported parameter: 'temperature' is not supported with this model. - But temparature:1 works.
     {label: 'OpenAI o3-mini', provider: 'openai', modelValue: 'o3-mini', sdkModelValue: 'o3-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $1.1/M (cached $0.55), out $4.4/M
     {label: 'OpenAI o1-mini', provider: 'openai', modelValue: 'o1-mini', sdkModelValue: 'o1-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-
+    
+    // in $10/M (cached $2.5), out $40/M
+    {label: 'OpenAI o3', provider: 'openai', modelValue: 'o3', sdkModelValue: 'o3', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $15.00/M (cached $7.50/M), out $60.00/M
+    {label: 'OpenAI o1', provider: 'openai', modelValue: 'o1', sdkModelValue: 'o1', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $150/M, out $600.00/M
+    {label: 'OpenAI o1-pro', provider: 'openai', modelValue: 'o1-pro', sdkModelValue: 'o1-pro', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
     // in $75/M (cached $37.5/M) out $150/M
-    {label: 'OpenAI GPT-4.5 Preview', provider: 'openai', modelValue: 'gpt-4.5-preview', sdkModelValue: 'gpt-4.5-preview', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // ?
-    {label: 'OpenAI ChatGPT-4o', provider: 'openai', modelValue: 'chatgpt-4o-latest', sdkModelValue: 'chatgpt-4o-latest', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $2.5/1M (cached $1.25/M), out $10/1M
-    {label: 'OpenAI GPT-4o', provider: 'openai', modelValue: 'gpt-4o', sdkModelValue: 'gpt-4o', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $0.15/1M, out $0.6/1M
-    {label: 'OpenAI GPT-4o-mini', provider: 'openai', modelValue: 'gpt-4o-mini', sdkModelValue: 'gpt-4o-mini', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'OpenAI GPT-4.5 Preview', provider: 'openai', modelValue: 'gpt-4.5-preview', sdkModelValue: 'gpt-4.5-preview', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
     // // in $0.03/1K tokens, out $0.06/1K tokens
     // {label: 'OpenAI GPT-4', provider: 'openai', modelValue: 'gpt-4', sdkModelValue: 'gpt-4', qualityScore: 254/256*100, japaneseScore: 76, doesSupportTool: true,},
     // in $10/M tokens, out $30/M tokens 
-    {label: 'OpenAI GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'OpenAI GPT-4 Turbo', provider: 'openai', modelValue: 'gpt-4-turbo', sdkModelValue: 'gpt-4-turbo', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
+    // in $5/M, out $15/M
+    {label: 'OpenAI ChatGPT-4o', provider: 'openai', modelValue: 'chatgpt-4o-latest', sdkModelValue: 'chatgpt-4o-latest', qualityScore: 253/256*100, japaneseScore: 77, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
     // in $0.5/M tokens, out $1.5/M tokens
     {label: 'OpenAI GPT-3.5', provider: 'openai', modelValue: 'gpt-3.5-turbo', sdkModelValue: 'gpt-3.5-turbo', qualityScore: 118/256*100, japaneseScore: 67, doesSupportTool: true,},
 
     // https://ai.google.dev/gemini-api/docs/pricing
+    // in $1.25/M, out $10/M after free tier
+    {label: 'Google Gemini 2.5 Pro', provider: 'google', modelValue: 'gemini-2.5-pro', sdkModelValue: 'models/gemini-2.5-pro-exp-03-25', qualityScore: 122/256*100, japaneseScore: 64},
+    // in $0.15/M, out $3.5/M after free tier
+    {label: 'Google Gemini 2.5 Flash', provider: 'google', modelValue: 'gemini-2.5-flash', sdkModelValue: 'models/gemini-2.5-flash-preview-04-17', qualityScore: 122/256*100, japaneseScore: 64},
     // in $0.1/M, out $0.4/M after free tier
     {label: 'Google Gemini 2.0 Flash', provider: 'google', modelValue: 'gemini-2.0-flash', sdkModelValue: 'models/gemini-2.0-flash', qualityScore: 122/256*100, japaneseScore: 64},
     // in $1.25/M, out $5/M
@@ -84,11 +100,11 @@ const allModels0:ChatModel0[] = [
     {label: 'Google Gemini Pro Vision', provider: 'google', modelValue: 'gemini-pro-vision', sdkModelValue: 'models/gemini-pro-vision', qualityScore: 218/256*100, japaneseScore: 64, doesAcceptImageUrl: true, },
 
     // in $15/M, out $75/M
-    {label: 'Anthropic Claude 3 Opus (OpenRouter)', provider: 'openrouter', modelValue: 'anthropic/claude-3-opus', sdkModelValue: 'anthropic/claude-3-opus', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Opus (OpenRouter)', provider: 'openrouter', modelValue: 'claude-3-opus', sdkModelValue: 'anthropic/claude-3-opus', qualityScore: 255/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, isDisabled: true, },
     // in $3/M, out $15/M
-    {label: 'Anthropic Claude 3.5 Sonnet (OpenRouter)', provider: 'openrouter', modelValue: 'anthropic/claude-3.5-sonnet', sdkModelValue: 'anthropic/claude-3.5-sonnet', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3.5 Sonnet (OpenRouter)', provider: 'openrouter', modelValue: 'claude-3.5-sonnet', sdkModelValue: 'anthropic/claude-3.5-sonnet', qualityScore: 254/256*100, japaneseScore:64, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     // in $0.25/M, out $1.25/M
-    {label: 'Anthropic Claude 3 Haiku (OpenRouter)', provider: 'openrouter', modelValue: 'anthropic/claude-3-haiku', sdkModelValue: 'anthropic/claude-3-haiku', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
+    {label: 'Anthropic Claude 3 Haiku (OpenRouter)', provider: 'openrouter', modelValue: 'claude-3-haiku', sdkModelValue: 'anthropic/claude-3-haiku', qualityScore: 119/256*100, japaneseScore:63, maxTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     
     // https://www.anthropic.com/pricing#anthropic-api
     // We cannot pay for the anthropic credit for some reason. Disabling models
@@ -106,6 +122,10 @@ const allModels0:ChatModel0[] = [
     
     // https://cohere.com/pricing
     // https://docs.cohere.com/docs/command-r7b
+    // // in: $2.5/M, out: $10/M
+    // {label: 'Cohere Command A', provider: 'cohere', modelValue: 'command-a', sdkModelValue: 'command-a-03-2025', qualityScore: 148/256*100, japaneseScore:67},
+    // // in: $0.0375/M, out: $0.1/M
+    // {label: 'Cohere Command R7B', provider: 'cohere', modelValue: 'command-r7b-12-2024', sdkModelValue: 'command-r7b-12-2024', qualityScore: 148/256*100, japaneseScore:67},
     // in: $2.5/M, out: $10/M
     {label: 'Cohere Command R+ 08-2024', provider: 'cohere', modelValue: 'command-r-plus-08-2024', sdkModelValue: 'command-r-plus-08-2024', qualityScore: 148/256*100, japaneseScore:67},
     // in: $0.15/M, out: $0.60/M
