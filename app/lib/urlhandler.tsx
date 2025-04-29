@@ -56,7 +56,6 @@ const freeValues:ModelCharacterPair[] = [
         {modelValue: 'gpt-4.1', characterValue: ''},
         {modelValue: 'gpt-4o', characterValue: ''},
         {modelValue: 'o3-mini', characterValue: ''},
-        {modelValue: 'o1-mini', characterValue: ''},
     ],
     google: [
         {modelValue: 'gemini-2.5-pro', characterValue: ''},

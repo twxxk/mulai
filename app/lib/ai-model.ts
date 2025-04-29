@@ -66,7 +66,7 @@ const allModels0:ChatModel0[] = [
     // in $1.1/M (cached $0.55/M), out $4.4/M
     // AI_APICallError: Unsupported parameter: 'temperature' is not supported with this model. - But temparature:1 works.
     {label: 'OpenAI o3-mini', provider: 'openai', modelValue: 'o3-mini', sdkModelValue: 'o3-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
-    // in $1.1/M (cached $0.55), out $4.4/M
+    // shutdown: October 27, 2025in $1.1/M (cached $0.55), out $4.4/M
     {label: 'OpenAI o1-mini', provider: 'openai', modelValue: 'o1-mini', sdkModelValue: 'o1-mini', qualityScore: 253/256*100, japaneseScore: 77, temperature: 1, maxCompletionTokens: 4096, doesSupportTool: true, doesAcceptImageUrl: true, },
     
     // in $10/M (cached $2.5), out $40/M
